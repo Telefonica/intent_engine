@@ -6,6 +6,6 @@ import yamlParser
 if __name__ == "__main__":
 
     data=yamlParser.yaml_to_data("input.yaml")
-    print(data)
+    # print(data)
     intent=ib_object.IB_object(data)
     print(intent)

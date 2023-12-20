@@ -1,0 +1,17 @@
+{
+    "cloud_continuum": {
+        "nemo_deployment":{
+            "create":{
+                "vpnl2":"vpn",
+                "overlay":"l2sm"
+            },
+            "modify":"l2sm",
+            "migrate":"sdnc l2sm"
+        }
+    },
+    "transport":{
+        "d6g":{
+            "energy_saving":"sdnc"
+        }
+    }
+}

@@ -1,20 +1,24 @@
 Intent:
-  AttributeName: atname
+  AttributeName: cloud_continuum
   Expectations:
-    - Type (verb): verbo
+    - Type (verb): create
       Contexts:
-        AttributeName: catname
-        Attribute: catt
-        Condition: ccon
-        ValueRange: cval
+        - AttributeName: nemo_node
+          Attribute: nodeA
+          Condition: ccon
+          ValueRange: cval
+        - AttributeName: nemo_node
+          Attribute: nodeB
+          Condition: ccon
+          ValueRange: cval
       Target:
-        AttributeName: tatname
-        Attribute: tstate
+        AttributeName: requirements
+        Attribute: QoS
         Condition: greater
         ValueRange: 34
         Context: null
   Context:
-    AttributeName: atname
-    Attribute: att
-    Condition: nulconl
-    ValueRange: val
+    AttributeName: nemo_deployment
+    Attribute: overlay
+    Condition: is
+    ValueRange: UP

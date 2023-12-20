@@ -23,12 +23,13 @@ class Target():
 
 class Expectation():
 
-    def __init__(self, intent_type : str,target : Target, context : Context):
+    def __init__(self, intent_type : str,target : Target, context : List[Context]):
         self.__target=target
         self.__context=context
         self.__intent_type=intent_type
     def __str__(self):
-        return f"Expectation(intent_type={self.__intent_type}, target={self.__target}, context={self.__context})"
+        context=[ctx.__str__() for ctx in self.__context]
+        return f"Expectation(intent_type={self.__intent_type}, target={self.__target}, contexts={context})"
 
 class IB_object():
     def __init__(self, intent_dict: dict):
@@ -38,12 +39,16 @@ class IB_object():
         self.__context = intent["Context"]
         self.__expectations: List[Expectation] = []
         for expectation_data in intent['Expectations']:
-            print("\n",expectation_data)
-            context_data = expectation_data["Contexts"]
+            # print("\n --expecs--",expectation_data)
+            # context_data = expectation_data["Contexts"]
+            context_data_list = expectation_data.get("Contexts", [])
             target_data = expectation_data["Target"]
-            if context_data and target_data:
-                print("\n Context",context_data)
-                context_obj = Context(**context_data)
+            # print("\n --Context list-- ",context_data_list)
+            if context_data_list and target_data:
+                context_obj=[]
+                for context_data in context_data_list:
+                    # print("\n --Context-- ",context_data)
+                    context_obj.append(Context(**context_data))
                 target_obj = Target(**target_data)
                 expectation_obj = Expectation(
                     intent_type=expectation_data.get('intent_type'),
