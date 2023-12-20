@@ -1,0 +1,20 @@
+Intent:
+  AttributeName: atname
+  Expectations:
+    - Type (verb): verbo
+      Contexts:
+        AttributeName: catname
+        Attribute: catt
+        Condition: ccon
+        ValueRange: cval
+      Target:
+        AttributeName: tatname
+        Attribute: tstate
+        Condition: greater
+        ValueRange: 34
+        Context: null
+  Context:
+    AttributeName: atname
+    Attribute: att
+    Condition: nulconl
+    ValueRange: val
