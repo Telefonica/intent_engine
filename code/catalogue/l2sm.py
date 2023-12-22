@@ -43,6 +43,7 @@ class l2sm():
 
         return structure
 
+    
     # def find(self,d, tag):
     #     if tag in d:
     #         yield d[tag]
