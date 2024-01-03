@@ -3,7 +3,24 @@
 class l2sm():
 
     def __init__(self):
-        __isILU__:True
+        self.__isILU=True
+        self.__hasSBI=True
+        self.__parser={}
+        self.__checker={}
+        self.__interface={}
+        self.__functions=[]
+
+    def do_something_create(self,href):
+        # special code 1
+        print('========1=======' + href)
+
+    def do_something_modify(self,href):
+        # special code 2
+        print('========2=======' + href)
+
+    def do_something_remove(self,href):
+        # special code 3
+        print('========3=======' + href)
 
     def l2sm_structure(self):
 
