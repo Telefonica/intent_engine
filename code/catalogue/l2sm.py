@@ -1,4 +1,4 @@
-
+from ib_object import IB_object
 
 class l2sm():
 
@@ -10,6 +10,18 @@ class l2sm():
         self.__interface={}
         self.__functions=[]
 
+    def check_import(self):
+        print("L2SM imported")
+    def isILU(self):
+        return self.__isILU
+    def classifier(self,ib_object:IB_object):
+        return []
+    
+    def checker(self,intent : IB_object):
+        if intent.get_name() == "l2sm_deployment":
+            print("is l2sm")
+            return True
+        return False
     def do_something_create(self,href):
         # special code 1
         print('========1=======' + href)

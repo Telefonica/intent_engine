@@ -1,7 +1,7 @@
 Intent:
   AttributeName: cloud_continuum
   Expectations:
-    - Type (verb): create
+    - Type: create
       Contexts:
         - AttributeName: nemo_node
           Attribute: nodeA

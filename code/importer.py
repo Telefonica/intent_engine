@@ -10,7 +10,7 @@ class Importer:
     def import_modules_from_file(self)-> dict:
         with open(self.__catalogue_file, 'r') as file:
             module_names = [line.strip() for line in file if line.strip()]
-            print(module_names)
+            # print("Importer",module_names)
 
         imported_modules = {}
         for module_name in module_names:
