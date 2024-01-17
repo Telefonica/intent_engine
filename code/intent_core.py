@@ -8,6 +8,7 @@ from intent_classifier import Classifier
 if __name__ == "__main__":
 
     # ------- Import modules -------
+    print("---------- Importer----------")
     imp=importer.Importer("intent_catalogue.in")
     imported_modules = imp.get_imported_libraries()
     # Now you can use the imported modules
@@ -22,13 +23,18 @@ if __name__ == "__main__":
         module_instances.append(class_and_instance)
         # Perform actions using the imported module
     # Importar dependerá de la interfaz del módulo
+    
+    # Los executioners serán las interfaces hacia afuera
+    exec_cat=importer.Importer("executioner_catalogue.in")
+    imported_executioners = exec_cat.get_imported_libraries()
     # Check NBI
     print("module_instances: ",module_instances)
     data=yamlParser.yaml_to_data("input.yaml")
     intent=ib_object.IB_object(data)
     print(intent)
-            
+    
     # ------- Intent classifier -------
+    print("------- Intent classifier -------")
     # while loop con la condicion de que sean todo ilus
     # for module in module_instances:
     #     if not module['instance'].isILU():
@@ -38,10 +44,17 @@ if __name__ == "__main__":
     subintents,ill=classifier.classify(intent)
     print("ILL :",ill)
 
+     # ------ Intent translator -------
+    print("------ Intent translator -------")
     for ilu in ill:
-        order=ilu.translator(subintents)
-        
-    #
+        for module in module_instances:
+            if module['class']==ilu:
+                execution=module['instance'].translator(subintents)
+    # ------ Execution platform -------
+                print(" ------ Execution platform -------")
+                
+
+
     # de momento asumo que solo hay dos pasos
     # popear el último hasta que sea ilu
     # si la lista vacía stop

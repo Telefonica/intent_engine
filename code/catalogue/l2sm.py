@@ -33,6 +33,11 @@ class l2sm():
     def get_decision_tree(self):
         return self.__decision_tree
 
+    def translator(self,subintent):
+        
+        execution="crd"
+        return execution
+
     def create_ilu(self,ilu_ref):
 
         return ilu_ref

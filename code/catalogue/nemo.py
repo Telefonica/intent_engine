@@ -51,6 +51,7 @@ class nemo():
             return True
         return False
     def executioner(self):
+        
         return
     # def classifier(self,intent : IB_object):
     #     ill=[]
