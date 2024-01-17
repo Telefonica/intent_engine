@@ -3,17 +3,24 @@ from ib_object import IB_object
 class l2sm():
 
     def __init__(self):
+        self.__module_name="l2sm"
         self.__isILU=True
         self.__hasSBI=True
         self.__parser={}
         self.__checker={}
         self.__interface={}
         self.__functions=[]
+        self.__decision_tree={"l2sm_deployment":"l2sm"}
 
+    def get_name(self):
+        return self.__module_name
+    
     def check_import(self):
         print("L2SM imported")
+
     def isILU(self):
         return self.__isILU
+    
     def classifier(self,ib_object:IB_object):
         return []
     
@@ -22,17 +29,13 @@ class l2sm():
             print("is l2sm")
             return True
         return False
-    def do_something_create(self,href):
-        # special code 1
-        print('========1=======' + href)
+    
+    def get_decision_tree(self):
+        return self.__decision_tree
 
-    def do_something_modify(self,href):
-        # special code 2
-        print('========2=======' + href)
+    def create_ilu(self,ilu_ref):
 
-    def do_something_remove(self,href):
-        # special code 3
-        print('========3=======' + href)
+        return ilu_ref
 
     def l2sm_structure(self):
 

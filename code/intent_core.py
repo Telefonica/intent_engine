@@ -3,18 +3,7 @@ import ib_object
 import importer
 import yamlParser
 import os
-
-def l2sm_create(href):
-        # special code 1
-        print('========1=======' + href)
-
-def l2sm_modify(href):
-    # special code 2
-    print('========2=======' + href)
-
-def l2sm_remove(href):
-    # special code 3
-    print('========3=======' + href)
+from intent_classifier import Classifier
 
 if __name__ == "__main__":
 
@@ -38,21 +27,34 @@ if __name__ == "__main__":
     data=yamlParser.yaml_to_data("input.yaml")
     intent=ib_object.IB_object(data)
     print(intent)
-    # ------- Intent assurance -------
-    # a partir del objeto realizar comprobaciones en librería
-    for module in module_instances:
-        if module['instance'].checker(intent):
-            # append por si hay varias librerías?
-            print("keywords: ",intent.get_keywords())
-        else:
-            print("Intent not from :",module['class'])
             
     # ------- Intent classifier -------
     # while loop con la condicion de que sean todo ilus
-    for module in module_instances:
-        if not module['instance'].isILU():
-            intent,ill=module['instance'].classifier(intent)
+    # for module in module_instances:
+    #     if not module['instance'].isILU():
+    #         tree=module['instance'].get_decision_tree(intent)
+    
+    classifier=Classifier([m['instance'] for m in module_instances])
+    subintents,ill=classifier.classify(intent)
     print("ILL :",ill)
+
+    for ilu in ill:
+        order=ilu.translator(subintents)
+        
+    #
+    # de momento asumo que solo hay dos pasos
+    # popear el último hasta que sea ilu
+    # si la lista vacía stop
+    # modules_have_ill = True
+    # while modules_have_ill:
+    #     for module in module_instances:
+    #         if not module['instance'].isILU():
+    #             tree=module['instance'].get_decision_tree(intent)
+    #             module_instances.pop(module)
+
+
+    
+
     # el classifier tiene que dar una ill
     # que pasa si lo que da no es ILU?
     # classifier de ILU == null
@@ -65,10 +67,11 @@ if __name__ == "__main__":
     # esto tendría que ser recursivo, checkerar primero nemo tree, luego l2sm tree
     # y si es ILU buscar las funciones y ejecutar
     
-              
+    # ------- Intent assurance -------
+    # a partir del objeto realizar comprobaciones en librería
     # ------ Intent translator -------
     # ill=[]
     # ill.append(module['instance'].classifier(intent))
     # una vez sacada la funcion a ejecutar puede devolver las siguientes funciones con los interfaces
     # dict = {interfaz_func, variables}
-              
+

@@ -176,6 +176,7 @@ class IB_object():
                 keywords.append(words)
         for words in flat_list:
                 keywords.append(words)
+        print("keywords: ",keywords)
         return keywords
     
     def set_name(self, name):

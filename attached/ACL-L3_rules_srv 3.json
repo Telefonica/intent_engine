@@ -1,0 +1,77 @@
+{
+    "services": [
+        {
+            "service_id": {
+                "context_id": {"context_uuid": {"uuid": "admin"}},
+                "service_uuid": {"uuid": "l3-svc"}
+            },
+            "service_type": 1,
+            "service_status": {"service_status": 1},
+            "service_endpoint_ids": [
+                {"device_id": {"device_uuid": {"uuid": "R149"}}, "endpoint_uuid": {"uuid": "eth-1/0/20"}},
+                {"device_id": {"device_uuid": {"uuid": "R155"}}, "endpoint_uuid": {"uuid": "eth-1/0/20"}}
+            ],
+            "service_constraints": [
+                {"custom": {"constraint_type": "bandwidth[gbps]", "constraint_value": "10.0"}},
+                {"custom": {"constraint_type": "latency[ms]", "constraint_value": "15.2"}}
+            ],
+            "service_config": {"config_rules": [
+                {"action": 1, "custom": {"resource_key": "/settings", "resource_value": {
+                    "bgp_as"             : 65000,
+                    "route_distinguisher": "65000:533"
+                }}},
+                {"action": 1, "custom": {"resource_key": "/device[R149]/endpoint[eth-1/0/20]/settings", "resource_value": {
+                    "router_id"          : "5.5.5.5",
+                    "sub_interface_index": 0,
+                    "vlan_id"            : 533,
+                    "address_ip"         : "172.16.12.12",
+                    "address_prefix"     : 16,
+                    "policy_AZ"           : "srv_ACL",
+                    "policy_ZA"           : "srv_ACLr"
+                }}},
+                {"action": 1, "custom": {"resource_key": "/device[R155]/endpoint[eth-1/0/20]/settings", "resource_value": {
+                    "router_id"          : "5.5.5.1",
+                    "sub_interface_index": 0,
+                    "vlan_id"            : 533,
+                    "address_ip"         : "172.16.13.13",
+                    "address_prefix"     : 16,
+                    "policy_AZ"           : "srv_ACLr",
+                    "policy_ZA"           : "srv_ACL"
+                }}},
+                {"action": 1, "acl": {
+                    "endpoint_id": {
+                        "device_id": {"device_uuid": {"uuid": "R155"}},
+                        "endpoint_uuid": {"uuid": "eth-1/0/20.533"}
+                    },
+                    "rule_set": {
+                        "name": "DROP-HTTPS",
+                        "description": "DROP undesired HTTPS traffic",
+                        "type": 1,
+                        "user_id": "",
+                        "entries": [
+                            {
+                                "sequence_id": 1,
+                                "description": "DROP-10.100.200.4:52982-216.58.215.173:443",
+                                "match": {
+                                    "dscp": 0,
+                                    "dst_address": "216.58.215.173/32",
+                                    "dst_port": 443,
+                                    "end_mpls_label": 0,
+                                    "protocol": 6,
+                                    "src_address": "10.100.200.4/32",
+                                    "src_port": 52982,
+                                    "start_mpls_label": 0
+                                },
+                                "action": {
+                                    "forward_action": 1,
+                                    "log_action": 1
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+            ]}
+        }
+    ]
+}
