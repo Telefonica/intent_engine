@@ -35,8 +35,8 @@ class l2sm():
 
     def translator(self,subintent):
         
-        execution="crd"
-        return execution
+        # TODO: los subintents direan si hay que desplegar/migrar/eliminar
+        return self.l2sm_structure()
 
     def create_ilu(self,ilu_ref):
 
