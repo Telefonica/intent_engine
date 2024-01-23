@@ -1,1 +1,2 @@
 executioners.sysout
+executioners.rabbitmq
