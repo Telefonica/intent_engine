@@ -77,5 +77,3 @@ if __name__ == "__main__":
                         if exec_instance['class'] in executioner:
                             logging.debug("Runnning %s",exec_instance['class'])
                             exec_instance['instance'].execute(exec_obj)
-
-                

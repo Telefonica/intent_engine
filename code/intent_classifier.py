@@ -24,6 +24,10 @@ class Classifier():
             leaves.append(obj)
 
     def classify(self,intent : list):
+
+        """
+        When an intent is recived in the intent_core 
+        """
         
         ill=[]
         # puede ser que para un intent haya varias librerías que

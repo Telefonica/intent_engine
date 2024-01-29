@@ -4,17 +4,30 @@ from ib_object import IB_object
 class nemo():
     """
     This class works as a library for the Intent Engine. The structure is 
-    difine in such way that the Intent Engine is capable of parsing a
+    defined in such way that the Intent Engine is capable of parse a
     NEMO deployment intent. The principal functionality is to translate a 
     general NEMO deployment intent to an atomic intent. This atomic
     intent will be processed by its own library. 
+
+    Functions: 
+        -
+    
+    Attributes:
+        - Module name
+        - isILU: this library refer to other libraries to create
+                an atomic intent. This means that when an intent is 
+                process as part of a nemo deployment the classification 
+                will return a more specific tecnology (library or libraries) that 
+                the intent will process. 
+        - executioners: for the moment, a nemo intent is not passed directly to
+                        any specific tecnology. 
 
     Relations: l2sm, (in future versions also vpn, sdnc)
     """
     def __init__(self):
         self.__module_name="nemo"
         self.__isILU=False
-        self.__hasSBI=False
+        self.__executioners=[]
         self.__parser={}
         self.__checker={}
         self.__interface={}

@@ -2,6 +2,10 @@ import pika
 import yaml
 import json
 
+"""
+Test class simulation NEMO Meta-Orchestrator sending an Intent to the 
+RabbitMQ queue.
+"""
 def sender(key,message):
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host='localhost',port=5672))

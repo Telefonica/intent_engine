@@ -5,9 +5,15 @@ from .rabbitMQ_recv import reciver
 import concurrent.futures
 
 class rabbitmq():
+    """
+    The RabbitMQ executer stablish a connection between a RabbitMQ
+    message broker and the Intent Engine. This executer will start
+    a connecttion and send the entering intent to the internal 
+    queue of the intent_core.
+    """
     def __init__(self,queue : Queue):
         self.__args=["kern"]
-        self.__addr='localhost'
+        self.__addr='localhost' # Should come in config file (or intent?)
         self.__port=5672
         self.__queue=queue
         self.start_mq_server(self.__args, queue)

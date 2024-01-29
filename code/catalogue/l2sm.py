@@ -1,12 +1,34 @@
 from ib_object import IB_object
 
 class l2sm():
+    """
+    L2S-M ILU library
+    
+    This is a library to translate an Intent Logic Unit (i.e an atomic
+    intent) into an order the L2S-M tecnology cand understand.
+    In this case is a Kubernets CRD in YAML format.
 
+    Functions:
+        - create_overlay
+        - migrate_service
+        - modify_overlay
+    
+    Attributes:
+        - Module name
+        - isILU: this library is able to proccess atomic intents.
+        - executer: stores a list of the executers (South Bound Interface) capable 
+                    of sending a concrete order to L2S-M.
+        - functions: a list of the atomic tasks that can be done by L2S-M.
+        - decision_tree: keywords tree that an intent may have to be understood as
+                        a L2S-M intent. This decision tree is the one deciding which
+                        function is being executed given an ILU.
+    
+    Relations: nemo
+    """
     def __init__(self):
         self.__module_name="l2sm"
         self.__isILU=True
-        self.__hasSBI=True
-        self.__parser={}
+        self.__executioners=[]
         self.__checker={}
         self.__interface={}
         self.__functions=[]
@@ -19,6 +41,10 @@ class l2sm():
         print("L2SM imported")
 
     def isILU(self):
+        """
+        Return true if this library is able to procces atomic
+        intetns.
+        """
         return self.__isILU
     
     def classifier(self,ib_object:IB_object):
@@ -33,8 +59,15 @@ class l2sm():
     def get_decision_tree(self):
         return self.__decision_tree
 
-    def translator(self,subintent):
-        
+    def translator(self,subintent : IB_object) -> (dict , str):
+        """
+        This functions translate an atomic intent into a CRD L2S-M software
+        can understand. This function will decide which functionality (deploy,
+        modify, migrate) will be called.
+
+        This decision can be done using the same idea of the decision tree or a more
+        direct way.
+        """
         # TODO: los subintents direan si hay que desplegar/migrar/eliminar
         return self.l2sm_structure(),"sysout"
 
@@ -79,25 +112,3 @@ class l2sm():
         }
 
         return structure
-
-    
-    # def find(self,d, tag):
-    #     if tag in d:
-    #         yield d[tag]
-    #     for k, v in d.items():
-    #         if isinstance(v, dict):
-    #             for i in find(v, tag):
-    #                 yield i
-
-    # def get_yaml_keys(self,data):
-    #     for k,v in data.items():
-    #         yield k
-    #         if isinstance(v,dict):
-    #             for i in self.get_yaml_keys(v):
-    #                 yield i
-    #         if isinstance(v,list):
-    #             for i in v:
-    #                 self.get_yaml_keys(i)
-
-    # if __name__ == "__main__":
-    #     print(l2sm.get_yaml_keys(l2sm_structure()))
