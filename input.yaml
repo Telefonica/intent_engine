@@ -12,11 +12,16 @@ Intent:
           Condition: ccon
           ValueRange: cval
       Target:
-        AttributeName: requirements
-        Attribute: QoS
-        Condition: greater
-        ValueRange: 34
-        Context: null
+        - AttributeName: requirements
+          Attribute: QoS
+          Condition: greater
+          ValueRange: 34
+          Context: null
+        - AttributeName: requirements2
+          Attribute: latency
+          Condition: lower
+          ValueRange: 5
+          Context: null
   Context:
     AttributeName: nemo_deployment
     Attribute: overlay

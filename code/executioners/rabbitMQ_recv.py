@@ -12,9 +12,9 @@ def reciver(bind : list, queue : Queue):
     pika.ConnectionParameters(host='localhost',port=5672))
     channel = connection.channel()
 
-    channel.exchange_declare(exchange='topic_logs', exchange_type='topic')
+    channel.exchange_declare(exchange='mo', exchange_type='topic')
 
-    result = channel.queue_declare('pythonq', exclusive=True)
+    result = channel.queue_declare('mncc', exclusive=True)
     queue_name = result.method.queue
     # queue_name = "kern.critical"
 
@@ -25,7 +25,7 @@ def reciver(bind : list, queue : Queue):
 
     for binding_key in binding_keys:
         channel.queue_bind(
-            exchange='topic_logs', queue=queue_name, routing_key=binding_key)
+            exchange='mo', queue=queue_name, routing_key=binding_key)
 
     logging.info(f' [*] Waiting for logs. To exit press CTRL+C in: {queue_name}, {binding_keys}')
 
@@ -42,4 +42,4 @@ def reciver(bind : list, queue : Queue):
 
 
 if __name__ == "__main__":
-    reciver(["kern","pythonq"])
+    reciver(["mo","mncc"])

@@ -12,7 +12,7 @@ class rabbitmq():
     queue of the intent_core.
     """
     def __init__(self,queue : Queue):
-        self.__args=["kern"]
+        self.__args=["*mncc"]
         self.__addr='localhost' # Should come in config file (or intent?)
         self.__port=5672
         self.__queue=queue
