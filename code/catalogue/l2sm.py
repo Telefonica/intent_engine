@@ -1,4 +1,7 @@
 from ib_object import IB_object
+import logging
+
+logger = logging.getLogger(__name__)
 
 class l2sm():
     """
@@ -52,7 +55,7 @@ class l2sm():
     
     def checker(self,intent : IB_object):
         if intent.get_name() == "l2sm_deployment":
-            print("is l2sm")
+            logger.debug("is l2sm")
             return True
         return False
     
@@ -69,6 +72,36 @@ class l2sm():
         direct way.
         """
         # TODO: los subintents direan si hay que desplegar/migrar/eliminar
+        logger.info("Translating L2S-M...")
+        logger.debug("debug L2S-M...")
+        for exp in subintent.get_expectations():
+            exp_type=exp.get_intent_type()
+            logger.debug("expectation case %s",exp_type)
+            match exp_type:
+                case "request":
+                    logger.debug("request case")
+                    for exp_ctx in exp.get_context():
+                        # Loop ctx inside exp
+                        att=exp_ctx.get_attribute()
+                        match att:
+                            case "network":
+                                logger.debug("network case")
+                            case "provider_name":
+                                logger.debug("provider case")
+                            case "domain":
+                                logger.debug("domain case")
+                    for trg_ctx in exp.get_target():
+                        att=trg_ctx.get_attribute()
+                        match att:
+                            case "secure":
+                                logger.debug("secure case")
+                        trg_ctx=trg_ctx.get_context()
+                        for ctx in trg_ctx:
+                            match ctx:
+                                case "signature":
+                                    logger.debug("signature_trg_ctx case")
+
+
         return self.l2sm_structure(),"sysout"
 
     def create_ilu(self,ilu_ref):
@@ -78,37 +111,51 @@ class l2sm():
     def l2sm_structure(self):
 
         nodename='masterk8s'
-        network='ping-network'
-        pod_name='ping'
+        network='spain-network'
+        provider_name='uc3m'
+        provaider_domain='idco.uc3m.es'
+        access_list=["public-key-1", "public-key-2"]
         
-        structure = {
-            'apiVersion': 'v1',
-            'kind': 'Pod',
-            'metadata': {
-                'name': pod_name,
-                'labels': {
-                    'app': 'ping-pong'
-                },
-                'annotations': {
-                    'k8s.v1.cni.cncf.io/networks': network
+        config= {
+                    "provider": {
+                        "name": provider_name,
+                        "domain": provaider_domain
+                    },
+                    "accessList": access_list
                 }
-            },
-            'spec': {
-                'containers': [
-                    {
-                        'name': 'router',
-                        'command': ["/bin/ash", "-c", "trap : TERM INT; sleep infinity & wait"],
-                        'image': 'alpine:latest',
-                        'securityContext': {
-                            'capabilities': {
-                                'add': ['NET_ADMIN']
-                            }
-                        }
+        structure = {
+                    "apiVersion": "l2sm.k8s.local/v1",
+                    "kind": "L2SMNetwork",
+                    "metadata": {
+                        "name": network
+                    },
+                    "spec": {
+                        "type": "inter-vnet",
+                        "config": config,
+                        "signature": "sxySO0jHw4h1kcqO/LMLDgOoOeH8dOn8vZWv4KMBq0upxz3lcbl+o/36JefpEwSlBJ6ukuKiQ79L4rsmmZgglk6y/VL54DFyLfPw9RJn3mzl99YE4qCaHyEBANSw+d5hPaJ/I8q+AMtjrYpglMTRPf0iMZQMNtMd0CdeX2V8aZOPCQP75PsZkWukPdoAK/++y1vbFQ6nQKagvpUZfr7Ecb4/QY+hIAzepm6N6lNiFNTgj6lGTrFK0qCVfRhMD+vXbBP6xzZjB2N1nIheK9vx7kvj3HORjZ+odVMa+AOU5ShSKpzXTvknrtcRTcWWmXPNUZLoq5k3U+z1g1OTFcjMdQ===="
                     }
-                ],
-                # Uncomment the following line if you want to place the pod in a specific node
-                'nodeName': nodename
-            }
-        }
+                }
 
         return structure
+    
+    def get_blue_print(self):
+
+        return True
+
+"""
+apiVersion: l2sm.k8s.local/v1
+kind: L2SMNetwork
+metadata:
+  name: spain-network
+spec:
+  type: inter-vnet
+  config: |
+    {
+      "provider": {
+        "name": "uc3m",
+        "domain": "idco.uc3m.es"
+      },
+      "accessList": ["public-key-1", "public-key-2"]
+    }
+  signature: sxySO0jHw4h1kcqO/LMLDgOoOeH8dOn8vZWv4KMBq0upxz3lcbl+o/36JefpEwSlBJ6ukuKiQ79L4rsmmZgglk6y/VL54DFyLfPw9RJn3mzl99YE4qCaHyEBANSw+d5hPaJ/I8q+AMtjrYpglMTRPf0iMZQMNtMd0CdeX2V8aZOPCQP75PsZkWukPdoAK/++y1vbFQ6nQKagvpUZfr7Ecb4/QY+hIAzepm6N6lNiFNTgj6lGTrFK0qCVfRhMD+vXbBP6xzZjB2N1nIheK9vx7kvj3HORjZ+odVMa+AOU5ShSKpzXTvknrtcRTcWWmXPNUZLoq5k3U+z1g1OTFcjMdQ====
+"""

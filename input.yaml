@@ -1,27 +1,32 @@
 Intent:
   AttributeName: cloud_continuum
   Expectations:
-    - Type: create
+    - Type: request
       Contexts:
-        - AttributeName: nemo_node
-          Attribute: nodeA
-          Condition: ccon
-          ValueRange: cval
-        - AttributeName: nemo_node
-          Attribute: nodeB
-          Condition: ccon
-          ValueRange: cval
-      Target:
-        - AttributeName: requirements
-          Attribute: QoS
-          Condition: greater
-          ValueRange: 34
-          Context: null
-        - AttributeName: requirements2
-          Attribute: latency
-          Condition: lower
-          ValueRange: 5
-          Context: null
+        - AttributeName : 
+          Attribute : network
+          Condition : is
+          ValueRange : spain-network
+        - AttributeName : 
+          Attribute : provider_name
+          Condition : is
+          ValueRange : uc3m
+        - AttributeName : 
+          Attribute : domain
+          Condition : is
+          ValueRange : idco.uc3m.es
+      Target : 
+        - AttributeName :
+          Attribute : secure
+          Condition : asserts signature
+          ValueRange : sxySO0jHw4h1kcqO/LMLDgOo...
+          Contexts :                                
+            - Attribute : signature
+              Condition : is
+              ValueRange : sxySO0jHw4h1kcqO/LMLDgOo...
+            - Attribute: s
+              Condition: b
+              ValueRange: c
   Context:
     AttributeName: nemo_deployment
     Attribute: overlay

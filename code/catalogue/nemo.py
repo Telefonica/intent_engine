@@ -35,7 +35,7 @@ class nemo():
         self.__decision_tree={
                             "cloud_continuum": {
                                 "nemo_deployment":{
-                                    "create":{
+                                    "request":{
                                         "vpnl2":"vpn",
                                         "overlay":"l2sm"
                                     },

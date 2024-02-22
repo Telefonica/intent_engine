@@ -3,11 +3,16 @@ import logging
 from queue import Queue
 import pika
 import sys
+import logging
+
+logger = logging.getLogger(__name__)
+level = logger.level
 
 def reciver(bind : list, queue : Queue):
 
-    logging.info("Starting RMQ server in localhost:5672")
-    logging.getLogger().setLevel(logging.INFO)
+    logger.info("Starting RMQ server in localhost:5672")
+    # Pika logging level set to warn to avoid full log
+    # logging.getLogger().setLevel(logging.WARNING)
     connection = pika.BlockingConnection(
     pika.ConnectionParameters(host='localhost',port=5672))
     channel = connection.channel()
@@ -26,14 +31,13 @@ def reciver(bind : list, queue : Queue):
     for binding_key in binding_keys:
         channel.queue_bind(
             exchange='mo', queue=queue_name, routing_key=binding_key)
-
-    logging.info(f' [*] Waiting for logs. To exit press CTRL+C in: {queue_name}, {binding_keys}')
-
+    # logging.getLogger().setLevel(level)
+    logger.info(' [*] Waiting for logs. To exit press CTRL+C in: %s %s',queue_name, binding_keys)
 
     def callback(ch, method, properties, body):
         # logging.debug(f" [x] {method.routing_key}:{json.loads(body)}")
         queue.put(json.loads(body))
-        logging.info("New message from RMQ: %s %s",method.routing_key,body)
+        logger.info("New message from RMQ: %s %s",method.routing_key,body)
 
     channel.basic_consume(
         queue=queue_name, on_message_callback=callback, auto_ack=False)
