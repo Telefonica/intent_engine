@@ -11,8 +11,6 @@ level = logger.level
 def reciver(bind : list, queue : Queue):
 
     logger.info("Starting RMQ server in localhost:5672")
-    # Pika logging level set to warn to avoid full log
-    # logging.getLogger().setLevel(logging.WARNING)
     connection = pika.BlockingConnection(
     pika.ConnectionParameters(host='localhost',port=5672))
     channel = connection.channel()
@@ -41,9 +39,12 @@ def reciver(bind : list, queue : Queue):
 
     channel.basic_consume(
         queue=queue_name, on_message_callback=callback, auto_ack=False)
-
-    channel.start_consuming()
-
+    try:
+        channel.start_consuming()
+    except KeyboardInterrupt:
+        logger.debug("RMQ server interrupt")
+        channel.close()
+        sys.exit()
 
 if __name__ == "__main__":
     reciver(["mo","mncc"])

@@ -91,16 +91,18 @@ class l2sm():
                             case "domain":
                                 logger.debug("domain case")
                     for trg_ctx in exp.get_target():
+                        # Loop trg inside exp
                         att=trg_ctx.get_attribute()
                         match att:
                             case "secure":
                                 logger.debug("secure case")
                         trg_ctx=trg_ctx.get_context()
                         for ctx in trg_ctx:
-                            match ctx:
+                            # Loop ctx inside trg inside exp
+                            att=ctx.get_attribute()
+                            match att:
                                 case "signature":
                                     logger.debug("signature_trg_ctx case")
-
 
         return self.l2sm_structure(),"sysout"
 

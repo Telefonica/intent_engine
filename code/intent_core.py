@@ -6,6 +6,7 @@ import yamlParser
 import os
 from intent_classifier import Classifier
 import logging
+import signal,sys
 
 # logging.basicConfig(level=logging.INFO,
                         # datefmt="%H:%M:%S")
@@ -21,7 +22,13 @@ logger = logging.getLogger(__name__)
 # create a bounded shared queue
 buffer = Queue(maxsize=100)
 
+def signal_handler(signal, frame):
+    logger.info('You pressed Ctrl+C, keyboardInterrupt detected!')
+    sys.exit(0)
+
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, signal_handler)
+    print('Enter Ctrl+C to stop:')
     logging.debug("Logger in DEBUG mode")
     # ------- Import modules -------
     logger.info("---------- Importer----------")
