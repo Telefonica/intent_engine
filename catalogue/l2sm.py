@@ -1,4 +1,4 @@
-from ib_object import IB_object
+from intent_engine.core.ib_object import IB_object
 import logging
 
 logger = logging.getLogger(__name__)

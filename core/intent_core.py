@@ -1,37 +1,22 @@
-from queue import Queue
-import translator
-import ib_object
-import importer
-import yamlParser
+# © 2024 Telefónica Innovación Digital, All rights reserved
 import os
-from intent_classifier import Classifier
+from queue import Queue
+from intent_engine.core import ib_object
+from intent_engine.core import importer
+from intent_engine.core import yamlParser
+from intent_engine.core.intent_classifier import Classifier
 import logging
-import signal,sys
 
-# logging.basicConfig(level=logging.INFO,
-                        # datefmt="%H:%M:%S")
-# create console handler and set level to debug
-date_fmt = "%H:%M:%S"
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-logging.getLogger().addHandler(ch)
-ch.setFormatter(logging.Formatter(
-    '[%(levelname)s - %(asctime)s] %(name)s: [%(threadName)s] %(message)s',date_fmt))
-logging.getLogger().setLevel(logging.DEBUG)
 logger = logging.getLogger(__name__)
+
 # create a bounded shared queue
 buffer = Queue(maxsize=100)
 
-def signal_handler(signal, frame):
-    logger.info('You pressed Ctrl+C, keyboardInterrupt detected!')
-    sys.exit(0)
-
-if __name__ == "__main__":
-    signal.signal(signal.SIGINT, signal_handler)
+def core():
     print('Enter Ctrl+C to stop:')
     logging.debug("Logger in DEBUG mode")
     # ------- Import modules -------
-    logger.info("---------- Importer----------")
+    print("---------- Importer----------")
     imp=importer.Importer("intent_catalogue.in")
     imported_modules = imp.get_imported_libraries()
     # Now you can use the imported modules

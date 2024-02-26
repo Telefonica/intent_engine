@@ -3,7 +3,6 @@ import logging
 from queue import Queue
 import pika
 import sys
-import logging
 
 logger = logging.getLogger(__name__)
 level = logger.level

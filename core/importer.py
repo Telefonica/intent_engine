@@ -1,5 +1,8 @@
 import importlib
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Importer:
 
@@ -8,6 +11,9 @@ class Importer:
         self.__imported_modules=self.import_modules_from_file()
 
     def import_modules_from_file(self)-> dict:
+        
+        logger.debug("Importing from: %s",os.getcwd())
+
         with open(self.__catalogue_file, 'r') as file:
             module_names = [line.strip() for line in file if line.strip()]
             # print("Importer",module_names)
