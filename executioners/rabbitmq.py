@@ -2,8 +2,7 @@ import logging
 from queue import Queue
 import threading
 from .rabbitMQ_recv import reciver
-import concurrent.futures
-import signal,sys
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +15,13 @@ class rabbitmq():
     """
     def __init__(self,queue : Queue):
         self.__args=["*mncc"]
-        self.__addr='localhost' # Should come in config file (or intent?)
+        self.__addr=os.environ.get('AMQP_HOST')
+        if(self.__addr):
+            # Docker container case where hostname needed
+            logger.debug("Reading enviroment RBMQ vars: %s",self.__addr)
+        else:
+            self.__addr="localhost"
+        self.__broker_queue=os.environ.get('QUEUE_NAME')
         self.__port=5672
         self.__queue=queue
         # reduce log level
@@ -25,7 +30,7 @@ class rabbitmq():
 
     def start_mq_server(self,args : list,queue : Queue):
         logger.debug("Start threads RMQ")
-        thread=threading.Thread(target=reciver,args=(args,queue))
+        thread=threading.Thread(target=reciver,args=(args,queue,self.__addr,self.__port))
         thread.daemon = True # die when the main thread dies
         thread.start()
     

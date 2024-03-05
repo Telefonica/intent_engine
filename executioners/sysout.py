@@ -8,4 +8,5 @@ class sysout():
         self.__queue=queue
     def execute(self,string):
         print(" -> -> Executing: ", string, " <- <-")
+        # True if no error
         return True

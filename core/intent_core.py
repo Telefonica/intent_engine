@@ -1,9 +1,7 @@
 # © 2024 Telefónica Innovación Digital, All rights reserved
-import os
 from queue import Queue
 from intent_engine.core import ib_object
 from intent_engine.core import importer
-from intent_engine.core import yamlParser
 from intent_engine.core.intent_classifier import Classifier
 import logging
 
@@ -27,6 +25,7 @@ def core():
         splited=name.split('catalogue.')[-1]
         class_and_instance['class'] =splited
         class_and_instance['instance']= getattr(module,splited)()
+        # TODO: implement check import?
         logger.debug(class_and_instance['instance'].check_import())
         module_instances.append(class_and_instance)
         # Perform actions using the imported module
@@ -45,31 +44,31 @@ def core():
         exec_instances.append(class_and_instance)
     # Check NBI
     logger.info("module_instances: %s",module_instances)
-    data=yamlParser.yaml_to_data("input.yaml")
-    intent=ib_object.IB_object(data)
-    logger.info(intent)
+    # data=yamlParser.yaml_to_data("input.yaml")
+    # intent=ib_object.IB_object(data)
+    # logger.info(intent)
 
     while True:
         pop=buffer.get()
         intent=ib_object.IB_object(pop)
         # ------- Intent classifier -------
-        logger.info("------- Intent classifier -------")
+        print("------- Intent classifier -------")
         
         classifier=Classifier([m['instance'] for m in module_instances])
         subintents,ill=classifier.classify(intent)
         logger.info("ILL : %s",ill)
 
         # ------ Intent translator -------
-        logger.info("------ Intent translator -------")
+        print("------ Intent translator -------")
         for i,ilu in enumerate(ill):
             subintent=subintents[i]
             for module in module_instances:
                 if module['class']==ilu:
                     exec_obj,executioner=module['instance'].translator(subintent)
         # ------ Execution platform -------
-                    logger.info(" ------ Execution platform -------")
+                    print(" ------ Execution platform -------")
                     for exec_instance in exec_instances:
                         if exec_instance['class'] in executioner:
                             logger.info("Runnning %s",exec_instance['class'])
                             exec_instance['instance'].execute(exec_obj)
-        logger.info("Intent procesed !!!")
+        print("-------- Intent procesed !!! ---------")

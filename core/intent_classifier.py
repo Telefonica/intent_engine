@@ -26,17 +26,10 @@ class Classifier():
             leaves.append(obj)
 
     def classify(self,intent : list):
-
         """
         When an intent is recived in the intent_core 
         """
         ill=[]
-        # puede ser que para un intent haya varias librerías que
-        # lo entiendan como suyo --> Tengo todos los decision trees
-        # while loop con la condicion de que sean todo ilus
-        # for module in module_instances:
-        #     if not module['instance'].isILU():
-        #         tree=module['instance'].get_decision_tree(intent)
         for tree in self.__trees:
             self.find_in_tree(intent.get_keywords(),tree,ill)
         sub_intents=[intent]

@@ -7,11 +7,11 @@ import sys
 logger = logging.getLogger(__name__)
 level = logger.level
 
-def reciver(bind : list, queue : Queue):
+def reciver(bind : list, queue : Queue, host, port):
 
-    logger.info("Starting RMQ server in localhost:5672")
+    logger.info("Starting RMQ server in %s:%s",host,port)
     connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host='localhost',port=5672))
+    pika.ConnectionParameters(host=host,port=port))
     channel = connection.channel()
 
     channel.exchange_declare(exchange='mo', exchange_type='topic')

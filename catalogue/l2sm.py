@@ -104,7 +104,7 @@ class l2sm():
                                 case "signature":
                                     logger.debug("signature_trg_ctx case")
 
-        return self.l2sm_structure(),"sysout"
+        return self.l2sm_structure(),"http_handler"
 
     def create_ilu(self,ilu_ref):
 
@@ -120,10 +120,10 @@ class l2sm():
         
         config= {
                     "provider": {
-                        "name": provider_name,
-                        "domain": provaider_domain
+                        "name": provider_name, #si
+                        "domain": provaider_domain#si
                     },
-                    "accessList": access_list
+                    "accessList": access_list #si publickeys
                 }
         structure = {
                     "apiVersion": "l2sm.k8s.local/v1",
@@ -148,16 +148,16 @@ class l2sm():
 apiVersion: l2sm.k8s.local/v1
 kind: L2SMNetwork
 metadata:
-  name: spain-network
+  name: spain-network si
 spec:
   type: inter-vnet
   config: |
     {
       "provider": {
-        "name": "uc3m",
-        "domain": "idco.uc3m.es"
+        "name": "uc3m", si
+        "domain": "idco.uc3m.es" si
       },
-      "accessList": ["public-key-1", "public-key-2"]
+      "accessList": ["public-key-1", "public-key-2"] si
     }
   signature: sxySO0jHw4h1kcqO/LMLDgOoOeH8dOn8vZWv4KMBq0upxz3lcbl+o/36JefpEwSlBJ6ukuKiQ79L4rsmmZgglk6y/VL54DFyLfPw9RJn3mzl99YE4qCaHyEBANSw+d5hPaJ/I8q+AMtjrYpglMTRPf0iMZQMNtMd0CdeX2V8aZOPCQP75PsZkWukPdoAK/++y1vbFQ6nQKagvpUZfr7Ecb4/QY+hIAzepm6N6lNiFNTgj6lGTrFK0qCVfRhMD+vXbBP6xzZjB2N1nIheK9vx7kvj3HORjZ+odVMa+AOU5ShSKpzXTvknrtcRTcWWmXPNUZLoq5k3U+z1g1OTFcjMdQ====
 """
