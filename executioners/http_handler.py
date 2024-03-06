@@ -18,7 +18,7 @@ class http_handler():
         # self.start_https_server(self.__args, queue)
     
     def execute(self,data):
-        url = 'http://localhost:8080'
+        url = 'http://192.168.165.168:8080'
         headers = {'Content-Type': 'application/x-yaml'}
         print("Sending to http server: %s",json.dumps(data))
         response = requests.post(url, headers=headers, data=yaml.dump(data),timeout=20)

@@ -20,14 +20,15 @@ class Importer:
 
         imported_modules = {}
         for module_name in module_names:
-            # print("module_name: ",module_name)
+            logger.debug("module_name: %s",module_name)
             # splitted=module_name.split(".")
             # print("splitted: ",splitted)
             try:
                 imported_module = importlib.import_module(module_name)
+                logger.debug("imported_module: %s",imported_module)
                 imported_modules[module_name] = imported_module
             except ImportError as e:
-                print(f"Error importing module {module_name}: {e}")
+                logger.debug("Error importing module %s: %s",module_name,e)
 
         return imported_modules
 
