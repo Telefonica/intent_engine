@@ -36,6 +36,11 @@ class l2sm():
         self.__interface={}
         self.__functions=[]
         self.__decision_tree={"l2sm_deployment":"l2sm"}
+        self.__params={"node_name":"",
+                       "network":"",
+                       "provider_name":"",
+                       "provider_domain":"",
+                       "access_list":["public-key-1", "public-key-2"]}
 
     def get_name(self):
         return self.__module_name
@@ -86,10 +91,13 @@ class l2sm():
                         match att:
                             case "network":
                                 logger.debug("network case")
+                                self.__params['network']=exp_ctx.get_value_range()
                             case "provider_name":
                                 logger.debug("provider case")
+                                self.__params['provider_name']=exp_ctx.get_value_range()
                             case "domain":
                                 logger.debug("domain case")
+                                self.__params['provaider_domain']=exp_ctx.get_value_range()
                     for trg_ctx in exp.get_target():
                         # Loop trg inside exp
                         att=trg_ctx.get_attribute()
@@ -112,24 +120,18 @@ class l2sm():
 
     def l2sm_structure(self):
 
-        nodename='masterk8s'
-        network='spain-network'
-        provider_name='uc3m'
-        provaider_domain='idco.uc3m.es'
-        access_list=["public-key-1", "public-key-2"]
-        
         config= {
                     "provider": {
-                        "name": provider_name, #si
-                        "domain": provaider_domain#si
+                        "name": self.__params['provider_name'], #si
+                        "domain": self.__params['provaider_domain'] #si
                     },
-                    "accessList": access_list #si publickeys
+                    "accessList": self.__params['access_list'] #si publickeys
                 }
         structure = {
                     "apiVersion": "l2sm.k8s.local/v1",
                     "kind": "L2SMNetwork",
                     "metadata": {
-                        "name": network
+                        "name": self.__params['network']
                     },
                     "spec": {
                         "type": "inter-vnet",

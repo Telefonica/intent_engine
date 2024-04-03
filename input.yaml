@@ -10,7 +10,7 @@ Intent:
         - AttributeName : 
           Attribute : provider_name
           Condition : is
-          ValueRange : uc3m
+          ValueRange : uc3m.test
         - AttributeName : 
           Attribute : domain
           Condition : is
@@ -21,12 +21,9 @@ Intent:
           Condition : asserts signature
           ValueRange : sxySO0jHw4h1kcqO/LMLDgOo...
           Contexts :                                
-            - Attribute : signature
-              Condition : is
-              ValueRange : sxySO0jHw4h1kcqO/LMLDgOo...
-            - Attribute: s
-              Condition: b
-              ValueRange: c
+            - Attribute: accessList
+              Condition: is
+              ValueRange: public-key
   Context:
     AttributeName: nemo_deployment
     Attribute: overlay
