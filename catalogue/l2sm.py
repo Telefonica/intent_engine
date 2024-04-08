@@ -115,7 +115,6 @@ class l2sm():
         return self.l2sm_structure(),"http_handler"
 
     def create_ilu(self,ilu_ref):
-
         return ilu_ref
 
     def l2sm_structure(self):
