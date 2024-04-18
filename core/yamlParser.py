@@ -3,7 +3,7 @@ import os
 
 def data_to_yaml(data):
 
-    with open('input.yaml', 'w') as yaml_file:
+    with open('input_v2.yaml', 'w') as yaml_file:
         yaml.dump(data, yaml_file, default_flow_style=False)
 
     print("YAML file 'pod.yaml' has been created.")

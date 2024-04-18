@@ -1,0 +1,26 @@
+Intent:
+  AttributeName: 'cloud_continuum'
+  Expectations:
+    - Verb: 'request'
+      Object: 
+       Type : 'l2sm-network'
+       Instance : 'spain-network'
+       Contexts :
+        - AttributeName : 
+          Attribute : 'provider_name'
+          Condition : 'IS_EQUAL_TO'
+          ValueRange : 'uc3m'
+        - AttributeName : 
+          Attribute : 'domain'
+          Condition : 'IS_EQUAL_TO'
+          ValueRange : 'idco.uc3m.es'
+      Targets:
+       - AttributeName :
+         Attribute : 'signature'
+         Condition : 'IS_EQUAL_TO'
+         ValueRange : 'sxySO0jHw4h1kcqO/LMLDgOo...'
+  Context:
+    AttributeName: 'nemo_deployment'
+    Attribute: 'overlay'
+    Condition: 'IS_EQUAL_TO'
+    ValueRange: 'UP'

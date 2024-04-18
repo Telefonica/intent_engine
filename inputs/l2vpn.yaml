@@ -1,0 +1,46 @@
+Intent:
+  AttributeName: 'cloud_continuum'
+  Expectations:
+    - Verb : 'request'
+      Object :
+       Type : 'l2vpn' 
+       Instance: 'l2vpn-tfs-name'
+       Contexts: 
+       - AttributeName : 
+         Attribute : 'node_src'
+         Condition : 'IS_EQUAL_TO'
+         ValueRange : '3.3.3.3'
+       - AttributeName : 
+         Attribute : 'node_dst'
+         Condition : 'IS_EQUAL_TO'
+         ValueRange : '5.5.5.5'
+       - AttributeName :
+         Attribute : 'endpoint_src'
+         Condition : 'IS_EQUAL_TO'
+         ValueRange : 'GigabitEthernet0/0/0/1'
+       - AttributeName :
+         Attribute : 'endpoint_dst'
+         Condition : 'IS_EQUAL_TO'
+         ValueRange : 'GigabitEthernet0/0/0/1'
+       - AttributeName :
+         Attribute : 'vlan_id'
+         Condition : 'IS_EQUAL_TO'
+         ValueRange : '999'
+       - AttributeName :
+         Attribute : 'ni_name'
+         Condition : 'IS_EQUAL_TO'
+         ValueRange : 'ninametfs'
+      Targets: 
+        - AttributeName : 
+          Attribute : 'bandwith'
+          Condition : 'IS_EQUAL_TO_OR_GREATER_THAN'
+          ValueRange : 10.0
+        - AttributeName :
+          Attribute : 'latency'
+          Condition : 'IS_LESS_THAN'
+          ValueRange : 15.2
+  Context:
+    AttributeName: 'tfs_controller'
+    Attribute: 'l2vpn'
+    Condition: 'UP'
+    ValueRange: 'http://192.168.165.10/restconf/data/ietf-l2vpn-svc:l2vpn-svc/vpn-services'

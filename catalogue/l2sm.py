@@ -80,49 +80,55 @@ class l2sm():
         logger.info("Translating L2S-M...")
         logger.debug("debug L2S-M...")
         for exp in subintent.get_expectations():
-            exp_type=exp.get_intent_type()
-            logger.debug("expectation case %s",exp_type)
-            match exp_type:
+            exp_verb=exp.get_verb()
+            logger.debug("expectation case %s",exp_verb)
+            match exp_verb:
                 case "request":
-                    logger.debug("request case")
-                    for exp_ctx in exp.get_context():
-                        # Loop ctx inside exp
-                        att=exp_ctx.get_attribute()
-                        match att:
-                            case "network":
-                                logger.debug("network case")
-                                self.__params['network']=exp_ctx.get_value_range()
-                            case "provider_name":
-                                logger.debug("provider case")
-                                self.__params['provider_name']=exp_ctx.get_value_range()
-                            case "domain":
-                                logger.debug("domain case")
-                                self.__params['provaider_domain']=exp_ctx.get_value_range()
+                    exp_obj=exp.get_object()
+                    logger.debug("request case obj: %s",exp_obj)
+                    exp_type=exp_obj.get_type()
+                    match exp_type:
+                        case "l2sm-network":
+                            for obj_ctx in exp_obj.get_contexts():
+                                # Loop ctx inside obj
+                                logger.debug("objectctx case %s: ",obj_ctx)
+                                att=obj_ctx.get_attribute()
+                                match att:
+                                    case "network":
+                                        logger.debug("network case")
+                                        self.__params['network']=obj_ctx.get_value_range()
+                                    case "provider_name":
+                                        logger.debug("provider case")
+                                        self.__params['provider_name']=obj_ctx.get_value_range()
+                                    case "domain":
+                                        logger.debug("domain case")
+                                        self.__params['provider_domain']=obj_ctx.get_value_range()
                     for trg_ctx in exp.get_target():
                         # Loop trg inside exp
                         att=trg_ctx.get_attribute()
                         match att:
-                            case "secure":
-                                logger.debug("secure case")
+                            case "signature":
+                                logger.debug("signature case")
                         trg_ctx=trg_ctx.get_context()
-                        for ctx in trg_ctx:
-                            # Loop ctx inside trg inside exp
-                            att=ctx.get_attribute()
-                            match att:
-                                case "signature":
-                                    logger.debug("signature_trg_ctx case")
+                        if trg_ctx:
+                            for ctx in trg_ctx:
+                                # Loop ctx inside trg inside exp
+                                att=ctx.get_attribute()
+                                match att:
+                                    case "signature":
+                                        logger.debug("signature_trg_ctx case")
 
-        return self.l2sm_structure(),"http_handler"
+        return self.l2sm_schema(),"http_handler"
 
     def create_ilu(self,ilu_ref):
         return ilu_ref
 
-    def l2sm_structure(self):
+    def l2sm_schema(self):
 
         config= {
                     "provider": {
                         "name": self.__params['provider_name'], #si
-                        "domain": self.__params['provaider_domain'] #si
+                        "domain": self.__params['provider_domain'] #si
                     },
                     "accessList": self.__params['access_list'] #si publickeys
                 }

@@ -20,6 +20,9 @@ class abstract_library(ABC):
     def get_name(self):
         return self.__module_name
     
+    def check_import(self):
+        print(f"{self.__module_name} imported")
+    
     def isILU(self):
         """
         Return true if this library is able to procces atomic
@@ -28,5 +31,5 @@ class abstract_library(ABC):
         return self.__isILU
     
     @abstractmethod
-    def transaltor(self):
+    def translator(self)-> tuple[list , str]:
         pass

@@ -21,7 +21,7 @@ def sender(key,message):
 
 if __name__ == "__main__":
     data={}
-    with open("input.yaml", 'r') as yaml_file:
+    with open("inputs/tfs_ctx.yaml", 'r') as yaml_file:
         data = yaml.safe_load(yaml_file)
     print(data)
     sender("*mncc" ,json.dumps(data))

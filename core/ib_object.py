@@ -45,15 +45,19 @@ class Context():
 
 class Target():
 
-    def __init__(self,AttributeName,Attribute,Condition,ValueRange,Contexts : List[Context]):
+    def __init__(self,AttributeName,Attribute,Condition,ValueRange,Contexts : List[Context]=None):
         self.__name=AttributeName
         self.__attribute=Attribute
         self.__condition=Condition
         self.__value_range=ValueRange
-        self.__context : List[Context]=[Context(**ctx) for ctx in Contexts]
+        if Contexts:
+            self.__context : List[Context]=[Context(**ctx) for ctx in Contexts]
+        else: self.__context = None
     def __str__(self):
-        ctx=[cx.__str__() for cx in self.__context]
-        return f"Target(name={self.__name}, attribute={self.__attribute}, condition={self.__condition}, value_range={self.__value_range}, context={ctx})"
+        if self.__context:
+            ctx=[cx.__str__() for cx in self.__context]
+            return f"Target(name={self.__name}, attribute={self.__attribute}, condition={self.__condition}, value_range={self.__value_range}, context={ctx})"
+        return f"Target(name={self.__name}, attribute={self.__attribute}, condition={self.__condition}, value_range={self.__value_range})"
     def get_keywords(self):
         keywords= []
         keywords.append(self.__name)
@@ -94,23 +98,63 @@ class Target():
 
     def get_context(self):
         return self.__context
-    
-class Expectation():
 
-    def __init__(self, intent_type : str,target : List [Target], context : List[Context]):
-        self.__target=target
-        self.__context=context
-        self.__intent_type=intent_type
+class Object_expectation():
+    def __init__(self, Type : str,Instance : str, Contexts : List[Context]):
+        self.__type=Type
+        self.__instance=Instance
+        if Contexts:
+            self.__context : List[Context]=[Context(**ctx) for ctx in Contexts]
+        else: self.__context = None
     def __str__(self):
         context=[ctx.__str__() for ctx in self.__context]
+        return f"Expectation(type={self.__type},instance={self.__instance}, contexts={context})"
+    
+    def get_keywords(self):
+        # print("context getkeywords expectations",flat_list)
+        keywords= []
+        keywords.append(self.__type)
+        keywords.append(self.__instance)
+        context=[ctx.get_keywords() for ctx in self.__context]
+        flat_list_ctx = [x for xs in context for x in xs]
+        for words in flat_list_ctx:
+            keywords.append(words)
+        return keywords
+
+    def get_type(self):
+        return self.__type
+    def set_type(self,otype : str):
+        self.__type=otype
+    def get_contexts(self):
+        return self.__context
+    def set_contexts(self,context:Context):
+        self.__context=context
+
+class Expectation():
+
+    def __init__(self, verb : str,Targets : List [Target], obj : Object_expectation ,context : List[Context] = None):
+    
+        if Targets:
+            self.__target : List[Target]=Targets
+        else:
+            self.__target=None
+            logger.warning("Intent expectation needs a Target!")
+        self.__context=context
+        self.__verb=verb
+        self.__object=obj
+    def __str__(self):
         target=[trg.__str__() for trg in self.__target]
-        return f"Expectation(intent_type={self.__intent_type}, target={target}, contexts={context})"
+        if self.__context:
+            context=[ctx.__str__() for ctx in self.__context]
+            return f"Expectation(verb={self.__verb}, target={target},object={self.__object},contexts={context})"
+        return f"Expectation(verb={self.__verb},target={target},object={self.__object})"
     def get_keywords(self):
         
         # print("context getkeywords expectations",flat_list)
         keywords= []
-        keywords.append(self.__intent_type)
-
+        keywords.append(self.__verb)
+        for words in self.__object.get_keywords():
+            keywords.append(words)
         target=[trg.get_keywords() for trg in self.__target]
         flat_list_trg = [x for xs in target for x in xs]
         for words in flat_list_trg:
@@ -123,17 +167,23 @@ class Expectation():
         # print("flat_list getkeywords expectations",flat_list)
         return keywords
     
-    def set_intent_type(self, intent_type):
-        self.__intent_type = intent_type
+    def set_verb(self, verb):
+        self.__verb = verb
 
     def set_target(self, target : Target):
         self.__target = target
 
     def set_context(self, context : Context):
         self.__context = context
+
+    def set_object(self, obj : Object_expectation):
+        self.__object = obj
     
-    def get_intent_type(self):
-        return self.__intent_type
+    def get_object(self):
+        return self.__object
+    
+    def get_verb(self):
+        return self.__verb
 
     def get_target(self):
         return self.__target
@@ -143,7 +193,9 @@ class Expectation():
 
 class IB_object():
     def __init__(self, intent_dict: dict):
-
+        context_obj=[]
+        target_obj = []
+        object_data = []
         intent=intent_dict["Intent"]
         self.__name=intent["AttributeName"]
         # Fixme context clase context/ lista de contexts
@@ -151,27 +203,33 @@ class IB_object():
         self.__expectations: List[Expectation] = []
         for expectation_data in intent['Expectations']:
             # print("\n --expecs--",expectation_data)
-            # context_data = expectation_data["Contexts"]
-            context_data_list = expectation_data["Contexts"]
-            target_data_list = expectation_data["Target"]
-            # print("\n --Context list-- ",context_data_list)
-            if context_data_list and target_data_list:
-                context_obj=[]
-                for context_data in context_data_list:
-                    # print("\n --Context-- ",context_data)
-                    context_obj.append(Context(**context_data))
-                # Fixme target lista de targets
-                target_obj = []
+            if "Contexts" in expectation_data:
+                context_data_list = expectation_data["Contexts"]
+                if context_data_list:
+                    for context_data in context_data_list:
+                        # print("\n --Context-- ",context_data)
+                        context_obj.append(Context(**context_data))
+            if "Targets" in expectation_data :
+                target_data_list = expectation_data["Targets"]
                 for target_data in target_data_list:
-                    # print("\n --Target-- ",target_data)
+                    # print("\n --Targets-- ",target_data)
                     target_obj.append(Target(**target_data))
 
+            object_data = expectation_data["Object"]
+            # print("\n --Context list-- ",context_data_list)
+            # Fixme target lista de targets
+
+            if object_data:
                 expectation_obj = Expectation(
-                    intent_type=expectation_data.get('Type'),
-                    target=target_obj,
-                    context=context_obj
+                    verb=expectation_data.get('Verb'),
+                    Targets=target_obj,
+                    context=context_obj,
+                    obj=Object_expectation(**object_data)
                 )
                 self.__expectations.append(expectation_obj)
+            else:
+                print("Error.No expectation object.")
+            
     def __str__(self):
         expecs=[exp.__str__() for exp in self.__expectations]
         return f"IB_object(name={self.__name},context={self.__context},{expecs})"

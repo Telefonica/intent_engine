@@ -26,8 +26,8 @@ class S(BaseHTTPRequestHandler):
             data = yaml.load(self.data_string,Loader=yaml.FullLoader)
         if(self.headers['Content-type']=='application/json'):
             data = simplejson.loads(self.data_string)
-            with open("test123456.json", "w") as outfile:
-                simplejson.dump(data, outfile)
+            # with open("test123456.json", "w") as outfile:
+            #     simplejson.dump(data, outfile)
         print ("{}".format(data))
         self.send_response(200)
         self.end_headers()
