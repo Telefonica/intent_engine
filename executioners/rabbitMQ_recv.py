@@ -34,7 +34,7 @@ def reciver(bind : list, queue : Queue, host, port):
     def callback(ch, method, properties, body):
         # logging.debug(f" [x] {method.routing_key}:{json.loads(body)}")
         queue.put(json.loads(body))
-        logger.info("New message from RMQ: %s %s",method.routing_key,body)
+        logger.info("New message from RMQ: %s",method.routing_key)
 
     channel.basic_consume(
         queue=queue_name, on_message_callback=callback, auto_ack=False)

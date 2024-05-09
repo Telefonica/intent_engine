@@ -1,4 +1,5 @@
 # © 2024 Telefónica Innovación Digital, All rights reserved
+import json
 from queue import Queue
 from intent_engine.core import ib_object
 from intent_engine.core import importer
@@ -53,7 +54,7 @@ def core():
         intent=ib_object.IB_object(pop)
         # ------- Intent classifier -------
         print("------- Intent classifier -------")
-        
+        o=[logger.debug("Expectation %s",json.dumps(s.get_dict(),indent=6)) for s in intent.get_expectations()]
         classifier=Classifier([m['instance'] for m in module_instances])
         subintents,ill=classifier.classify(intent)
         logger.info("ILL : %s",ill)

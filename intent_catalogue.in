@@ -1,3 +1,4 @@
 intent_engine.catalogue.l2sm
 intent_engine.catalogue.nemo
-intent_engine.catalogue.tfs_vpnl2
+intent_engine.catalogue.l2vpn
+intent_engine.catalogue.tfs_controller

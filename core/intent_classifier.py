@@ -1,4 +1,7 @@
+import json
+from schema import Schema, And, Use, Optional, SchemaError
 from .ib_object import IB_object
+import jsonpickle
 import logging
 logger = logging.getLogger(__name__)
 
@@ -22,16 +25,31 @@ class Classifier():
             for item in obj:
                 self.find_in_tree(keywords,item,leaves)
         else:
-            # print("is leave :",obj)
+            print("is leave :",obj)
             leaves.append(obj)
 
-    def classify(self,intent : list):
+    def classify(self,intent : IB_object):
         """
-        When an intent is recived in the intent_core 
+        When an intent is recived in the intent_core .
+        TODO: get intent blueprint to create subintents
         """
         ill=[]
+        sub_intents=[]
         for tree in self.__trees:
             self.find_in_tree(intent.get_keywords(),tree,ill)
-        sub_intents=[intent]
-        o=[logger.info("Subintents : %s",s) for s in sub_intents]
-        return sub_intents,ill
+            sub_intents.append(intent)
+            logger.info("Ill: %s || Subintent: %s",ill[:],intent)
+        # Necesito que sea uniq ill, pero cada ill su subintent?
+        # problema si un ill tiene dos subintents? 
+        return list(set(sub_intents)),list(set(ill))
+    
+    def check(self,conf_schema, conf):
+        try:
+            conf_schema.validate(conf)
+            return True
+        except SchemaError:
+            return False
+    
+    def filter(self, intent :IB_object):
+
+        return intent

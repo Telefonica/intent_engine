@@ -1,0 +1,24 @@
+{
+    "$id": "/schemas/Context",
+    "type": "object",
+    "Context": {
+      "type": "object",
+      "properties": {
+        "AttributeName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "Attribute": {
+          "type": "string"
+        },
+        "Condition": {
+          "type": "string"
+        },
+        "ValueRange": {
+          "type": "string"
+        }
+      }
+    }
+}

@@ -11,6 +11,13 @@ class Context():
     def __str__(self):
         return f"Context(name={self.__name}, attribute={self.__attribute}, condition={self.__condition}, value_range={self.__value_range})"
     
+    def get_dict(self):
+        return {
+            "AttributeName":self.__name,
+            "Attribute":self.__attribute,
+            "Condition":self.__condition,
+            "ValueRange":self.__value_range
+        }
     def get_keywords(self):
         keywords= []
         keywords.append(self.__name)
@@ -109,7 +116,12 @@ class Object_expectation():
     def __str__(self):
         context=[ctx.__str__() for ctx in self.__context]
         return f"Expectation(type={self.__type},instance={self.__instance}, contexts={context})"
-    
+    def get_dict(self):
+        return {
+            "Type":self.__type,
+            "Instance":self.__instance,
+            "Contexts":[ctx.get_dict() for ctx in self.__context]
+        }
     def get_keywords(self):
         # print("context getkeywords expectations",flat_list)
         keywords= []
@@ -148,6 +160,19 @@ class Expectation():
             context=[ctx.__str__() for ctx in self.__context]
             return f"Expectation(verb={self.__verb}, target={target},object={self.__object},contexts={context})"
         return f"Expectation(verb={self.__verb},target={target},object={self.__object})"
+    def get_dict(self):
+        if self.__target:
+            return {
+                "Verb":self.__verb,
+                "Object":self.__object.get_dict(),
+                "Contexts":[ctx.get_dict() for ctx in self.__context],
+            }
+        return {
+                "Verb":self.__verb,
+                "Object":self.__object.get_dict(),
+                "Contexts":[ctx.get_dict() for ctx in self.__context],
+                "Targets":[trg.get_dict() for trg in self.__target],
+            }
     def get_keywords(self):
         
         # print("context getkeywords expectations",flat_list)
@@ -159,7 +184,7 @@ class Expectation():
         flat_list_trg = [x for xs in target for x in xs]
         for words in flat_list_trg:
             keywords.append(words)
-        logger.debug("__target getkeywords expectations %s",keywords)
+        # logger.debug("__target getkeywords expectations %s",keywords)
         context=[ctx.get_keywords() for ctx in self.__context]
         flat_list_ctx = [x for xs in context for x in xs]
         for words in flat_list_ctx:
@@ -246,7 +271,7 @@ class IB_object():
                 keywords.append(words)
         for words in flat_list:
                 keywords.append(words)
-        logger.debug("keywords: %s",keywords)
+        # logger.debug("keywords: %s",keywords)
         return keywords
     
     def set_name(self, name):

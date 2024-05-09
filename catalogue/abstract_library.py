@@ -15,6 +15,11 @@ class abstract_library(ABC):
         pass
     
     def get_decision_tree(self):
+        """
+        How to construct a tree:
+        1. Leaves (references to other libraries) are lists
+        2. exp->ctx->target ? TODO
+        """
         return self.__decision_tree
     
     def get_name(self):

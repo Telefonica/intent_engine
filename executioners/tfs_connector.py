@@ -21,7 +21,9 @@ class tfs_connector():
     def execute(self,data_and_params):
         params={}
         params=data_and_params[1]
-        logger.debug("params: %s",data_and_params)
+        # data=data_and_params[0]
+        logger.debug("data_and_params: %s",data_and_params)
+        logger.debug("params: %s",params)
         if(params['connect_type']=='get'):
             self.get_and_post(data_and_params)
         if(params['connect_type']=='nbi'):

@@ -6,27 +6,27 @@ Intent:
        Type : 'l2vpn'
        Instance: 'l2vpn-tfs-name'
        Contexts:
-        - AttributeName :
+        - AttributeName : 'node'
           Attribute : 'node_src'
           Condition : 'IS_EQUAL_TO'
           ValueRange : '3.3.3.3'
-        - AttributeName :
+        - AttributeName : 'node'
           Attribute : 'node_dst'
           Condition : 'IS_EQUAL_TO'
           ValueRange : '5.5.5.5'
-        - AttributeName :
+        - AttributeName : 'interface'
           Attribute : 'endpoint_src'
           Condition : 'IS_EQUAL_TO'
           ValueRange : 'GigabitEthernet0/0/0/1'
-        - AttributeName :
+        - AttributeName : 'interface'
           Attribute : 'endpoint_dst'
           Condition : 'IS_EQUAL_TO'
           ValueRange : 'GigabitEthernet0/0/0/1'
-        - AttributeName :
+        - AttributeName : 'vlan'
           Attribute : 'vlan_id'
           Condition : 'IS_EQUAL_TO'
           ValueRange : '999'
-        - AttributeName :
+        - AttributeName : 'vlan'
           Attribute : 'ni_name'
           Condition : 'IS_EQUAL_TO'
           ValueRange : 'ninametfs'
@@ -40,20 +40,20 @@ Intent:
           Condition : 'IS_LESS_THAN'
           ValueRange : 15.2
       Contexts:
-       - AttributeName :
+       - AttributeName : 'tfs_controller'
          Attribute : 'url'
          Condition : 'IS_EQUAL_TO'
          ValueRange : 'http://192.168.165.10/'
-       - AttributeName :
+       - AttributeName : 'tfs_session'
          Attribute : 'user'
          Condition : 'IS_EQUAL_TO'
          ValueRange : 'admin'
-       - AttributeName :
+       - AttributeName : 'tfs_session'
          Attribute : 'password'
          Condition : 'IS_EQUAL_TO'
          ValueRange : 'admin'
   Context:
-    AttributeName: 'tfs_controller'
+    AttributeName: 'admin_id'
     Attribute: 'state'
     Condition: 'IS_EQUAL_TO'
-    ValueRange: 'persistent'
+    ValueRange: 'flavor'

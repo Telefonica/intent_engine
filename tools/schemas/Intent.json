@@ -1,0 +1,130 @@
+{
+    "$id": "/schemas/dfa",
+    "type": "object",
+    "properties": {
+      "Intent": {
+        "type": "object",
+        "properties": {
+          "AttributeName": {
+            "type": "string"
+          },
+          "Expectations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Verb": {
+                  "type": "string"
+                },
+                "Object": {
+                  "type": "object",
+                  "properties": {
+                    "Type": {
+                      "enum": ["l2vpn"]
+                    },
+                    "Instance": {
+                      "type": "string"
+                    },
+                    "Contexts": {
+                      "type": "array",
+                        "items":{
+                          "anyOf":[{"$ref":"#/$def/Context_n"},
+                        {"$ref": "/schemas/Context"}
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "Type",
+                    "Instance",
+                    "Contexts"
+                  ]
+                },
+                "Targets": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "AttributeName": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "Attribute": {
+                        "type": "string"
+                      },
+                      "Condition": {
+                        "type": "string"
+                      },
+                      "ValueRange": {
+                        "type": [
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "Context": {
+                        "$ref": "/schemas/Context"
+                      }
+                    },
+                    "required": [
+                      "Attribute",
+                      "Condition",
+                      "ValueRange"
+                    ]
+                  }
+                },
+                "Contexts": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "/schemas/Context"
+                  }
+                }
+              },
+              "required": [
+                "Verb",
+                "Object",
+                "Targets",
+                "Contexts"
+              ]
+            }
+          },
+          "Context": {
+            "$ref": "/schemas/Context"
+          }
+        },
+        "required": [
+          "AttributeName",
+          "Expectations",
+          "Context"
+        ]
+      }
+    },
+    "$def": {
+      "Context_n": {
+        "type": "object",
+        "properties": {
+          "AttributeName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "Attribute": {
+            "enum":["node_src","node_dst"]
+          },
+          "Condition": {
+            "type": "string"
+          },
+          "ValueRange": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "Attribute",
+          "Condition",
+          "ValueRange"
+        ]
+      }
+    }
+  }

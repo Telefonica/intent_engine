@@ -4,7 +4,7 @@ from intent_engine.core.ib_object import IB_object
 
 logger = logging.getLogger(__name__)
 
-class tfs_vpnl2(abstract_library):
+class tfs_controller(abstract_library):
     """
     Abstract class created as 
     """
@@ -13,7 +13,7 @@ class tfs_vpnl2(abstract_library):
            "cloud_continuum" : {
                "tfs_controller":{
                    "l2vpn":{
-                       "request":"tfs_vpnl2"}
+                       "request":["tfs_controller"]}
                     }
                 }
         }
@@ -30,14 +30,15 @@ class tfs_vpnl2(abstract_library):
             "circuit_id":"999",
             "ni_name":"ninametfssssss"
         }
-        super().__init__(module_name="tfs_vpnl2",isILU=True,params=params,decision_tree=decision_tree)
+        super().__init__(module_name="tfs_controller",isILU=True,params=params,decision_tree=decision_tree)
         self.__params=params
     
     def translator(self,subintent : IB_object) -> tuple[list , str]:
         # TODO: cambiar el connect_type dependiendo del intent de  tfs session
         exec_params=[]
-        logger.info("Translating L2VPN TFS...")
-        logger.debug("debug L2VPN TFS...")
+        params={}
+        logger.info("Translating TFS connector...")
+        logger.debug("debug TFS connector...")
         for exp in subintent.get_expectations():
             exp_verb=exp.get_verb()
             logger.debug("expectation case %s",exp_verb)
@@ -77,26 +78,35 @@ class tfs_vpnl2(abstract_library):
                                 match att:
                                     case "signature":
                                         logger.debug("signature_trg_ctx case")
+                    
+                    for exp_ctx in exp.get_context():
+                        att=exp_ctx.get_attribute()
+                        match att:
+                            case "url":
+                                logger.debug("url case")
+                                
+                                params['url']=exp_ctx.get_value_range()
+                                params['headers'] = {'Content-Type': 'multipart/form-data'}
+                                params['connect_type'] = 'get'
+                            case "user":
+                                logger.debug("user case")
+                                params['user']=exp_ctx.get_value_range()
+                            case "password":
+                                logger.debug("pass case")
+                                params['password']=exp_ctx.get_value_range()
+
 
         # esto debería context del intent
         match subintent.get_context().get_name():
             case "tfs_controller":
                 logger.debug("intent context tfs controller case")
                 match subintent.get_context().get_attribute():
-                    case "l2vpn":
-                        logger.debug("intent context att l2vpn case")
-                        exec_params={
-                            "url":subintent.get_context().get_value_range(),
-                            "headers" : {'Content-Type': 'application/json'}
-                        }
-                    case "url":
-                        logger.debug("intent context att ulr case")
-                        exec_params={
-                            "url":subintent.get_context().get_value_range(),
-                            "headers" : {'Content-Type': 'multipart/form-data'},
-                            "connect_type" : 'get'
-                        }
-        return [self.vpnl2_schema(),exec_params],"tfs_connector"
+                    case "state":
+                        logger.debug("intent context att state case")
+                    case "permits":
+                        logger.debug("intent context att permits case")
+
+        return [self.vpnl2_schema(),params],"sysout"
 
     def ietf_l2vpn_schema(self):
         ietf_l2vpn={
@@ -145,7 +155,3 @@ class tfs_vpnl2(abstract_library):
                     }
 
         return vpn_descriptor
-
-if __name__ == "__main__":
-    a=tfs_vpnl2()
-    print(a.get_decision_tree())
