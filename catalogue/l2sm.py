@@ -1,9 +1,23 @@
+# © 2024 Telefónica Innovación Digital
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+from intent_engine.catalogue.abstract_library import abstract_library
 from intent_engine.core.ib_object import IB_object
 import logging
 
 logger = logging.getLogger(__name__)
 
-class l2sm():
+class l2sm(abstract_library):
     """
     L2S-M ILU library
     
@@ -67,7 +81,7 @@ class l2sm():
     def get_decision_tree(self):
         return self.__decision_tree
 
-    def translator(self,subintent : IB_object) -> (dict , str):
+    def translator(self,subintent : IB_object) -> tuple[list , str]:
         """
         This functions translate an atomic intent into a CRD L2S-M software
         can understand. This function will decide which functionality (deploy,

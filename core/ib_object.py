@@ -1,3 +1,16 @@
+# © 2024 Telefónica Innovación Digital
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 from typing import List
 import logging
 logger = logging.getLogger(__name__)
@@ -65,6 +78,15 @@ class Target():
             ctx=[cx.__str__() for cx in self.__context]
             return f"Target(name={self.__name}, attribute={self.__attribute}, condition={self.__condition}, value_range={self.__value_range}, context={ctx})"
         return f"Target(name={self.__name}, attribute={self.__attribute}, condition={self.__condition}, value_range={self.__value_range})"
+    
+    def get_dict(self):
+        return {
+            "AttributeName":self.__name,
+            "Attribute":self.__attribute,
+            "Condition":self.__condition,
+            "ValueRange":self.__value_range
+        }
+
     def get_keywords(self):
         keywords= []
         keywords.append(self.__name)
@@ -166,12 +188,12 @@ class Expectation():
                 "Verb":self.__verb,
                 "Object":self.__object.get_dict(),
                 "Contexts":[ctx.get_dict() for ctx in self.__context],
+                "Targets":[trg.get_dict() for trg in self.__target]
             }
         return {
                 "Verb":self.__verb,
                 "Object":self.__object.get_dict(),
-                "Contexts":[ctx.get_dict() for ctx in self.__context],
-                "Targets":[trg.get_dict() for trg in self.__target],
+                "Contexts":[ctx.get_dict() for ctx in self.__context]
             }
     def get_keywords(self):
         
@@ -259,6 +281,11 @@ class IB_object():
         expecs=[exp.__str__() for exp in self.__expectations]
         return f"IB_object(name={self.__name},context={self.__context},{expecs})"
     
+    def get_dict(self):
+        return {
+                "Expectations":[exp.get_dict() for exp in self.__expectations],
+                "Targets":self.__context.get_dict(),
+            }
     def get_keywords(self):
         expecs=[exp.get_keywords() for exp in self.__expectations]
         # print("expecs getkeywords ib_object",expecs)

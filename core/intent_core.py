@@ -1,4 +1,16 @@
-# © 2024 Telefónica Innovación Digital, All rights reserved
+# © 2024 Telefónica Innovación Digital
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 import json
 from queue import Queue
 from intent_engine.core import ib_object
@@ -54,7 +66,8 @@ def core():
         intent=ib_object.IB_object(pop)
         # ------- Intent classifier -------
         print("------- Intent classifier -------")
-        o=[logger.debug("Expectation %s",json.dumps(s.get_dict(),indent=6)) for s in intent.get_expectations()]
+        logger.debug("Intent %s",json.dumps(intent.get_dict(),indent=10))
+        # o=[logger.debug("Expectation %s",json.dumps(s.get_dict(),indent=10)) for s in intent.get_expectations()]
         classifier=Classifier([m['instance'] for m in module_instances])
         subintents,ill=classifier.classify(intent)
         logger.info("ILL : %s",ill)

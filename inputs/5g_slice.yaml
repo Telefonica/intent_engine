@@ -1,0 +1,57 @@
+Intent:
+  AttributeName: 'cloud_continuum'
+  Expectations:
+    - Verb: 'create'
+      Object: 
+       Type : '5g_slice_flow'
+       Instance : 'cumu_slice'
+       Contexts :
+          - AttributeName : 'ipv4_filter 1'
+            Attribute : 'ip4Address'
+            Condition : 'IS_EQUAL_TO'
+            ValueRange : '1.1.1.1'
+          - AttributeName : 'ipv4_filter 1'
+            Attribute : 'type'
+            Condition : 'IS_EQUAL_TO'
+            ValueRange : 'BOTH'
+          - AttributeName : 'ipv4_filter 1'
+            Attribute : 'portNumber'
+            Condition : 'IS_EQUAL_TO'
+            ValueRange : '36000'
+          - AttributeName : 'ipv4_filter 1'
+            Attribute : 'portType'
+            Condition : 'IS_EQUAL_TO'
+            ValueRange : 'UDP'
+      Targets:
+       - AttributeName :
+         Attribute : 'ulCapacity'
+         Condition : 'IS_EQUAL_TO'
+         ValueRange : '3'
+         Contexts :
+          - AttributeName : 'abc123'
+            Attribute : 'profile'
+            Condition : 'IS_EQUAL_TO'
+            ValueRange : 'audio4k'
+       - AttributeName :
+         Attribute : 'dlCapacity'
+         Condition : 'IS_EQUAL_TO'
+         ValueRange : '3'
+         Contexts :
+          - AttributeName : 'abc123'
+            Attribute : 'profile'
+            Condition : 'IS_EQUAL_TO'
+            ValueRange : 'audio4k'
+      Contexts:
+       - AttributeName : 'time'
+         Attribute : 'startime'
+         Condition : 'IS_EQUAL_TO'
+         ValueRange : '20210510T123000-1'
+       - AttributeName : 'time'
+         Attribute : 'stoptime'
+         Condition : 'IS_EQUAL_TO'
+         ValueRange : '20210510T134500-1'
+  Context:
+    AttributeName: 'nemo_deployment'
+    Attribute: 'instantceid'
+    Condition: 'IS_EQUAL_TO'
+    ValueRange: 'id142938'
