@@ -50,6 +50,7 @@ class Classifier():
         sub_intents=[]
         for tree in self.__trees:
             self.find_in_tree(intent.get_keywords(),tree,ill)
+            
             sub_intents.append(intent)
             logger.info("Ill: %s || Subintent: %s",ill[:],intent)
         # Necesito que sea uniq ill, pero cada ill su subintent?

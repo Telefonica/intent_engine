@@ -1,0 +1,78 @@
+{
+    "applicationInstanceID": "330",
+    "name": "Minimal-Slice-NAO-OSS-demo",
+    "callbackURL": "http://localhost:8080/api/v2/callback/slice/330",
+    "authenticationDetails": {
+    "clientToken": "!OSS-BSS!",
+    "clientKey": " OSS-BSS "
+    },
+    "componentNodeInstances": [{  
+          "componentNodeInstanceID": "12",
+          "componentNodeInstanceHexID": "sdbwjcZKvP",
+          "componentNodeInstanceName": "PhpMyAdmin"
+        },
+        {
+          "componentNodeInstanceID": "11",
+          "componentNodeInstanceHexID": "eaXB7aYR9e",
+          "componentNodeInstanceName": "MariaDB"
+        }
+    ],
+    "constraints": [{
+    "constraintID": "47",
+    "interfaceInstanceID": "590",
+    "qi": "10",
+    "radioServiceType": "1",
+    "resourceType": "DELAY_CRITICAL_GBR",
+    "allocationRetentionPriorityProfile": 1,
+    "minimumGuaranteedBandwidth": 120.0,
+    "maximumRequiredBandwidth": 200.0,
+    "constraintUnit": "kbps",
+    "category": "ACCESS",
+    "type": "HARD"
+    },{
+          "constraintID": "46",
+          "category": "COMPONENT_HOSTING",
+          "componentNodeInstanceID": "12",
+          "componentNodeInstanceHexID": "sdbwjcZKvP",
+          "type": "HARD",
+          "constraintMetric": "MIN_RAM",
+          "constraintValue": "2048",
+          "constraintUnit": "mb"
+        },
+        {
+          "constraintID": "45",
+          "category": "COMPONENT_HOSTING",
+          "componentNodeInstanceID": "12",
+          "componentNodeInstanceHexID": "sdbwjcZKvP",
+          "type": "HARD",
+          "constraintMetric": "MIN_V_CPU",
+          "constraintValue": "1",
+          "constraintUnit": "amount"
+        },
+        {
+          "constraintID": "44",
+          "category": "COMPONENT_HOSTING",
+          "componentNodeInstanceID": "11",
+          "componentNodeInstanceHexID": "eaXB7aYR9e",
+          "type": "HARD",
+          "constraintMetric": "REGION",
+          "constraintValue": "-1",
+          "constraintUnit": "gr-ath"
+        }],
+    "graphLinkNodeInstances": [
+        {
+          "graphLinkNodeInstanceID": "6",
+          "fromComponentNodeInstanceHexID": "sdbwjcZKvP",
+          "fromComponentNodeInstanceID": "12",
+          "toComponentNodeInstanceID": "11",
+          "toComponentNodeInstanceHexID": "eaXB7aYR9e",
+          "type": "CORE"
+        },
+        {
+          "graphLinkNodeInstanceID": "ACCESS_12",
+          "toComponentNodeInstanceID": "12",
+          "toComponentNodeInstanceHexID": "sdbwjcZKvP",
+          "type": "ACCESS"
+        }]
+    }
+    

@@ -13,5 +13,5 @@
 # limitations under the License.
 
 """
-Library for 6Green project
+Puede que no haga falta, y sea el hhtp_handler
 """
