@@ -49,13 +49,27 @@ class Classifier():
         ill=[]
         sub_intents=[]
         for tree in self.__trees:
+            # get all libraries capable of translate the intent
             self.find_in_tree(intent.get_keywords(),tree,ill)
-            
-            sub_intents.append(intent)
-            logger.info("Ill: %s || Subintent: %s",ill[:],intent)
+            # la lista
+        unique_ill=list(set(ill))
+        logger.debug("unique list: %s",unique_ill)
+        for ilu in unique_ill:
+            logger.debug("subintent ilu: %s",ilu)
+            for module in self.__modules:
+                if module.get_name() == ilu:
+                    sub_intent,sub_ilu=module.generate_subintent(intent)
+                    if module.isILU:
+                        sub_intents.append(sub_intent)
+                    else:
+                        sub_intent,sub_ilu=self.classify(sub_intent)
+        # if ill:
+            # logger.info("Ill: %s || Subintent: %s",ill[:],intent)
+
         # Necesito que sea uniq ill, pero cada ill su subintent?
-        # problema si un ill tiene dos subintents? 
-        return list(set(sub_intents)),list(set(ill))
+        # problema si un ill tiene dos subintents?
+        # return list(set(sub_intents)),list(set(ill))
+        return sub_intents,unique_ill
     
     def check(self,conf_schema, conf):
         try:

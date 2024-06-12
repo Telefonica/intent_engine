@@ -70,11 +70,11 @@ def core():
         # o=[logger.debug("Expectation %s",json.dumps(s.get_dict(),indent=10)) for s in intent.get_expectations()]
         classifier=Classifier([m['instance'] for m in module_instances])
         subintents,ill=classifier.classify(intent)
-        logger.info("ILL : %s",ill)
+        logger.info("ILL : %s \nSubintent number: %d",ill, len(subintents))
 
         # ------ Intent translator -------
-        print("------ Intent translator -------")
         for i,ilu in enumerate(ill):
+            print("------ Intent translator -------")
             subintent=subintents[i]
             for module in module_instances:
                 if module['class']==ilu:

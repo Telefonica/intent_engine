@@ -27,8 +27,7 @@ class enif_slice(abstract_library):
            "green" : {
                "intent_id":{
                    "slice_intent_5ginduce":{
-                       "deploy": "enif_slice"},
-                    "Slice_Energy_Saving":"green_things", #mirar esto
+                       "deploy": "enif_slice"} #mirar esto
                     }
                 }
         }
@@ -79,6 +78,7 @@ class enif_slice(abstract_library):
         instances={}
         logger.info("Translating enif_slice...")
         logger.debug("debug enif_slice connector...")
+        logger.debug("subint: %s",subintent.get_expectations())
         for exp in subintent.get_expectations():
             exp_verb=exp.get_verb()
             logger.debug("expectation case %s",exp_verb)
@@ -103,18 +103,26 @@ class enif_slice(abstract_library):
                                         instances[obj_ctx.get_name()]['name']=obj_ctx.get_value_range()
                                     case "hex_ID":
                                         logger.debug("hex_ID case")
+                                        if obj_ctx.get_name() not in instances.keys():
+                                            instances[obj_ctx.get_name()]={}
                                         self.__params['hex_ID']=obj_ctx.get_value_range()
                                         instances[obj_ctx.get_name()]['hex_ID']=obj_ctx.get_value_range()
                                     case "type":
                                         logger.debug("type case")
+                                        if obj_ctx.get_name() not in instances.keys():
+                                            instances[obj_ctx.get_name()]={}
                                         self.__params['type']=obj_ctx.get_value_range()
                                         instances[obj_ctx.get_name()]['type']=obj_ctx.get_value_range()
                                     case "from_to":
                                         logger.debug("from_to case")
+                                        if obj_ctx.get_name() not in instances.keys():
+                                            instances[obj_ctx.get_name()]={}
                                         self.__params['from_to']=obj_ctx.get_value_range()
                                         instances[obj_ctx.get_name()]['from_to']=obj_ctx.get_value_range()
                                     case "to":
                                         logger.debug("to case")
+                                        if obj_ctx.get_name() not in instances.keys():
+                                            instances[obj_ctx.get_name()]={}
                                         self.__params['to']=obj_ctx.get_value_range()
                                         instances[obj_ctx.get_name()]['to']=obj_ctx.get_value_range()
                     for trg_ctx in exp.get_target():
@@ -186,6 +194,7 @@ class enif_slice(abstract_library):
 
 
         # esto debería context del intent
+        logger.debug("int ctx: %s",subintent.get_context())
         match subintent.get_context().get_name():
             case "green":
                 logger.debug("intent context tfs controller case")
@@ -197,11 +206,13 @@ class enif_slice(abstract_library):
 
         return [self.slice_schema(),params],"sysout"
 
-    def ietf_l2vpn_schema(self):
-        ietf_l2vpn={
-            
-        }
-        return 
+    def generate_subintent(self,intent:IB_object) -> IB_object:
+        """
+        Return sub intents of a slice in a green context.
+        """
+
+        return intent
+    
     def slice_schema(self):
 
         slice_schema={   

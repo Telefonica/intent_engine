@@ -239,15 +239,19 @@ class Expectation():
         return self.__context
 
 class IB_object():
-    def __init__(self, intent_dict: dict):
+    def __init__(self, intent_dict: dict = {}):
         context_obj=[]
         target_obj = []
         object_data = []
+        self.__expectations: List[Expectation] = []
+        self.__context:Context
+        self.__name : str
+        if not intent_dict:
+            return
         intent=intent_dict["Intent"]
         self.__name=intent["AttributeName"]
         # Fixme context clase context/ lista de contexts
         self.__context = Context(**intent["Context"])
-        self.__expectations: List[Expectation] = []
         for expectation_data in intent['Expectations']:
             # print("\n --expecs--",expectation_data)
             if "Contexts" in expectation_data:
@@ -284,7 +288,7 @@ class IB_object():
     def get_dict(self):
         return {
                 "Expectations":[exp.get_dict() for exp in self.__expectations],
-                "Targets":self.__context.get_dict(),
+                "Context":self.__context.get_dict(),
             }
     def get_keywords(self):
         expecs=[exp.get_keywords() for exp in self.__expectations]
