@@ -47,3 +47,20 @@ As the networks are evolving continuously, the technologies should follow along.
 ![Arquitecture]
 
 Also, there is another type of catalogue, the executioners catalogue. It defines the inbound and outbound interfaces of the core. The executioners are managed by the execution platform as they can run independent communication processes with different technologies.
+
+# About this repo
+
+Each branch is the development in the different projects.
+
+# Support
+
+For any feedback or doubts about **The Intent Engine** don't hesitate to contact us:
+- Guillermo S. Illán : guillermo.sanchezillan@telefonica.com
+- Luis Miguel Contreras Murillo : luismiguel.contrerasmurillo@telefonica.com
+
+# Acknowledgments
+
+The work in this open-source project has partially been granted by :
+- [NEMO]([HOME - META-OS](https://meta-os.eu/)) (EU Horizon Europe Grant Agreement No. 101070118).
+- [6Green](https://www.6green.eu/) (101096925 – 6Green – HORIZON-JU-SNS-2022) 
+
