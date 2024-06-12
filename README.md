@@ -108,10 +108,10 @@ The Intent-Based System is capable of reading the intents that the AF. Then, it 
 ```mermaid
 flowchart LR
 
-A[AF] -->|Aggregated Intent| B(BSSF)
+A[AF] -->|Aggregated Intent| B(BSSF i/f)
 
 subgraph NFSET3
-subgraph IBS
+subgraph IBS - BSSF
 B --> C{Classifier}
 	C -->|ILU| D[ENIF lib]
 	C -->|ILU| E[Other NF lib]
