@@ -104,7 +104,7 @@ The Intent-Based System is capable of reading the intents that the AF. Then, it 
 ```mermaid
 flowchart LR
 
-A[AF] -->|Intent| B(BSSF)
+A[AF] -->|Aggregated Intent| B(BSSF)
 
 subgraph NFSET3
 subgraph IBS
@@ -146,11 +146,10 @@ The code follows this structure:
 
 - Intent-engine
 	- catalogue
-		- **mNCC_intent.py**
-		- **l2sm.py**
+		- **green_bssf.py**
+		- **enif_slice.py**
 	- executioners
-		- **rabbitmq.py**
-		- **crd.py**
+		- **http_handler.py**
 	- core
 		- intent_core.py
 		- ib_object.py
@@ -160,7 +159,7 @@ The code follows this structure:
 	- intent_catalogue.in
 	- executioner_catalogue.in
 
-**In bold, the part of the code belonging to the 6Green project.**
+**In bold, the part of the new code developed to the 6Green project.**
 
 # Functionalities
 
