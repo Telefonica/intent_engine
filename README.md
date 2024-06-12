@@ -198,3 +198,4 @@ For any feedback or doubts about **The Intent Engine** don't hesitate to contact
 
 The work in this open-source project has partially been granted by :
 - [NEMO]([HOME - META-OS](https://meta-os.eu/)) (EU Horizon Europe Grant Agreement No. 101070118).
+- [6Green]([6Green - Web](https://www.6green.eu/)) (101096925 – 6Green – HORIZON-JU-SNS-2022) 
