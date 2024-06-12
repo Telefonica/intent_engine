@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License. -->
 # The Intent Engine
-*An Intent Based Network Translator in a Micro-Kernel Architecture*
+*An Intent Based Network Translator in a Micro-Kernel Architecture*.
+
+![alt text](attached/image.png)
 # Introduction
 
 The **Intent Engine** is a translator between different technologies, abstracting the specific details of network components from the general directives of higher-level components. This abstract order is known as Intent (*an intention*). It express an expectation of *what* the underlying technologies should do without knowing the *how*. 
@@ -26,15 +28,17 @@ Following the structure in [Specification # 28.312 (3gpp.org)](https://portal.3g
 
 This definition is broad, and is each library in the intent catalog is the one responsible for translating the intent into a network configuration. 
 
+**Version**: 0.2-*alpha version*
+
 ### A Micro-Kernel Architecture
 
 As the networks are evolving continuously, the technologies should follow along. **The Intent Engine** is build as a central core that processes the Intent and then, tries to translate it to network configurations using the intent catalogue. The intent catalogue is a set of python libraries, each one containing a set of Intent Logic Units (ILUs). 
 
-![Arquitecture]
+![Arquitecture](attached/bssf_update_d3.2-Página-2.drawio.png)
 
 Also, there is another type of catalogue, the executioners catalogue. It defines the inbound and outbound interfaces of the core. The executioners are managed by the execution platform as they can run independent communication processes with different technologies.
 
-## 6Green: BSSF (NFSET3)
+## 6Green: BSSF (NFSET3) 
 
 The **Business Support System Function** is a newly introduced component designed to manage the business aspects of network and slice reconfiguration. Its primary role is to enforce the dynamic green business model that governs the interactions between Telecom Operators and Vertical Stakeholders. As a result, this component serves as the entry point for handling vertical demands and processing slice requests. Its aims to enable the efficient deployment and management of 6G vertical slice expectations by aggregating and translating infrastructure slice intents, vertical SLAs, green intent expectations and user specific policies into a compound ENIF slice ready to by optimice. 
 
@@ -43,7 +47,7 @@ The **Business Support System Function** is a newly introduced component designe
 
 Some updates have been done in how the BSSF interacts with the AF and the ENIF. 
 
-![NFSET3]   
+![NFSET3](attached/bssf_update_d3.2-Página-1.drawio%201.png)
 
 ### AF to BSSF interface
 
@@ -82,7 +86,7 @@ Targets:
 
 
 
-### Intent aggregation
+<!-- ### Intent aggregation -->
 
 ## About this repository
 
@@ -116,18 +120,18 @@ D -->|slice request| F[ENIF]
 end
 ```
 
-As described in this picture, there are several steps inside the IBS, first the RabbitMQ queue is read, then is classified in the specific technology. These steps creates an atomic intent ready to by translated to L2S-M or any other imported library in the core. 
+As described in this picture, there are several steps inside the IBS, first the intent arrives from the AF, then is classified in the specific slice type. These steps creates an atomic intent ready to be send to the ENIF as a slice or to any other imported library in the core. 
 
-In this way, the MO express just an intention of creating a NEMO deployment, and the IBS understands that is L2S-M in this case. Also, having this intermediate steps, somehow provides an assurance that the CRD is created correctly as it can only correspond to a classified ILU.
+In this way, the AF express just an intention of creating a new slice with its contrains, and the IBS understands how to aggregate this into an augmented slice based on the 5GInduce API. Also, having this intermediate steps, somehow provides an assurance that the slice is created correctly as it can only correspond to a classified ILU.
 
-Below, its shown an example of incoming intent and outgoing CRD. The first case is more human readable and just express the intention to create a new network between to points given some specifications.
+Below, its shown an example of incoming intent and outgoing request. The first case is more human readable and just express the intention to create a new network between to points given some specifications.
 
 ```yaml
-
+TBD
 ```
 
 ```yaml
-
+TBD
 ```
 
 ## Intent classification
@@ -135,10 +139,19 @@ Below, its shown an example of incoming intent and outgoing CRD. The first case 
 The classification is done using an attribute of each library called decision_tree:
 
 ```python
-self.__decision_tree=
+self.__decision_tree={
+    # Not definitive tree
+           "green" : {
+               "intent_id":{
+                   "slice_intent_5ginduce":{
+                       "deploy": "enif_slice"},
+                    "Slice_Energy_Saving":"green_bssf",
+                    }
+                }
+        }
 ```
 
-Then, the classifier in the intent core collects all the decision trees of every library and do a simple comparison with the general intent. In this case, if detects that is a NEMO deployment it will refer to the L2S-M library and create the atomic intent that the library can understand and execute.
+Then, the classifier in the intent core collects all the decision trees of every library and do a simple comparison with the general intent. In this case, if detects that is a slice request in a green context, it will refer to the ENIF library and create the atomic intent that the library can understand and execute.
 
 # Structure
 
@@ -163,10 +176,12 @@ The code follows this structure:
 
 # Functionalities
 
-The functionalities available for this version are:
-- Connect to RabbitMQ queue. Starts a RabbitMQ consumer and waits for intents to be posted.
-- Translation of the MO intent to a CRD L2S-M can process.
-- Send the intent expectation to L2S-M.
+The expected functionalities are:
+- Consume infrastructure slice intents based on the generic slice template.
+- Consume slice for ENIF optimization. 
+- Consume decarbonization targets for a slice.
+- Aggregate the previous iformation and fordward it to ENIF.
+
 ## Getting started
 
 1. Download source code.
@@ -177,17 +192,8 @@ cd intent_engine/
 python3 code/intent_core.py
 ```
 
-4. Generate a test RabbitMQ message
-	- Install a RabbitMQ broker docker image
-```bash
-docker run -d --hostname my-rabbit --name some-rabbit -e RABBITMQ_DEFAULT_VHOST=my_vhost rabbitmq:3-management
-```
-5. Create a queue called mo.mncc in the broker (localhost:15672).
-6. Send a test Intent to the intent engine
-```bash
-cd intent_engine/
-python3 code/executioners/rabbitMQ_emit.py
-```
+4. Change input yaml for queue in core.
+
 
 # Support
 

@@ -210,8 +210,9 @@ class enif_slice(abstract_library):
         """
         Return sub intents of a slice in a green context.
         """
+        ilu="enif_slice"
 
-        return intent
+        return intent,ilu
     
     def slice_schema(self):
 
