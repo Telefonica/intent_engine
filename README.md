@@ -182,16 +182,21 @@ The expected functionalities are:
 - Consume decarbonization targets for a slice.
 - Aggregate the previous iformation and fordward it to ENIF.
 
+## Roadmap
+
+In the current version the BSSF only acts as a proxy with a translating functionality. In future verions the BSSF should intergate policies in the intent processing workflow, and manage slices accordingly.
+
 ## Getting started
 
 1. Download source code.
-2. Start intent engine:
+2. Install requirements:
+	- Python 3.10
+	- Required python libraries: 
+3. Start intent engine:
 	- Run intent_core.py. 
 ```bash
-cd intent_engine/
-python3 code/intent_core.py
+python3.10 -m intent_engine
 ```
-
 4. Change input yaml for queue in core.
 
 

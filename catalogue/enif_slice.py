@@ -31,12 +31,12 @@ class enif_slice(abstract_library):
                     }
                 }
         }
-        componentNodeInstances={
+        self.__componentNodeInstances={
           "componentNodeInstanceID": "",
           "componentNodeInstanceHexID": "",
           "componentNodeInstanceName": ""
           }
-        AccessConstrains={
+        self.__AccessConstrains={
     "constraintID": "",
     "interfaceInstanceID": "",
     "qi": "",
@@ -49,7 +49,7 @@ class enif_slice(abstract_library):
     "category": "ACCESS",
     "type": ""
         }
-        ComponentHostingConstrains={
+        self.__ComponentHostingConstrains={
           "constraintID": "",
           "category": "",
           "componentNodeInstanceID": "",
@@ -204,7 +204,7 @@ class enif_slice(abstract_library):
                     case "permits":
                         logger.debug("intent context att permits case")
 
-        return [self.slice_schema(),params],"sysout"
+        return [self.slice_schema(instances),params],"sysout"
 
     def generate_subintent(self,intent:IB_object) -> IB_object:
         """
@@ -214,7 +214,7 @@ class enif_slice(abstract_library):
 
         return intent,ilu
     
-    def slice_schema(self):
+    def slice_schema(self, slice_content):
 
         slice_schema={   
         "SliceIntent":{

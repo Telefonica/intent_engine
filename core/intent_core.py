@@ -13,7 +13,7 @@
 # limitations under the License.
 import json
 from queue import Queue
-from intent_engine.core import ib_object
+from intent_engine.core import ib_object, yamlParser
 from intent_engine.core import importer
 from intent_engine.core.intent_classifier import Classifier
 import logging
@@ -57,7 +57,7 @@ def core():
         exec_instances.append(class_and_instance)
     # Check NBI
     logger.info("module_instances: %s",module_instances)
-    # data=yamlParser.yaml_to_data("input.yaml")
+    # data=yamlParser.yaml_to_data("inputs/6green_int.yaml")
     # intent=ib_object.IB_object(data)
     # logger.info(intent)
 
