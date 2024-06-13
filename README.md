@@ -163,6 +163,7 @@ The code follows this structure:
 		- **enif_slice.py**
 	- executioners
 		- **http_handler.py**
+		- **sys_in.py**
 	- core
 		- intent_core.py
 		- ib_object.py
@@ -193,11 +194,14 @@ In the current version the BSSF only acts as a proxy with a translating function
 	- Python 3.10
 	- Required python libraries: 
 3. Start intent engine:
-	- Run intent_core.py. 
+	- Run intent_engine. 
 ```bash
 python3.10 -m intent_engine
 ```
-4. Change input yaml for queue in core.
+4. Change input yaml for queue in executioners/sys_in.py
+```python
+self.__args=["inputs/","6green_int.yaml"]
+```
 
 
 # Support
