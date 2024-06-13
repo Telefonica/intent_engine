@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import ast
 import logging
 from intent_engine.catalogue.abstract_library import abstract_library
 from intent_engine.core.ib_object import IB_object
@@ -214,8 +215,38 @@ class enif_slice(abstract_library):
 
         return intent,ilu
     
-    def slice_schema(self, slice_content):
-
+    def slice_schema(self, slice_content: dict):
+        componentNodeInstances=[]
+        graphLinkNodeInstances=[]
+        for instace in slice_content:
+            logger.debug("split content %s",instace.split("node_instance_"))
+            if instace.split("node_instance_")[0] == "":
+                node_instance_id=instace.split("node_instance_")
+                logger.debug("node_instance: %s from %s", instace,slice_content)
+                componentNode={
+                    "componentNodeInstanceID": node_instance_id[1],
+                    "componentNodeInstanceHexID": slice_content[instace]['hex_ID'],
+                    "componentNodeInstanceName": slice_content[instace]['name']
+                }
+                componentNodeInstances.append(componentNode)
+            if instace.split("graph_link_node_instance_")[0] == "":
+                if slice_content[instace]['type'] =="CORE":
+                    link_instance_id=instace.split("graph_link_node_instance_")
+                    logger.debug("link_instance: %s from %s", instace,slice_content)
+                    from_node=ast.literal_eval(slice_content[instace]['from_to'])[0]
+                    to_node=ast.literal_eval(slice_content[instace]['from_to'])[1]
+                    from_hex=slice_content["node_instance_"+str(from_node)]['hex_ID']
+                    to_hex=slice_content["node_instance_"+str(to_node)]['hex_ID']
+                    graphLinkNode={
+                                "graphLinkNodeInstanceID": link_instance_id[1],
+                                "fromComponentNodeInstanceHexID": from_node,
+                                # [key for key, value in slice_content.items() if value == 2]
+                                "fromComponentNodeInstanceID": from_hex,
+                                "toComponentNodeInstanceID": to_node,
+                                "toComponentNodeInstanceHexID": to_hex,
+                                "type": "CORE"
+                                }
+                    graphLinkNodeInstances.append(graphLinkNode)
         slice_schema={   
         "SliceIntent":{
         "SliceIntentIdentifier":{},
@@ -283,4 +314,34 @@ class enif_slice(abstract_library):
     }
 }
 
-        return slice_schema
+        return componentNode
+
+
+    #     componentNodeInstances={
+    #       "componentNodeInstanceID": "",
+    #       "componentNodeInstanceHexID": "",
+    #       "componentNodeInstanceName": ""
+    #       }
+    #     AccessConstrains={
+    # "constraintID": "",
+    # "interfaceInstanceID": "",
+    # "qi": "",
+    # "radioServiceType": "",
+    # "resourceType": "",
+    # "allocationRetentionPriorityProfile": 0,
+    # "minimumGuaranteedBandwidth": 0,
+    # "maximumRequiredBandwidth": 0,
+    # "constraintUnit": "",
+    # "category": "ACCESS",
+    # "type": ""
+    #     }
+    #     ComponentHostingConstrains={
+    #       "constraintID": "",
+    #       "category": "",
+    #       "componentNodeInstanceID": "",
+    #       "componentNodeInstanceHexID": "",
+    #       "type": "",
+    #       "constraintMetric": "",
+    #       "constraintValue": "",
+    #       "constraintUnit": ""
+    #     }
