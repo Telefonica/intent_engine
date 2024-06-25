@@ -15,7 +15,7 @@
 import ast
 import logging
 from intent_engine.catalogue.abstract_library import abstract_library
-from intent_engine.core.ib_object import IB_object
+from intent_engine.core.ib_object import IB_object, Object_expectation
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,8 @@ class enif_slice(abstract_library):
            "green" : {
                "intent_id":{
                    "slice_intent_5ginduce":{
-                       "deploy": "enif_slice"} #mirar esto
+                       "deploy": "enif_slice",
+                       "ensure": "enif_slice"} #mirar esto
                     }
                 }
         }
@@ -73,17 +74,25 @@ class enif_slice(abstract_library):
         self.__params=params
     
     def translator(self,subintent : IB_object) -> tuple[list , str]:
-        # TODO: cambiar el connect_type dependiendo del intent de  tfs session
         exec_params=[]
         params={}
         instances={}
         logger.info("Translating enif_slice...")
         logger.debug("debug enif_slice connector...")
-        logger.debug("subint: %s",subintent.get_expectations())
+        logger.debug("subint: %s",subintent)
         for exp in subintent.get_expectations():
             exp_verb=exp.get_verb()
             logger.debug("expectation case %s",exp_verb)
             match exp_verb:
+                case "ensure":
+                    exec_params=[]
+                    self.__params={
+                        "Constrain type":"green"
+                    }
+                    logger.info("Translating green_bssf in enif...")
+                    logger.debug("debug enif_slice...")
+                    
+                    return [self.__params,exec_params],"sysout"
                 case "deploy":
                     exp_obj=exp.get_object()
                     logger.debug("deploy case obj: %s",exp_obj)
@@ -198,7 +207,7 @@ class enif_slice(abstract_library):
         logger.debug("int ctx: %s",subintent.get_context())
         match subintent.get_context().get_name():
             case "green":
-                logger.debug("intent context tfs controller case")
+                logger.debug("intent context green case")
                 match subintent.get_context().get_attribute():
                     case "state":
                         logger.debug("intent context att state case")
@@ -211,9 +220,28 @@ class enif_slice(abstract_library):
         """
         Return sub intents of a slice in a green context.
         """
-        ilu="enif_slice"
-
-        return intent,ilu
+        logger.debug("Simple enif_slice")
+        logger.debug("With intent: %s", intent.get_name())
+        subintent=IB_object()
+        subintent.set_name(intent.get_name())
+        subintent.set_context(intent.get_context())
+        for exp in intent.get_expectations():
+            if exp.get_object().get_type() == 'slice_intent_5ginduce':
+                match exp.get_verb():
+                    # remove any not enif_slice type expectation
+                    case "deploy":
+                        logger.debug("Generating sub intent ENIF->ENIF...")
+                        ilu="enif_slice"
+                        subintent.set_expectations([exp])
+                        subintent.set_context(intent.get_context())
+                        logger.debug("generated subintent:%s",subintent)
+                    case "ensure":
+                        logger.debug("Generating sub intent GREEN(ENIF)->ENIF...")
+                        ilu="enif_slice"
+                        subintent.set_expectations([exp])
+                        subintent.set_context(intent.get_context())
+                        logger.debug("generated subintent:%s",subintent)
+        return subintent
     
     def slice_schema(self, slice_content: dict):
         componentNodeInstances=[]

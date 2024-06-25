@@ -42,8 +42,8 @@ Intent:
           Condition: 'IS_GREATER_THAN'
           ValueRange: ''
       Contexts:
-        - AttributeName:
-          Attribute: ''
+        - AttributeName: 'application_instance_ID_330'
+          Attribute: '6Green_slice_1'
           Condition: ''
           ValueRange: ''
     - Verb: 'deploy'

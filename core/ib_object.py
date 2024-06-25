@@ -240,9 +240,6 @@ class Expectation():
 
 class IB_object():
     def __init__(self, intent_dict: dict = {}):
-        context_obj=[]
-        target_obj = []
-        object_data = []
         self.__expectations: List[Expectation] = []
         self.__context:Context
         self.__name : str
@@ -250,26 +247,35 @@ class IB_object():
             return
         intent=intent_dict["Intent"]
         self.__name=intent["AttributeName"]
-        # Fixme context clase context/ lista de contexts
+        # Intent context
         self.__context = Context(**intent["Context"])
+        # Intent Expectations
         for expectation_data in intent['Expectations']:
             # print("\n --expecs--",expectation_data)
+            # Travers expectations in one intent
+            target_data_list=[]
+            target_obj = []
+            context_obj=[]
+            object_data={}
+            context_data_list=[]
+            # Expectations contexts
             if "Contexts" in expectation_data:
                 context_data_list = expectation_data["Contexts"]
                 if context_data_list:
                     for context_data in context_data_list:
                         # print("\n --Context-- ",context_data)
                         context_obj.append(Context(**context_data))
+            # Expectations targets
             if "Targets" in expectation_data :
                 target_data_list = expectation_data["Targets"]
                 for target_data in target_data_list:
                     # print("\n --Targets-- ",target_data)
                     target_obj.append(Target(**target_data))
 
+            # Expectation Objects
             object_data = expectation_data["Object"]
             # print("\n --Context list-- ",context_data_list)
-            # Fixme target lista de targets
-
+            print("\n --object_data-- ",object_data)
             if object_data:
                 expectation_obj = Expectation(
                     verb=expectation_data.get('Verb'),
@@ -277,7 +283,9 @@ class IB_object():
                     context=context_obj,
                     obj=Object_expectation(**object_data)
                 )
+                # Intent expectation
                 self.__expectations.append(expectation_obj)
+                # print("\n --expectation_obj-- ",expectation_obj)
             else:
                 print("Error.No expectation object.")
             

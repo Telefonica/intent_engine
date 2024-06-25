@@ -70,7 +70,8 @@ def core():
         # o=[logger.debug("Expectation %s",json.dumps(s.get_dict(),indent=10)) for s in intent.get_expectations()]
         classifier=Classifier([m['instance'] for m in module_instances])
         subintents,ill=classifier.classify(intent)
-        logger.info("ILL : %s \nSubintent number: %d",ill, len(subintents))
+        logger.info("ILL : %s Subintent number: %d",ill, len(subintents))
+        o=[logger.info("ILL : %s Subintent : %s",ill, subintent) for subintent in subintents]
 
         # ------ Intent translator -------
         for i,ilu in enumerate(ill):

@@ -15,6 +15,7 @@
 import logging
 from intent_engine.catalogue.abstract_library import abstract_library
 from intent_engine.core.ib_object import IB_object
+from intent_engine.core.ib_object import Object_expectation
 
 logger = logging.getLogger(__name__)
 
@@ -27,9 +28,9 @@ class green_bssf(abstract_library):
         decision_tree={
            "green" : {
                "intent_id":{
-                   "slice_intent_5ginduce":{
-                       "deploy": "enif_slice"},
-                    "Slice_Energy_Saving":"green_bssf", #mirar esto
+                    "Slice_Energy_Saving":{
+                        "ensure":"green_bssf"
+                        } #mirar esto
                     }
                 }
         }
@@ -45,16 +46,26 @@ class green_bssf(abstract_library):
         """
         subintent=IB_object()
         ilu=""
+        subintent.set_name(intent.get_name())
+        subintent.set_context(intent.get_context())
         for exp in intent.get_expectations():
-            match exp:
+            match exp.get_verb():
                 case "ensure":
                     # Maybe ilu in not needed as next
                     # library will detect the intent as own
+                    logger.debug("Generating sub intent green->ENIF...")
                     ilu="enif_slice"
-                    subintent.set_expectations(exp)
-                    subintent.set_context(intent.get_context())
-                    subintent.set_name(intent.get_name())
-        return subintent,ilu
+                    # create new object from existing intent
+                    logger.debug("Context to generate new: ")
+                    ctxs=[ctx.get_dict() for ctx in exp.get_object().get_contexts()]
+                    logger.debug("ctxs: %s",ctxs)
+                    new_obj=Object_expectation('slice_intent_5ginduce','6Green_slice_1',ctxs)
+                    # change type so ENIF library understands
+                    exp.set_object(new_obj)
+                    logger.debug("new expectation for subint: %s",exp)
+                    subintent.set_expectations([exp])
+                    logger.debug("generated subintent green->ENIF:%s",subintent)
+        return subintent
     
     def translator(self,subintent : IB_object)-> tuple[list , str]:
         exec_params=[]
