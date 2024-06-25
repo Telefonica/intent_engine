@@ -14,6 +14,7 @@
 
 # The Intent Engine
 *An Intent Based Network Translator in a Micro-Kernel Architecture*
+*(under development)*
 # Introduction
 
 The **Intent Engine** is a translator between different technologies, abstracting the specific details of network components from the general directives of higher-level components. This abstract order is known as Intent (*an intention*). It express an expectation of *what* the underlying technologies should do without knowing the *how*. 
