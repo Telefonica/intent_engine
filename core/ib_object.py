@@ -248,7 +248,7 @@ class IB_object():
         intent=intent_dict["Intent"]
         self.__name=intent["AttributeName"]
         # Intent context
-        self.__context = Context(**intent["Context"])
+        self.__context = Context(**intent["Context"]) # IntentContext
         # Intent Expectations
         for expectation_data in intent['Expectations']:
             # print("\n --expecs--",expectation_data)
@@ -260,20 +260,20 @@ class IB_object():
             context_data_list=[]
             # Expectations contexts
             if "Contexts" in expectation_data:
-                context_data_list = expectation_data["Contexts"]
+                context_data_list = expectation_data["Contexts"] # ExpectationContext
                 if context_data_list:
                     for context_data in context_data_list:
                         # print("\n --Context-- ",context_data)
                         context_obj.append(Context(**context_data))
             # Expectations targets
             if "Targets" in expectation_data :
-                target_data_list = expectation_data["Targets"]
+                target_data_list = expectation_data["Targets"] # ExpectationTargets
                 for target_data in target_data_list:
                     # print("\n --Targets-- ",target_data)
                     target_obj.append(Target(**target_data))
 
             # Expectation Objects
-            object_data = expectation_data["Object"]
+            object_data = expectation_data["Object"] # ExpectationObject
             # print("\n --Context list-- ",context_data_list)
             print("\n --object_data-- ",object_data)
             if object_data:

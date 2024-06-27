@@ -1,0 +1,746 @@
+openapi: 3.0.1
+info:
+  title: AI/ML NRM
+  version: 18.3.0
+  description: >-
+    OAS 3.0.1 specification of the AI/ML NRM
+    © 2024, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
+    All rights reserved.
+externalDocs:
+  description: 3GPP TS 28.105; AI/ML Management
+  url: http://www.3gpp.org/ftp/Specs/archive/28_series/28.105/
+paths: {}
+components:
+  schemas:
+
+#-------- Definition of types-----------------------------------------------------
+
+    MLContext:
+      type: object
+      properties:
+        inferenceEntityRef:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+        dataProviderRef:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+
+    RequestStatus:
+      type: string
+      enum:
+        - NOT_STARTED
+        - IN_PROGRESS
+        - SUSPENDED
+        - FINISHED
+        - CANCELLED
+        - CANCELLING
+
+    ModelPerformance:
+      type: object
+      properties:
+        inferenceOutputName:
+          type: string
+        performanceMetric:
+          type: string
+        performanceScore:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/Float'
+        decisionConfidenceScore:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/Float'         
+
+    ProcessMonitor:
+      description: >-
+        This data type is the "ProcessMonitor" data type defined in “genericNrm.yaml” 
+        with specialisations for usage in TS 28.105.
+      type: object
+      properties:
+        status:
+          type: string
+        progressPercentage:
+          type: integer
+          minimum: 0
+          maximum: 100
+        progressStateInfo:
+          type: string
+        resultStateInfo:
+          type: string
+
+    AIMLManagementPolicy:
+      description: >-
+              This data type represents the properties of a policy for AI/ML management.
+      type: object
+      properties:
+        thresholdList:
+          type: array
+          items:
+            type: string # $ref: 'TS28623_ThresholdMonitorNrm.yaml#/components/schemas/ThresholdInfo'
+
+    SupportedPerfIndicator:
+      type: object
+      properties:
+        performanceIndicatorName:
+          type: string
+        isSupportedForTraining:
+          type: boolean
+        isSupportedForTesting:
+          type: boolean
+
+    ManagedActivationScope:
+      oneOf:
+        - type: object
+          properties:
+            dNList:
+              type: array
+              items:
+                $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+        - type: object
+          properties:
+            timeWindow:
+              type: array
+              items:
+                $ref: 'TS28623_ComDefs.yaml#/components/schemas/TimeWindow'
+        - type: object
+          properties:
+            geoPolygon:
+              type: array
+              items:
+                $ref: 'TS28623_ComDefs.yaml#/components/schemas/GeoArea'
+                
+    MLCapabilityInfo:
+      type: object
+      properties:
+        inferenceType:
+          type: string
+        capabilityName:
+          type: string
+        mLCapabilityParameters:
+          description: A map (list of key-value pairs) for an inferenceType and capabilityName
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeNameValuePairSet'
+
+    AvailMLCapabilityReport:
+      type: object
+      properties:
+        mLCapabilityVersionId:
+          type: array
+          items:
+            type: string
+        expectedPerformanceGains:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelPerformance'
+        mLEntityRef:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+
+    InferenceOutput:
+      type: object
+      properties:
+        inferenceOutputId:
+          type: array
+          items:
+            type: string
+        inferenceType:
+          type: string
+        inferenceOutputTime:
+          type: array
+          items:
+            $ref: 'TS28623_ComDefs.yaml#/components/schemas/DateTime'
+          # FIXME, isOrder/isUnique both as True
+        inferencePerformance:
+          $ref: '#/components/schemas/ModelPerformance'          
+        outputResult:
+          description: A map (list of key-value pairs) for Inference result name and it's value
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeNameValuePairSet'
+          
+#-------- Definition of types for name-containments ------
+    SubNetwork-ncO-AiMlNrm:
+      type: object
+      properties:
+        MLTrainingFunction:
+          $ref: '#/components/schemas/MLTrainingFunction-Multiple'
+        MLTestingFunction:
+          $ref: '#/components/schemas/MLTestingFunction-Multiple'
+        MLEntityRepository:
+          $ref: '#/components/schemas/MLEntityRepository-Multiple'
+        MLUpdateFunction:
+          $ref: '#/components/schemas/MLUpdateFunction-Multiple'
+        AIMLInferenceFunction:
+          $ref: '#/components/schemas/AIMLInferenceFunction-Multiple'     
+
+    ManagedElement-ncO-AiMlNrm:
+      type: object
+      properties:
+        MLTrainingFunction:
+          $ref: '#/components/schemas/MLTrainingFunction-Multiple'
+        MLTestingFunction:
+          $ref: '#/components/schemas/MLTestingFunction-Multiple'
+        MLEntityRepository:
+          $ref: '#/components/schemas/MLEntityRepository-Multiple'
+        MLUpdateFunction:
+          $ref: '#/components/schemas/MLUpdateFunction-Multiple'
+        AIMLInferenceFunction:
+          $ref: '#/components/schemas/AIMLInferenceFunction-Multiple'
+          
+#-------- Definition of concrete IOCs --------------------------------------------
+
+    MLTrainingFunction-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              allOf:
+                - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/ManagedFunction-Attr'
+                - type: object
+                  properties:
+                    mLEntityRepositoryRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/ManagedFunction-ncO'
+        - type: object
+          properties:
+            MLTrainingRequest:
+              $ref: '#/components/schemas/MLTrainingRequest-Multiple'
+            MLTrainingProcess:
+              $ref: '#/components/schemas/MLTrainingProcess-Multiple'
+            MLTrainingReport:
+              $ref: '#/components/schemas/MLTrainingReport-Multiple'
+            ThresholdMonitors:
+              type: string # $ref: 'TS28623_ThresholdMonitorNrm.yaml#/components/schemas/ThresholdMonitor-Multiple'
+
+    MLTrainingRequest-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              allOf:
+                - type: object
+                  properties:
+                    inferenceType:
+                      type: string  
+                    candidateTrainingDataSource:
+                      type: array
+                      items:
+                        type: string
+                    trainingDataQualityScore:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Float'
+                    trainingRequestSource:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                    requestStatus:
+                      $ref: '#/components/schemas/RequestStatus'
+                    expectedRuntimeContext:
+                      $ref: '#/components/schemas/MLContext'
+                    performanceRequirements:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/ModelPerformance'
+                    cancelRequest:
+                      type: boolean
+                    suspendRequest:
+                      type: boolean                  
+                    mLEntityToTrainRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                    mLEntityCoordinationGroupToTrainRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+
+    MLTrainingProcess-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              allOf:
+                - type: object
+                  properties:
+                    priority:
+                      type: integer
+                    terminationConditions:
+                      type: string
+                      enum:
+                        - UPDATED_IN_INFERENCE_FUNCTION
+                        - INFERENCE FUNCTION_TERMINATED
+                        - INFERENCE FUNCTION_UPGRADED
+                        - INFERENCE_CONTEXT_CHANGED
+                    progressStatus:
+                      $ref: '#/components/schemas/ProcessMonitor'
+                    cancelProcess:
+                      type: boolean
+                    suspendProcess:
+                      type: boolean
+                    trainingRequestRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+                    trainingReportRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                    mLEntityRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+
+    MLTrainingReport-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              allOf:
+                - type: object
+                  properties:
+                    areConsumerTrainingDataUsed:
+                      type: string
+                      enum:
+                        - ALL
+                        - PARTIALLY
+                        - NONE
+                    usedConsumerTrainingData:
+                      type: array
+                      items:
+                        type: string
+                    modelconfidenceIndication:
+                      type: integer
+                    modelPerformanceTraining:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/ModelPerformance'
+                    modelPerformanceValidation:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/ModelPerformance'
+                    dataRatioTrainingAndValidation:
+                      type: integer  
+                    areNewTrainingDataUsed:
+                      type: boolean
+                    trainingRequestRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+                    trainingProcessRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                    lastTrainingRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                    mLEnityGeneratedRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                    mLEntityCoordinationGroupGeneratedRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                    mLEntityRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+
+    MLTestingFunction-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              allOf:
+                - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/ManagedFunction-Attr'
+                - type: object
+                  properties:
+                    mLEntityRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/ManagedFunction-ncO'
+        - type: object
+          properties:
+            MLTestingRequest:
+              $ref: '#/components/schemas/MLTestingRequest-Multiple'
+            MLTestingReport:
+              $ref: '#/components/schemas/MLTestingReport-Multiple'
+
+    MLTestingRequest-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              allOf:
+                - type: object
+                  properties:
+                    requestStatus:
+                      $ref: '#/components/schemas/RequestStatus'
+                    cancelRequest:
+                      type: boolean
+                    suspendRequest:
+                      type: boolean                  
+                    mLEntityToTestRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                    mLEntityCoordinationGroupToTestRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+
+    MLTestingReport-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              allOf:
+                - type: object
+                  properties:
+                    modelPerformanceTesting:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/ModelPerformance'
+                    mLTestingResult:
+                      type: string
+                    testingRequestRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+
+    MLEntityLoadingRequest-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              allOf:
+                - type: object
+                  properties:
+                    requestStatus:
+                      $ref: '#/components/schemas/RequestStatus'
+                    cancelRequest:
+                      type: boolean
+                    suspendRequest:
+                      type: boolean        
+                    mLEntityToLoadRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+
+    MLEntityLoadingPolicy-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              allOf:
+                - type: object
+                  properties:
+                    inferenceType:
+                      type: string
+                    policyForLoading:
+                      $ref: '#/components/schemas/AIMLManagementPolicy'
+                    mLEntityRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+
+    MLEntityLoadingProcess-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              allOf:
+                - type: object
+                  properties:
+                    progressStatus:
+                      $ref: '#/components/schemas/ProcessMonitor'
+                    cancelProcess:
+                      type: boolean
+                    suspendProcess:
+                      type: boolean
+                    resumeProcess:
+                      type: boolean
+                    MLEntityLoadingRequestRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                    MLEntityLoadingPolicyRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                    LoadedMLEntityRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+
+    MLEntity-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                mLEntityId:
+                  type: string
+                inferenceType:
+                  type: string
+                mLEntityVersion:
+                  type: string
+                expectedRunTimeContext:
+                  $ref: '#/components/schemas/MLContext'
+                trainingContext:
+                  $ref: '#/components/schemas/MLContext'
+                runTimeContext:
+                  $ref: '#/components/schemas/MLContext'
+                supportedPerformanceIndicators:
+                  $ref: '#/components/schemas/SupportedPerfIndicator'
+                mLCapabilitiesInfoList:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/MLCapabilityInfo'
+                retrainingEventsMonitorRef:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                sourceTrainedMLEntityRef:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+
+    MLEntityRepository-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                mLEntityRef:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+        - type: object
+          properties:
+            MLEntity:
+              $ref: '#/components/schemas/MLEntity-Multiple'
+            MLEntityCoordinationGroup:
+              $ref: '#/components/schemas/MLEntityCoordinationGroup-Multiple'
+    
+    MLEntityCoordinationGroup-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                memberMLEntityRefList:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+
+    ## 7.3a.4.1 IOC
+    MLUpdateFunction-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+             attributes:
+               allOf:
+                 - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/ManagedFunction-Attr'
+                 - type: object
+                   properties:
+                     availMLCapabilityReport:
+                       $ref: '#/components/schemas/AvailMLCapabilityReport'
+                     mLEntityRef:
+                       $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/ManagedFunction-ncO'
+        - type: object
+          properties:
+            MLUpdateRequest:
+              $ref: '#/components/schemas/MLUpdateRequest-Multiple'
+            MLUpdateProcess:
+              $ref: '#/components/schemas/MLUpdateProcess-Multiple'
+            MLUpdateReport:
+              $ref: '#/components/schemas/MLUpdateReport-Multiple'
+
+    MLUpdateRequest-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                performanceGainThreshold:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ModelPerformance'
+                newCapabilityVersionId:
+                  type: array
+                  items:
+                    type: string
+                updateTimeDeadline:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/TimeWindow'
+                requestStatus:
+                  $ref: '#/components/schemas/RequestStatus'
+                mLUpdateReportingPeriod:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/TimeWindow'
+                cancelRequest:
+                  type: boolean
+                suspendRequest:
+                  type: boolean 
+                mLUpdateProcessRef:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+                mLEntityRef:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+
+    MLUpdateProcess-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                progressStatus:
+                  $ref: '#/components/schemas/ProcessMonitor'
+                mLEntityRef:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+                mLUpdateRequestRef:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+                mLUpdateReportRef:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+
+    MLUpdateReport-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                updatedMLCapability:
+                  $ref: '#/components/schemas/AvailMLCapabilityReport'
+                mLEntityRef:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+                mLUpdateProcessRef:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+
+    AIMLInferenceFunction-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              allOf:
+                - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/ManagedFunction-Attr'
+                - type: object
+                  properties:
+                    activationStatus:
+                      type: string
+                      enum:
+                        - ACTIVATED
+                        - DEACTIVATED
+                    managedActivationScope:
+                      $ref: '#/components/schemas/ManagedActivationScope'
+                    usedByFunctionRefList:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+                    mLEntityRef:   # FIXME S5-240805,S5-240917 both define here
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/ManagedFunction-ncO'
+        - type: object
+          properties:
+            AIMLInferenceReport:
+              $ref: '#/components/schemas/AIMLInferenceReport-Multiple'
+
+    AIMLInferenceReport-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties: 
+            attributes:
+              allOf:
+                - type: object
+                  properties:
+                    inferenceOutputs:  #stage 2: attribute table name as: aimlInferenceOutputs  FIXME
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/InferenceOutput'
+                      minItems: 1
+                    mLEntityRef:
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+
+    AIMLInferenceEmulationFunction-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              allOf:
+                - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/ManagedFunction-Attr'
+                - type: object
+                  properties:
+                    AIMLInferenceEmulationReportRefs: # FIXME stage 2 of IOC AIMLInferenceEmulationReport missing
+                      $ref: 'TS28623_ComDefs.yaml#/components/schemas/DnList'
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/ManagedFunction-ncO'
+
+#-------- Definition of JSON arrays for name-contained IOCs ----------------------
+
+    MLTrainingFunction-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLTrainingFunction-Single'
+    MLTrainingRequest-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLTrainingRequest-Single'
+    MLTrainingProcess-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLTrainingProcess-Single'
+    MLTrainingReport-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLTrainingReport-Single'
+    MLEntity-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLEntity-Single'
+    MLEntityRepository-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLEntityRepository-Single'
+    MLEntityCoordinationGroup-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLEntityCoordinationGroup-Single'
+    MLTestingFunction-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLTestingFunction-Single'
+    MLTestingRequest-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLTestingRequest-Single'
+    MLTestingReport-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLTestingRequest-Single'
+    MLEntityLoadingRequest-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLEntityLoadingRequest-Single'
+    MLEntityLoadingProcess-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLEntityLoadingProcess-Single'
+    MLEntityLoadingPolicy-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLEntityLoadingPolicy-Single'
+    MLUpdateFunction-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLUpdateFunction-Single'
+    MLUpdateRequest-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLUpdateRequest-Single'      
+    MLUpdateProcess-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLUpdateProcess-Single'
+    MLUpdateReport-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/MLUpdateReport-Single'
+    AIMLInferenceFunction-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/AIMLInferenceFunction-Single'
+    AIMLInferenceReport-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/AIMLInferenceReport-Single'
+    AIMLInferenceEmulationFunction-Multiple:
+      type: array
+      items:
+        $ref: '#/components/schemas/AIMLInferenceEmulationFunction-Single'
+#-------- Definitions in TS 28.104 for TS 28.532 ---------------------------------
+
+    resources-AiMlNrm:
+      oneOf:
+        - $ref: '#/components/schemas/MLTrainingFunction-Single'
+        - $ref: '#/components/schemas/MLTrainingRequest-Single'
+        - $ref: '#/components/schemas/MLTrainingProcess-Single'
+        - $ref: '#/components/schemas/MLTrainingReport-Single'
+        - $ref: '#/components/schemas/MLEntity-Single'
+        - $ref: '#/components/schemas/MLEntityRepository-Single'
+        - $ref: '#/components/schemas/MLEntityCoordinationGroup-Single'
+        - $ref: '#/components/schemas/MLTestingFunction-Single'
+        - $ref: '#/components/schemas/MLTestingRequest-Single'
+        - $ref: '#/components/schemas/MLTestingReport-Single'
+        - $ref: '#/components/schemas/MLEntityLoadingRequest-Single'
+        - $ref: '#/components/schemas/MLEntityLoadingProcess-Single'
+        - $ref: '#/components/schemas/MLEntityLoadingPolicy-Single'
+
+        - $ref: '#/components/schemas/MLUpdateFunction-Single'
+        - $ref: '#/components/schemas/MLUpdateRequest-Single'
+        - $ref: '#/components/schemas/MLUpdateProcess-Single'
+        - $ref: '#/components/schemas/MLUpdateReport-Single'
+        - $ref: '#/components/schemas/AIMLInferenceFunction-Single'
+        - $ref: '#/components/schemas/AIMLInferenceReport-Single'
+        - $ref: '#/components/schemas/AIMLInferenceEmulationFunction-Single'
