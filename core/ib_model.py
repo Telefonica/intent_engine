@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class IntentModel():
     def __init__(self,intent_dict: dict = {}) -> None:
-        self.__intent : IntentNrm.IntentSingle = IntentNrm.IntentSingle(**intent_dict['Intent'])
+        self.__intent : IntentNrm.IntentMncc = IntentNrm.IntentMncc(**intent_dict['Intent'])
     
     def __str__(self):
         return str(self.__intent)

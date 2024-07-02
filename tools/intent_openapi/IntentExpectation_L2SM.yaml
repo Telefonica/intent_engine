@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: Intent for mncc
+  title: IntentExpectaions for L2SM
   version: 1.0.0
   description: >-
     OAS 3.0.1 definition for a new intentExpectation for L2SM mncc Adaptor

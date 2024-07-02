@@ -154,7 +154,7 @@ class l2sm(abstract_library):
                 logger.debug("Url: %s",int_ctx.contextValueRange)
                 params['url']=int_ctx.contextValueRange
                 params['headers']={'Content-Type': 'application/x-yaml'}
-        return [self.l2sm_schema(),params],"http_handler"
+        return [self.l2sm_schema(),params],"sysout"
 
     def create_ilu(self,ilu_ref):
         return ilu_ref

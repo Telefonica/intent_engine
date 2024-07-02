@@ -1,5 +1,5 @@
 Intent:
-  id: 'new_intent_1'
+  id: 'mncc_5gcmc_1'
   userLabel: 'cloud_continuum'
   intentExpectations:
     - expectationId: '1'

@@ -23,9 +23,10 @@ def get_literal_value(data_model, attr_name):
 Intent = yaml_to_data("intent_engine/inputs/l2sm.yaml")
 # Intent = yaml_to_data("intent_engine/inputs/intent-energy-carbon-efficiency.yaml")
 # print(Intent)
-intent = IntentNrm.IntentSingle(**Intent['Intent'])
+intent = IntentNrm.IntentMncc(**Intent['Intent'])
 # intent=IntentNrm(**(yaml_to_data("intent_engine/inputs/intent-energy-carbon-efficiency.yaml")))
-print(type(intent))
+print(type(intent.intentExpectations[0]))
+# print(intent)
 pprint(intent.dict(exclude_defaults=True))
 
 keywords=[]
@@ -44,6 +45,6 @@ for exp in intent.intentExpectations:
     print(exp.dict())
     IntentNrm.L2SMExpectation(**(exp.dict()))
     assert isinstance(exp,IntentNrm.L2SMExpectation)
-    
 print(keywords)
+print("Ctx: %s",type(intent.intentContexts[0]))
 

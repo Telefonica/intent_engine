@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: Intent for mncc
+  title: IntentExpectaions for 5GCMC
   version: 1.0.0
   description: >-
     OAS 3.0.1 definition for a new intentExpectation for 5G Cumucore mncc Adaptor
@@ -23,13 +23,13 @@ components:
     #-------Definition of the concrete IntentContexts dataType----------------#
     5GCMCIntentContext:
         description: >-
-            Url where the l2sm http server is located
+            Url where the 5g Cumucore API is located
         type: object
         properties:
           contextAttribute:
             type: string
             enum:
-              - l2sm_url
+              - API_url
           contextCondition:
             type: string
             enum:

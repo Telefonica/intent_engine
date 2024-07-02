@@ -26,7 +26,7 @@ components:
       description: >-
         This IOC represents the properties of an Intent driven management information between MnS consumer and MnS producer.  
       allOf:
-      - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'    
+      - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
       - type: object
         properties:
           userLabel:
@@ -36,8 +36,8 @@ components:
             items:
               type: object
               oneOf:
-                - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/L2SMExpectation"
-                - $ref: "IntentExpectation_5GCMC.yaml#/components/schemas/5GCMCExpectation"
+                # - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/L2SMExpectation"
+                # - $ref: "IntentExpectation_5GCMC.yaml#/components/schemas/5GCMCExpectation"
                 # - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/RadioNetworkExpectation"
                 # - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/EdgeServiceSupportExpectation"  
                 # - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/5GCNetworkExpectation"              
@@ -48,10 +48,7 @@ components:
           intentContexts:
             type: array
             items:
-              oneOf:
-                # Future versions ref to cloud_continuum context
-                - $ref : "IntentExpectation_L2SM.yaml#/components/schemas/L2SMIntentContext"
-                - $ref: '#/components/schemas/Context'
+              $ref: '#/components/schemas/Context'
             description: >-
               It describes the list of Context(s) which represents the constraints and conditions that should apply 
               for the entire intent even if there may be specific contexts defined for specific parts of the intent  
@@ -80,6 +77,10 @@ components:
               ExpectationTargets, IntentExpectations and Intent.
           intentReportReference:
             $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+
+            # ------------------Cloud continuum schemas---------------------
+      # - $ref: "IntentMncc.yaml#/components/schemas/Intent-mncc"
+
     IntentReport-Single:
       description: It represents intent report information from MnS producer to MnS consumer. 
       allOf:
