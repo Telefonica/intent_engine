@@ -6,7 +6,7 @@ Intent:
       expectationVerb: 'ENSURE'
       expectationObject:
           objectInstance: 'cbcb208a-d535-434b-bb35-217a64bd516c'
-          objectType: 'NEMO_WORKLOAD'
+          objectType: 'L2SM_Network'
           objectContexts:
             - contextAttribute: 'ServiceStartTime'
               contextCondition: 'IS_EQUAL_TO'

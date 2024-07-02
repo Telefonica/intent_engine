@@ -1,0 +1,51 @@
+Intent:
+  id: 'new_intent_1'
+  userLabel: 'cloud_continuum'
+  intentExpectations:
+    - expectationId: '1'
+      expectationVerb: 'CREATE'
+      expectationObject:
+        objectType: '5g_slice_flow'
+        objectInstance: 'cmc_slice_1'
+        objectContexts:
+          - contextAttribute: 'ip4Address'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: '1.1.1.1'
+          - contextAttribute: 'type'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'BOTH'
+          - contextAttribute: 'portNumber'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: '36000'
+          - contextAttribute: 'portType'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'UDP'
+      expectationTargets:
+        - targetName: 'ulCapacity'
+          targetCondition: 'IS_EQUAL_TO'
+          targetValueRange: '3'
+          targetContexts:
+            - contextAttribute: 'profile'
+              contextCondition: 'IS_EQUAL_TO'
+              contextValueRange: 'audio4k'
+        - targetName: 'dlCapacity'
+          targetCondition: 'IS_EQUAL_TO'
+          targetValueRange: '3'
+          targetContexts:
+            - contextAttribute: 'profile'
+              contextCondition: 'IS_EQUAL_TO'
+              contextValueRange: 'audio4k'
+      expectationContexts:
+        - contextAttribute: 'startime'
+          contextCondition: 'IS_EQUAL_TO'
+          contextValueRange: 20210510T123000-1
+        - contextAttribute: 'stoptime'
+          contextCondition: 'IS_EQUAL_TO'
+          contextValueRange: 20210510T134500-1
+  intentContexts:
+    - contextAttribute: 'API_url'
+      contextCondition: 'IS_EQUAL_TO'
+      contextValueRange: 'localhost'
+  intentPriority: 1
+  observationPeriod: 60
+  intentAdminState: 'ACTIVATED'

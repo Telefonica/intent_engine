@@ -1,0 +1,34 @@
+Intent:
+  id: 'mncc_l2sm_1'
+  userLabel: 'cloud_continuum'
+  intentExpectations:
+    - expectationId: '1'
+      expectationVerb: 'DELIVER'
+      expectationObject: 
+        objectType: 'L2SM_Network'
+        objectInstance: 'spain_network'
+        objectContexts:
+          - contextAttribute: 'network'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'spain_network'
+          - contextAttribute: 'provider_name'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'uc3m'
+          - contextAttribute: 'domain'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'idco.uc3m.es'
+      expectationTargets:
+        - targetName: 'secure'
+          targetCondition: 'IS_EQUAL_TO'
+          targetValueRange: 'accessList'
+          targetContexts:
+            - contextAttribute: 'public_key'
+              contextCondition: 'IS_EQUAL_TO'
+              contextValueRange: 'sxySO0jHw4h1kcqO/LMLDgOo...'
+  intentContexts:
+   - contextAttribute: 'l2sm_url'
+     contextCondition: 'IS_EQUAL_TO'
+     contextValueRange: 'http://192.168.165.168:8080'
+  intentPriority: 1
+  observationPeriod: 60
+  intentAdminState: 'ACTIVATED'

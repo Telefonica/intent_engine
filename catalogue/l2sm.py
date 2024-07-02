@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from intent_engine.catalogue.abstract_library import abstract_library
-from intent_engine.core.ib_object import IB_object
+from intent_engine.core import IntentNrm
+from intent_engine.core.ib_model import IntentModel
 import logging
 
 logger = logging.getLogger(__name__)
@@ -49,7 +50,10 @@ class l2sm(abstract_library):
         self.__checker={}
         self.__interface={}
         self.__functions=[]
-        self.__decision_tree={"l2sm_deployment":"l2sm"}
+        self.__decision_tree={"cloud_continuum":{
+                    "DELIVER":{"L2SM_Network":"l2sm"}
+                        }
+                    }
         self.__params={"node_name":"",
                        "network":"",
                        "provider_name":"",
@@ -69,10 +73,10 @@ class l2sm(abstract_library):
         """
         return self.__isILU
     
-    def classifier(self,ib_object:IB_object):
+    def classifier(self, ib_object : IntentModel):
         return []
     
-    def checker(self,intent : IB_object):
+    def checker(self,intent : IntentModel):
         if intent.get_name() == "l2sm_deployment":
             logger.debug("is l2sm")
             return True
@@ -80,8 +84,13 @@ class l2sm(abstract_library):
     
     def get_decision_tree(self):
         return self.__decision_tree
+    
+    def generate_subintent(self, intent : IntentModel):
+        subintent=intent
+        
+        return subintent
 
-    def translator(self,subintent : IB_object) -> tuple[list , str]:
+    def translator(self,subintent : IntentModel) -> tuple[list , str]:
         """
         This functions translate an atomic intent into a CRD L2S-M software
         can understand. This function will decide which functionality (deploy,
@@ -91,48 +100,61 @@ class l2sm(abstract_library):
         direct way.
         """
         # TODO: los subintents direan si hay que desplegar/migrar/eliminar
+        intent = subintent.get_intent()
+        params={
+
+        }
         logger.info("Translating L2S-M...")
         logger.debug("debug L2S-M...")
-        for exp in subintent.get_expectations():
-            exp_verb=exp.get_verb()
+        for exp in intent.intentExpectations:
+            exp_verb=exp.expectationVerb
             logger.debug("expectation case %s",exp_verb)
-            match exp_verb:
-                case "request":
-                    exp_obj=exp.get_object()
-                    logger.debug("request case obj: %s",exp_obj)
-                    exp_type=exp_obj.get_type()
+            # assert isinstance(exp, IntentNrm.L2SMExpectation)
+            logger.debug("Expectation type: %s", type(exp))
+            IntentNrm.L2SMExpectation(**(exp.dict()))
+            match exp_verb.value:
+                case "DELIVER":
+                    exp_obj=exp.expectationObject
+                    logger.debug("DELIVER case obj: %s",exp_obj)
+                    exp_type=exp_obj.objectType.value
                     match exp_type:
-                        case "l2sm-network":
-                            for obj_ctx in exp_obj.get_contexts():
+                        case "L2SM_Network":
+                            for obj_ctx in exp_obj.objectContexts:
                                 # Loop ctx inside obj
                                 logger.debug("objectctx case %s: ",obj_ctx)
-                                att=obj_ctx.get_attribute()
+                                att=obj_ctx.contextAttribute.value
+                                logger.debug("attobjectctx case %s: ",att)
                                 match att:
                                     case "network":
                                         logger.debug("network case")
-                                        self.__params['network']=obj_ctx.get_value_range()
+                                        self.__params['network']=obj_ctx.contextValueRange
                                     case "provider_name":
                                         logger.debug("provider case")
-                                        self.__params['provider_name']=obj_ctx.get_value_range()
+                                        self.__params['provider_name']=obj_ctx.contextValueRange
                                     case "domain":
                                         logger.debug("domain case")
-                                        self.__params['provider_domain']=obj_ctx.get_value_range()
-                    for trg_ctx in exp.get_target():
+                                        self.__params['provider_domain']=obj_ctx.contextValueRange
+                    for trg_ctx in exp.expectationTargets:
                         # Loop trg inside exp
-                        att=trg_ctx.get_attribute()
+                        att=trg_ctx.targetName
                         match att:
-                            case "signature":
+                            case "secure":
                                 logger.debug("signature case")
-                        trg_ctx=trg_ctx.get_context()
-                        if trg_ctx:
-                            for ctx in trg_ctx:
-                                # Loop ctx inside trg inside exp
-                                att=ctx.get_attribute()
-                                match att:
-                                    case "signature":
-                                        logger.debug("signature_trg_ctx case")
-
-        return self.l2sm_schema(),"http_handler"
+                                trg_ctxs=trg_ctx.targetContexts
+                                if trg_ctxs:
+                                    for trg_ctx in trg_ctxs:
+                                        # Loop ctx inside trg inside exp
+                                        att=trg_ctx.contextAttribute
+                                        match att:
+                                            case "public_key":
+                                                logger.debug("signature_trg_ctx case")
+               
+        for int_ctx in intent.intentContexts:
+            if isinstance(int_ctx,IntentNrm.L2SMIntentContext):
+                logger.debug("Url: %s",int_ctx.contextValueRange)
+                params['url']=int_ctx.contextValueRange
+                params['headers']={'Content-Type': 'application/x-yaml'}
+        return [self.l2sm_schema(),params],"http_handler"
 
     def create_ilu(self,ilu_ref):
         return ilu_ref

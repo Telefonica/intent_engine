@@ -1,0 +1,185 @@
+openapi: 3.0.1
+info:
+  title: Intent for mncc
+  version: 1.0.0
+  description: >-
+    OAS 3.0.1 definition for a new intentExpectation for 5G Cumucore mncc Adaptor
+paths: {}
+components:
+  schemas:
+    5GCMCExpectation:
+      description: >-
+        Different expectations for 5G Cumucore mncc adaptor
+      allOf:
+        - $ref: "#/components/schemas/New5GFlowExpectation"
+        # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"
+    intentContexts:
+      description: >-
+        Cloud_continuum context specific for name-containe
+      type: array
+      items:
+        $ref : "#/components/schemas/5GCMCIntentContext"
+
+    #-------Definition of the concrete IntentContexts dataType----------------#
+    5GCMCIntentContext:
+        description: >-
+            Url where the l2sm http server is located
+        type: object
+        properties:
+          contextAttribute:
+            type: string
+            enum:
+              - l2sm_url
+          contextCondition:
+            type: string
+            enum:
+              - IS_EQUAL_TO
+          contextValueRange:
+            type: string
+    #-------Definition of the concrete IntentExpectations dataType----------------#
+    New5GFlowExpectation:
+        type: object
+        properties:
+          expectationId:
+            type: string
+          expectationVerb:
+            type: string
+            enum:
+              - CREATE
+          expectationObject:
+            type: object
+            properties:
+              objectType:
+                type: string
+                enum:
+                  - 5g_slice_flow
+              objectInstance:
+                type: string
+              objectContexts:
+                type: array
+                items:
+                  type: object
+                  oneOf:
+                    - $ref: "#/components/schemas/5gcmcIPv4Context"
+                    - $ref: "#/components/schemas/5gcmcTypeContext"
+                    - $ref: "#/components/schemas/5gcmcPortNumberContext"
+                    - $ref: "#/components/schemas/5gcmcPortTypeContext"
+                    # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/Context"
+          expectationTargets:
+            type: array
+            items:
+              type: object
+              allOf:
+                -  $ref: "#/components/schemas/5gcmcmCapacityTarget"
+          
+          expectationContexts:
+            type: array
+            items:
+              type: object
+              allOf:
+                -  $ref: "#/components/schemas/5gcmctimeContext"
+
+              #-------Definition of the concrete ExpectationContext dataType----------------#
+    
+    5gcmctimeContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - startime
+            - stoptime
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: object
+          $ref: "TS28623_ComDefs.yaml#/components/schemas/DateTime"
+              #-------Definition of the concrete ObjectContext dataType----------------#
+    
+    5gcmcIPv4Context:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - ip4Address
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    5gcmcTypeContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - type
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    5gcmcPortNumberContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - portNumber
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    5gcmcPortTypeContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - portType
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    5gcmcProfileContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - profile
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+          #-------Definition of the concrete ExpectationTarget dataType----------------#
+    5gcmcmCapacityTarget:
+      type: object
+      properties:
+        targetName:
+          type: string
+          enum:
+            - ulCapacity
+            - dlCapacity
+        targetCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        targetValueRange:
+          type: string
+        targetContexts:
+          type: array
+          oneOf:
+            -  $ref: '#/components/schemas/5gcmcProfileContext'
+        

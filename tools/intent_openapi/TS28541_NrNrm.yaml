@@ -2053,12 +2053,12 @@ components:
 
     NRFrequency-Multiple:
       type: array
-      minItems: 1
+      # minItems: 1
       items:
         $ref: '#/components/schemas/NRFrequency-Single'
     EUtranFrequency-Multiple:
       type: array
-      minItems: 1
+      # minItems: 1
       items:
         $ref: '#/components/schemas/EUtranFrequency-Single'
 

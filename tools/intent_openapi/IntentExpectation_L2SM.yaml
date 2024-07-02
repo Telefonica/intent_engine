@@ -1,0 +1,146 @@
+openapi: 3.0.1
+info:
+  title: Intent for mncc
+  version: 1.0.0
+  description: >-
+    OAS 3.0.1 definition for a new intentExpectation for L2SM mncc Adaptor
+paths: {}
+components:
+  schemas:
+    L2SMExpectation:
+      description: >-
+        Different expectations for L2SM mncc adaptor
+      allOf:
+        - $ref: "#/components/schemas/NewNetworkExpectation"
+        # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"
+    intentContexts:
+      description: >-
+        Cloud_continuum context specific for name-containe
+      type: array
+      items:
+        $ref : "#/components/schemas/L2SMIntentContext"
+
+    #-------Definition of the concrete IntentContexts dataType----------------#
+    L2SMIntentContext:
+        description: >-
+            Url where the l2sm http server is located
+        type: object
+        properties:
+          contextAttribute:
+            type: string
+            enum:
+              - l2sm_url
+          contextCondition:
+            type: string
+            enum:
+              - IS_EQUAL_TO
+          contextValueRange:
+            type: string
+    #-------Definition of the concrete IntentExpectations dataType----------------#
+    NewNetworkExpectation:
+        type: object
+        properties:
+          expectationId:
+            type: string
+          expectationVerb:
+            type: string
+            enum:
+              - DELIVER
+          expectationObject:
+            type: object
+            properties:
+              objectType:
+                type: string
+                enum:
+                  - L2SM_Network
+              objectInstance:
+                type: string
+              objectContexts:
+                type: array
+                items:
+                  type: object
+                  oneOf:
+                    - $ref: "#/components/schemas/l2smNetworkContext"
+                    - $ref: "#/components/schemas/l2smProviderContext"
+                    - $ref: "#/components/schemas/l2smDomainContext"
+                    # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/Context"
+          expectationTargets:
+            type: array
+            items:
+              type: object
+              allOf:
+                -  $ref: "#/components/schemas/secureTarget"
+
+                  #-------Definition of the concrete ObjectContext dataType----------------#
+    
+    l2smNetworkContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - network
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    l2smProviderContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - provider_name
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    l2smDomainContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - domain
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    securedKeyContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - public_key
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+          #-------Definition of the concrete ExpectationTarget dataType----------------#
+    secureTarget:
+      type: object
+      properties:
+        targetName:
+          type: string
+          enum:
+            - secure
+        targetCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        targetValueRange:
+          type: string
+        targetContexts:
+          type: array
+          oneOf:
+            -  $ref: '#/components/schemas/securedKeyContext'
+        

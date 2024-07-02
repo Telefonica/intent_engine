@@ -13,7 +13,10 @@
 # limitations under the License.
 import json
 from queue import Queue
+
+from devtools import pprint
 from intent_engine.core import ib_object, yamlParser
+from intent_engine.core.ib_model import IntentModel
 from intent_engine.core import importer
 from intent_engine.core.intent_classifier import Classifier
 import logging
@@ -63,10 +66,11 @@ def core():
 
     while True:
         pop=buffer.get()
-        intent=ib_object.IB_object(pop)
+        intent: IntentModel = IntentModel(pop)
+        pprint(intent.get_dict())
         # ------- Intent classifier -------
         print("------- Intent classifier -------")
-        logger.debug("Intent %s",json.dumps(intent.get_dict(),indent=10))
+        # logger.debug("Intent %s",intent.get_dict())
         # o=[logger.debug("Expectation %s",json.dumps(s.get_dict(),indent=10)) for s in intent.get_expectations()]
         classifier=Classifier([m['instance'] for m in module_instances])
         subintents,ill=classifier.classify(intent)

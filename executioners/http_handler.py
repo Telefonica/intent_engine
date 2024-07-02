@@ -38,7 +38,8 @@ class http_handler():
         headers=params['headers']
         # url = 'http://192.168.165.168:8080'
         # headers = {'Content-Type': 'application/x-yaml'}
-        print("Sending to http server: %s",json.dumps(data))
+        print("Sending to http server data: %s",json.dumps(data))
+        print("Sending to http server headers: %s %s",url,headers)
         session = requests.Session()
         session.auth = (user, password)
         if(headers['Content-Type'] == 'application/x-yaml'):

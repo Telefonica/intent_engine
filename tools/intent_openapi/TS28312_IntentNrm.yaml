@@ -36,17 +36,22 @@ components:
             items:
               type: object
               oneOf:
-                - $ref: "#/components/schemas/IntentExpectation"
-                - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/RadioNetworkExpectation"
-                - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/EdgeServiceSupportExpectation"  
-                - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/5GCNetworkExpectation"              
-                - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/RadioServiceExpectation"                
+                - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/L2SMExpectation"
+                - $ref: "IntentExpectation_5GCMC.yaml#/components/schemas/5GCMCExpectation"
+                # - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/RadioNetworkExpectation"
+                # - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/EdgeServiceSupportExpectation"  
+                # - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/5GCNetworkExpectation"              
+                # - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/RadioServiceExpectation"     
+                - $ref: "#/components/schemas/IntentExpectation"           
           contextSelectivity:
             $ref: "#/components/schemas/Selectivity" 
           intentContexts:
             type: array
             items:
-              $ref: '#/components/schemas/Context'
+              oneOf:
+                # Future versions ref to cloud_continuum context
+                - $ref : "IntentExpectation_L2SM.yaml#/components/schemas/L2SMIntentContext"
+                - $ref: '#/components/schemas/Context'
             description: >-
               It describes the list of Context(s) which represents the constraints and conditions that should apply 
               for the entire intent even if there may be specific contexts defined for specific parts of the intent  
@@ -153,6 +158,7 @@ components:
             - RAN_SubNetwork  #value for Radio Network Expectation--#
             - Edge_Service_Support  #value for Edge Service Support Expectation--#
             - 5GC_SubNetwork  #value for 5GC Network Expectation--#
+            - L2SM_Network
         objectInstance:
           $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
         contextSelectivity:
@@ -160,7 +166,9 @@ components:
         objectContexts:
           type: array
           items:
-            $ref: '#/components/schemas/Context'
+            oneOf:
+              - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/L2SMIntentContext"
+              - $ref: '#/components/schemas/Context'
           description: >-
            It describes the list of Context(s) which represents the constraints and conditions to be 
            used as filter information to identify the object(s) to which a given intentExpectation should apply.
@@ -270,7 +278,7 @@ components:
           minimum: 0
           maximum: 255  
         sNssai: 
-          $ref: 'TS28541_NrNrm.yaml#/components/schemas/Snssai'                      
+          type: string # $ref: 'TS28541_NrNrm.yaml#/components/schemas/Snssai'                      
    #-------Definition of the generic dataType --------------#    
    
    #-------Definition of the generic ExpectationTarget dataType----------#     
