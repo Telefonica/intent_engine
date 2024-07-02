@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 class IntentModel():
     def __init__(self,intent_dict: dict = {}) -> None:
         self.__intent : IntentNrm.IntentMncc = IntentNrm.IntentMncc(**intent_dict['Intent'])
+        logger.debug("Schema Type: %s",type(self.__intent.intentExpectations[0]))
     
     def __str__(self):
         return str(self.__intent)

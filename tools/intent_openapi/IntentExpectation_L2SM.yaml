@@ -7,10 +7,11 @@ info:
 paths: {}
 components:
   schemas:
-    L2SMExpectation:
+    L2SMExpectations:
       description: >-
         Different expectations for L2SM mncc adaptor
-      allOf:
+      type: object
+      oneOf:
         - $ref: "#/components/schemas/NewNetworkExpectation"
         # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"
     intentContexts:
@@ -38,6 +39,8 @@ components:
             type: string
     #-------Definition of the concrete IntentExpectations dataType----------------#
     NewNetworkExpectation:
+        description: >-
+            Expectation to request a new l2sm network.
         type: object
         properties:
           expectationId:

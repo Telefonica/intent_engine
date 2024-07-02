@@ -34,8 +34,9 @@ components:
           intentExpectations:
             type: array
             items:
+              # $ref: "#/components/schemas/IntentExpectation"
               type: object
-              oneOf:
+              allOf:
                 # - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/L2SMExpectation"
                 # - $ref: "IntentExpectation_5GCMC.yaml#/components/schemas/5GCMCExpectation"
                 # - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/RadioNetworkExpectation"
@@ -159,7 +160,7 @@ components:
             - RAN_SubNetwork  #value for Radio Network Expectation--#
             - Edge_Service_Support  #value for Edge Service Support Expectation--#
             - 5GC_SubNetwork  #value for 5GC Network Expectation--#
-            - L2SM_Network
+            # - L2SM_Network
         objectInstance:
           $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
         contextSelectivity:

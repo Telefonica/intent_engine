@@ -7,11 +7,13 @@ info:
 paths: {}
 components:
   schemas:
-    5GCMCExpectation:
-      description: >-
-        Different expectations for 5G Cumucore mncc adaptor
-      allOf:
-        - $ref: "#/components/schemas/New5GFlowExpectation"
+    5GCMCExpectations:
+      $ref: "#/components/schemas/New5GFlowExpectation"
+      # description: >-
+      #   Different expectations for 5G Cumucore mncc adaptor
+      # type: object
+      # oneOf:
+      #   - $ref: "#/components/schemas/New5GFlowExpectation"
         # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"
     intentContexts:
       description: >-
@@ -38,6 +40,8 @@ components:
             type: string
     #-------Definition of the concrete IntentExpectations dataType----------------#
     New5GFlowExpectation:
+        description: >-
+            Expectation to create a new flow in CMC 5G adaptor
         type: object
         properties:
           expectationId:

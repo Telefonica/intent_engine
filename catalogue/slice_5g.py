@@ -14,6 +14,7 @@
 import logging
 from abc import ABC, abstractmethod
 
+from ib_model import IntentModel
 from intent_engine.catalogue.abstract_library import abstract_library
 from intent_engine.core.ib_object import IB_object
 
@@ -67,36 +68,37 @@ class slice_5g(abstract_library):
         """
         # Careful, example for default parameters to Cumucore API
         params={
-  "SUPI": "XYZ123",
-  "time": {
-    "type": "START-STOP",
-    "startime": "20210510T123000-2000",
-    "stoptime": "20210510T134500-2000"
-  },
-  "profileName": "audio128k",
-  "ulCapacity": "0.2",
-  "dlCapacity": "0.2",
-  "ip4Filters": [
-    {
-      "type": "BOTH",
-      "ip4Address": "192.168.10.10",
-      "portType": "TCP",
-      "portNumber": "1000-1005"
-    }
-  ]
-}
+            "SUPI": "XYZ123",
+            "time": {
+                "type": "START-STOP",
+                "startime": "20210510T123000-2000",
+                "stoptime": "20210510T134500-2000"
+            },
+            "profileName": "audio128k",
+            "ulCapacity": "0.2",
+            "dlCapacity": "0.2",
+            "ip4Filters": [
+                {
+                "type": "BOTH",
+                "ip4Address": "192.168.10.10",
+                "portType": "TCP",
+                "portNumber": "1000-1005"
+                }
+            ]
+            }
         decision_tree={
             "cloud_continuum" : {
-               "nemo_deployment":{
-                   "5g_slice_flow":{
-                       "create":["slice_5g"]}
-                    },
-                "mininet": "mininet_controller"
-                }
+               "CREATE":{
+                   "5g_slice_flow":"slice_5g"}    
+               }
         }
         super().__init__(module_name="slice_5g",isILU=False,params=params,decision_tree=decision_tree)
         self.__params=params
- 
+    
+    def generate_subintent(self, intent : IntentModel):
+        subintent=intent
+        return subintent
+
     def translator(self,subintent : IB_object)-> tuple[list , str]:
         exec_params=[]
         logger.info("Translating slice_5g...")

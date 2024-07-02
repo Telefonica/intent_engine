@@ -87,7 +87,6 @@ class l2sm(abstract_library):
     
     def generate_subintent(self, intent : IntentModel):
         subintent=intent
-        
         return subintent
 
     def translator(self,subintent : IntentModel) -> tuple[list , str]:
@@ -111,9 +110,9 @@ class l2sm(abstract_library):
             logger.debug("expectation case %s",exp_verb)
             # assert isinstance(exp, IntentNrm.L2SMExpectation)
             logger.debug("Expectation type: %s", type(exp))
-            IntentNrm.L2SMExpectation(**(exp.dict()))
             match exp_verb.value:
                 case "DELIVER":
+                    IntentNrm.NewNetworkExpectation(**(exp.dict()))
                     exp_obj=exp.expectationObject
                     logger.debug("DELIVER case obj: %s",exp_obj)
                     exp_type=exp_obj.objectType.value

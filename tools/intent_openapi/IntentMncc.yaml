@@ -17,12 +17,16 @@ components:
             userLabel:
               type: string
             intentExpectations:
+              description: >-
+                     Expectations for all the mncc adaptors
               type: array
               items:
-                type: object
+                # type: object
                 oneOf:
-                  - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/L2SMExpectation"
-                  - $ref: "IntentExpectation_5GCMC.yaml#/components/schemas/5GCMCExpectation"
+                  - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/NewNetworkExpectation"
+                  - $ref: "IntentExpectation_5GCMC.yaml#/components/schemas/New5GFlowExpectation"
+                  # - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/L2SMExpectations"
+                  # - $ref: "IntentExpectation_5GCMC.yaml#/components/schemas/5GCMCExpectations"
                   # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"       
             intentContexts:
               type: array

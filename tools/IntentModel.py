@@ -28,7 +28,6 @@ intent = IntentNrm.IntentMncc(**Intent['Intent'])
 print(type(intent.intentExpectations[0]))
 # print(intent)
 pprint(intent.dict(exclude_defaults=True))
-
 keywords=[]
 keywords.append(intent.userLabel)
 # intent_expectations: List[IntentNrm.IntentExpectation] = self.__intent.intentExpectations
@@ -43,8 +42,17 @@ for exp in intent.intentExpectations:
     # print(exp.expectationVerb)
     # print(get_literal_value(IntentNrm.IntentSingle,exp.expectationVerb))
     print(exp.dict())
-    IntentNrm.L2SMExpectation(**(exp.dict()))
-    assert isinstance(exp,IntentNrm.L2SMExpectation)
+    
+    try:
+        IntentNrm.NewNetworkExpectation(**(exp.dict()))
+        isinstance(exp,IntentNrm.NewNetworkExpectation)
+    except:
+        pass
+    try:
+        IntentNrm.New5GFlowExpectation(**(exp.dict()))
+        isinstance(exp,IntentNrm.New5GFlowExpectation)
+    except:
+        pass
 print(keywords)
 print("Ctx: %s",type(intent.intentContexts[0]))
 

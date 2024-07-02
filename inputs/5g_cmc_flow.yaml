@@ -38,10 +38,10 @@ Intent:
       expectationContexts:
         - contextAttribute: 'startime'
           contextCondition: 'IS_EQUAL_TO'
-          contextValueRange: 20210510T123000-1
+          contextValueRange: 2021-05-10T12:30:00-1
         - contextAttribute: 'stoptime'
           contextCondition: 'IS_EQUAL_TO'
-          contextValueRange: 20210510T134500-1
+          contextValueRange: 2021-05-10T13:45:00-1
   intentContexts:
     - contextAttribute: 'API_url'
       contextCondition: 'IS_EQUAL_TO'
