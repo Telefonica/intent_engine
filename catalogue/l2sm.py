@@ -87,6 +87,7 @@ class l2sm(abstract_library):
     
     def generate_subintent(self, intent : IntentModel):
         subintent=intent
+        logger.debug("Generate subintent model type: %s",type(subintent))
         return subintent
 
     def translator(self,subintent : IntentModel) -> tuple[list , str]:
@@ -99,10 +100,10 @@ class l2sm(abstract_library):
         direct way.
         """
         # TODO: los subintents direan si hay que desplegar/migrar/eliminar
+        # logger.debug("intent model: %s",subintent)
+        logger.debug("Intent model type: %s",type(subintent))
         intent = subintent.get_intent()
-        params={
-
-        }
+        params={}
         logger.info("Translating L2S-M...")
         logger.debug("debug L2S-M...")
         for exp in intent.intentExpectations:

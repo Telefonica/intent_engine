@@ -13,7 +13,7 @@
 # limitations under the License.
 import logging
 from intent_engine.catalogue.abstract_library import abstract_library
-from intent_engine.core.ib_object import IB_object
+from intent_engine.core.ib_model import IntentModel
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class tfs_controller(abstract_library):
         super().__init__(module_name="tfs_controller",isILU=True,params=params,decision_tree=decision_tree)
         self.__params=params
     
-    def translator(self,subintent : IB_object) -> tuple[list , str]:
+    def translator(self,subintent : IntentModel) -> tuple[list , str]:
         # TODO: cambiar el connect_type dependiendo del intent de  tfs session
         exec_params=[]
         params={}

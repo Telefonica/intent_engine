@@ -14,7 +14,7 @@
 import logging
 from abc import ABC, abstractmethod
 
-from intent_engine.core.ib_object import IB_object
+from intent_engine.core.ib_model import IntentModel
 
 logger = logging.getLogger(__name__)
 
@@ -55,5 +55,5 @@ class abstract_library(ABC):
         return self.__isILU
  
     @abstractmethod
-    def translator(self,subintent : IB_object)-> tuple[list , str]:
+    def translator(self,subintent : IntentModel)-> tuple[list , str]:
         pass

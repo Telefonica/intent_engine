@@ -15,7 +15,7 @@ import json
 from queue import Queue
 
 from devtools import pprint
-from intent_engine.core import ib_object, yamlParser
+from intent_engine.core import yamlParser
 from intent_engine.core.ib_model import IntentModel
 from intent_engine.core import importer
 from intent_engine.core.intent_classifier import Classifier
@@ -76,7 +76,7 @@ def core():
         subintents,ill=classifier.classify(intent)
         logger.info("ILL : %s Subintent number: %d",ill, len(subintents))
         o=[logger.info("ILL : %s Subintent : %s",ill, subintent) for subintent in subintents]
-
+        o=[logger.info("Type: %s", type(subintent)) for subintent in subintents]
         # ------ Intent translator -------
         for i,ilu in enumerate(ill):
             print("------ Intent translator -------")

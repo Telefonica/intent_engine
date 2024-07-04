@@ -14,7 +14,7 @@
 
 import logging
 from intent_engine.catalogue.abstract_library import abstract_library
-from intent_engine.core.ib_object import IB_object
+from intent_engine.core.ib_model import IntentModel
 
 logger = logging.getLogger(__name__)
 

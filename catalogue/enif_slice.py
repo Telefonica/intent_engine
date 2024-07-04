@@ -15,7 +15,7 @@
 import ast
 import logging
 from intent_engine.catalogue.abstract_library import abstract_library
-from intent_engine.core.ib_object import IB_object, Object_expectation
+from intent_engine.core.ib_model import IntentModel
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +73,7 @@ class enif_slice(abstract_library):
         super().__init__(module_name="enif_slice",isILU=True,params=params,decision_tree=decision_tree)
         self.__params=params
     
-    def translator(self,subintent : IB_object) -> tuple[list , str]:
+    def translator(self,subintent : IntentModel) -> tuple[list , str]:
         exec_params=[]
         params={}
         instances={}
@@ -216,13 +216,13 @@ class enif_slice(abstract_library):
 
         return [self.slice_schema(instances),params],"sysout"
 
-    def generate_subintent(self,intent:IB_object) -> IB_object:
+    def generate_subintent(self,intent:IntentModel) -> IntentModel:
         """
         Return sub intents of a slice in a green context.
         """
         logger.debug("Simple enif_slice")
         logger.debug("With intent: %s", intent.get_name())
-        subintent=IB_object()
+        subintent=IntentModel()
         subintent.set_name(intent.get_name())
         subintent.set_context(intent.get_context())
         for exp in intent.get_expectations():

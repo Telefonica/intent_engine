@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from intent_engine.core.ib_object import IB_object
+from intent_engine.core.ib_model import IntentModel
 
 class nemo():
     """
@@ -53,8 +53,9 @@ class nemo():
                                     },
                                     "modify":"l2sm",
                                     "migrate":"sdnc l2sm"
+                                    }
                                 }
-                            }}
+                            }
 
     def get_name(self):
         return self.__module_name
@@ -64,11 +65,11 @@ class nemo():
     def isILU(self):
         return self.__isILU
     
-    def generate_subintent(self,intent:IB_object):
+    def generate_subintent(self,intent:IntentModel):
         intent.set_name("l2sm_deploy")
         return intent
 
-    def checker(self,intent:IB_object):
+    def checker(self,intent:IntentModel):
         print("checker intent get name: ",intent.get_context().get_name())
         if intent.get_context().get_name() == "nemo_deployment":
             print("is NEMO")

@@ -20,7 +20,7 @@ def get_literal_value(data_model, attr_name):
     return get_args(data_model.model_fields[attr_name].annotation)
 # print(**(yaml_to_data("intent_engine/inputs/intent-energy-carbon-efficiency.yaml")))
 # intentsingle = IntentExpectations.IntentSingle( **(yaml_to_data("intent_engine/inputs/intent-energy-carbon-efficiency.yaml")))
-Intent = yaml_to_data("intent_engine/inputs/l2sm.yaml")
+Intent = yaml_to_data("intent_engine/inputs/5g_cmc_flow.yaml")
 # Intent = yaml_to_data("intent_engine/inputs/intent-energy-carbon-efficiency.yaml")
 # print(Intent)
 intent = IntentNrm.IntentMncc(**Intent['Intent'])

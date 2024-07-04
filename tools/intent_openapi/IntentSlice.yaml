@@ -1,0 +1,19 @@
+openapi: 3.0.1
+info:
+  title: Intent for slice
+  version: 1.0.0
+  description: >-
+    OAS 3.0.1 definition for a new slice , NOT AN INTENT YET
+paths: {}
+components:
+  schemas:
+    Intent-slice:
+      description: >-
+        This set of parameters represent the possible request for a 3gpp slice. NOT INTENT YET
+      oneOf:
+      - $ref: "TS28541_SliceNrm.yaml#/components/schemas/ServiceProfile"
+      - $ref: "TS28541_SliceNrm.yaml#/components/schemas/SliceProfile"
+      - $ref: "TS28541_SliceNrm.yaml#/components/schemas/TopSliceSubnetProfile"
+      - $ref: "TS28541_SliceNrm.yaml#/components/schemas/RANSliceSubnetProfile"
+      - $ref: "TS28541_SliceNrm.yaml#/components/schemas/MnS"
+      - $ref: "TS28541_SliceNrm.yaml#/components/schemas/NetworkSliceSubnetProviderCapabilities-Single"

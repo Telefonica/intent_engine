@@ -14,12 +14,16 @@
 from typing import List
 import logging
 from intent_engine.core import IntentNrm
+from pydantic import ValidationError
 logger = logging.getLogger(__name__)
 
 class IntentModel():
     def __init__(self,intent_dict: dict = {}) -> None:
-        self.__intent : IntentNrm.IntentMncc = IntentNrm.IntentMncc(**intent_dict['Intent'])
-        logger.debug("Schema Type: %s",type(self.__intent.intentExpectations[0]))
+        try:
+            self.__intent : IntentNrm.IntentMncc = IntentNrm.IntentMncc(**intent_dict['Intent'])
+        except ValidationError as exc:
+            logger.warning("Assurance error %s", exc)
+        logger.debug("Schema Type Expectation: %s",type(self.__intent.intentExpectations[0]))
     
     def __str__(self):
         return str(self.__intent)

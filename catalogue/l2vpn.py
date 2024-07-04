@@ -13,7 +13,7 @@
 # limitations under the License.
 import logging
 from intent_engine.catalogue.abstract_library import abstract_library
-from intent_engine.core.ib_object import IB_object
+from intent_engine.core.ib_model import IntentModel
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ class l2vpn(abstract_library):
         super().__init__(module_name="l2vpn",isILU=False,params=params,decision_tree=decision_tree)
         self.__params=params
     
-    def translator(self,subintent : IB_object) -> tuple[list , str]:
+    def translator(self,subintent : IntentModel) -> tuple[list , str]:
         # TODO: cambiar el connect_type dependiendo del intent de  tfs session
         exec_params=[]
         logger.info("Translating L2VPN...")
@@ -116,7 +116,7 @@ class l2vpn(abstract_library):
         blue_prints=[{},{}]
         return blue_prints
     
-    def create_ilu(self,intent : IB_object) -> IB_object:
+    def create_ilu(self,intent : IntentModel) -> IntentModel:
         # TODO: puede que esto no tenga sentido porq el classifier debería classificarlo como 
         # tfs_controller?    
 

@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
+from typing import List
 from schema import Schema, And, Use, Optional, SchemaError
-from .ib_object import IB_object
+from .ib_model import IntentModel
 import jsonpickle
 import logging
 logger = logging.getLogger(__name__)
@@ -41,17 +42,18 @@ class Classifier():
             print("is leave :",obj)
             leaves.append(obj)
 
-    def classify(self,intent : IB_object):
+    def classify(self,intent_model : IntentModel) -> tuple[list[IntentModel],list]:
         """
         When an intent is recived in the intent_core .
         TODO: get intent blueprint to create subintents
         """
         ill=[]
-        sub_intents=[]
+        sub_intents:list[IntentModel]=[]
         translators=[]
+        intent=intent_model
         for tree in self.__trees:
             # get all libraries capable of translate the intent
-            self.find_in_tree(intent.get_keywords(),tree,ill)
+            self.find_in_tree(intent_model.get_keywords(),tree,ill)
         # unique list in case of duplicities
         unique_ill=list(set(ill))
         logger.debug("unique list: %s",unique_ill)
@@ -98,6 +100,6 @@ class Classifier():
         except SchemaError:
             return False
     
-    def filter(self, intent :IB_object):
+    def filter(self, intent :IntentModel):
 
         return intent

@@ -14,8 +14,7 @@
 
 import logging
 from intent_engine.catalogue.abstract_library import abstract_library
-from intent_engine.core.ib_object import IB_object
-from intent_engine.core.ib_object import Object_expectation
+from intent_engine.core.ib_model import IntentModel
 
 logger = logging.getLogger(__name__)
 
@@ -38,13 +37,13 @@ class green_bssf(abstract_library):
         self.__params=params
     
 
-    def generate_subintent(self,intent:IB_object) -> IB_object:
+    def generate_subintent(self,intent:IntentModel) -> IntentModel:
         """
         Return sub intents of a slice in a green context.
         Also return library to porcess the subintent, as green_bssf is not ilu,
         this means have no final tranlation with a technology.
         """
-        subintent=IB_object()
+        subintent=IntentModel()
         ilu=""
         subintent.set_name(intent.get_name())
         subintent.set_context(intent.get_context())
@@ -67,7 +66,7 @@ class green_bssf(abstract_library):
                     logger.debug("generated subintent green->ENIF:%s",subintent)
         return subintent
     
-    def translator(self,subintent : IB_object)-> tuple[list , str]:
+    def translator(self,subintent : IntentModel)-> tuple[list , str]:
         exec_params=[]
         self.__params={
             "Constrain type":"green"

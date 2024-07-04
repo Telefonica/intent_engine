@@ -73,14 +73,14 @@ components:
             type: array
             items:
               type: object
-              allOf:
+              oneOf:
                 -  $ref: "#/components/schemas/5gcmcmCapacityTarget"
           
           expectationContexts:
             type: array
             items:
               type: object
-              allOf:
+              oneOf:
                 -  $ref: "#/components/schemas/5gcmctimeContext"
 
               #-------Definition of the concrete ExpectationContext dataType----------------#
@@ -184,6 +184,8 @@ components:
           type: string
         targetContexts:
           type: array
-          oneOf:
-            -  $ref: '#/components/schemas/5gcmcProfileContext'
+          items:
+            type: object
+            oneOf:
+              -  $ref: '#/components/schemas/5gcmcProfileContext'
         

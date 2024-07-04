@@ -14,9 +14,9 @@
 import logging
 from abc import ABC, abstractmethod
 
-from ib_model import IntentModel
+from intent_engine.core.ib_model import IntentModel
 from intent_engine.catalogue.abstract_library import abstract_library
-from intent_engine.core.ib_object import IB_object
+from intent_engine.core import IntentNrm
 
 logger = logging.getLogger(__name__)
 
@@ -92,89 +92,90 @@ class slice_5g(abstract_library):
                    "5g_slice_flow":"slice_5g"}    
                }
         }
-        super().__init__(module_name="slice_5g",isILU=False,params=params,decision_tree=decision_tree)
+        super().__init__(module_name="slice_5g",isILU=True,params=params,decision_tree=decision_tree)
         self.__params=params
     
     def generate_subintent(self, intent : IntentModel):
         subintent=intent
         return subintent
 
-    def translator(self,subintent : IB_object)-> tuple[list , str]:
+    def translator(self,subintent : IntentModel)-> tuple[list , str]:
         exec_params=[]
         logger.info("Translating slice_5g...")
         logger.debug("debug slice_5g...")
-        for exp in subintent.get_expectations():
-            exp_verb=exp.get_verb()
+        intent = subintent.get_intent()
+        for exp in intent.intentExpectations:
+            exp_verb=exp.expectationVerb
             logger.debug("expectation case %s",exp_verb)
             match exp_verb:
-                case "create":
-                    exp_obj=exp.get_object()
+                case "CREATE":
+                    IntentNrm.New5GFlowExpectation(**(exp.dict()))
+                    exp_obj=exp.expectationObject
                     logger.debug("create case obj: %s",exp_obj)
-                    exp_type=exp_obj.get_type()
+                    exp_type=exp_obj.objectType
                     match exp_type:
                         case "5g_slice_flow":
                             # Possible list of ipv4 filters
                             ip4filters=[]
-                            for obj_ctx in exp_obj.get_contexts():
+                            for obj_ctx in exp_obj.objectContexts:
                                 # Loop ctx inside obj
                                 # Filter
                                 ipv4filter={}
                                 logger.debug("objectctx case %s: ",obj_ctx)
-                                att=obj_ctx.get_attribute()
+                                att=obj_ctx.contextAttribute
                                 # several filters have to be referenced so matching
                                 # between ip,port,type
                                 match att:
                                     case "ip4Address":
-                                        logger.debug("ip4Address case %s",obj_ctx.get_value_range())
-                                        ipv4filter['ip4Address']=obj_ctx.get_value_range()
+                                        logger.debug("ip4Address case %s",obj_ctx.contextValueRange)
+                                        ipv4filter['ip4Address']=obj_ctx.contextValueRange
                                         logger.debug("params after %s",self.__params)
                                     case "type":
                                         logger.debug("type case")
-                                        ipv4filter['type']=obj_ctx.get_value_range()
+                                        ipv4filter['type']=obj_ctx.contextValueRange
                                     case "portNumber":
                                         logger.debug("portNumber case")
-                                        ipv4filter['portNumber']=obj_ctx.get_value_range()
+                                        ipv4filter['portNumber']=obj_ctx.contextValueRange
                                     case "portType":
                                         logger.debug("portType case")
-                                        ipv4filter['portType']=obj_ctx.get_value_range()
+                                        ipv4filter['portType']=obj_ctx.contextValueRange
                                 # append to ipv4 filters althoug functionality not jet #TODO
                                 ip4filters.append(ipv4filter)
                             self.__params['ipv4filters']=ip4filters
-                    for exp_trg in exp.get_target():
+                    for exp_trg in exp.expectationTargets:
                         # Loop trg inside exp
-                        att=exp_trg.get_attribute()
+                        att=exp_trg.targetName
                         match att:
                             case "ulCapacity":
                                 logger.debug("ulCapacity case")
-                                self.__params['ulCapacity']=exp_trg.get_value_range()
-                                exp_trg_ctx=exp_trg.get_context()
+                                self.__params['ulCapacity']=exp_trg.targetValueRange
+                                exp_trg_ctx=exp_trg.targetContexts
                                 if exp_trg_ctx:
                                     for ctx in exp_trg_ctx:
                                         # Loop ctx inside trg inside exp
-                                        att=ctx.get_attribute()
+                                        att=ctx.contextAttribute
                                         match att:
                                             case "profile":
                                                 logger.debug("profile_exp_trg_ctx case")
-                                                self.__params['profile']=ctx.get_value_range()
-                                                self.__params['SUPI']=ctx.get_name()
+                                                self.__params['profile']=ctx.contextValueRange
+                                                self.__params['SUPI']=exp.expectationObject.objectInstance
                             case "dlCapacity":
                                 logger.debug("dlCapacity case")
-                                exp_trg_ctx=exp_trg.get_context()
-                                self.__params['dlCapacity']=exp_trg.get_value_range()
+                                exp_trg_ctx=exp_trg.targetContexts
+                                self.__params['dlCapacity']=exp_trg.targetValueRange
                                 if exp_trg_ctx:
                                     for ctx in exp_trg_ctx:
                                         # Loop ctx inside trg inside exp
-                                        att=ctx.get_attribute()
+                                        att=ctx.contextAttribute
                                         match att:
                                             case "profile":
                                                 logger.debug("profile_exp_trg_ctx case")
 
         # esto debería context del intent
-        match subintent.get_context().get_name():
-            case "nemo_deployment":
-                logger.debug("intent context tfs controller case")
-                match subintent.get_context().get_attribute():
-                    case "instantceid":
-                        logger.debug("intent context att 5g slice case")
-                        # maybe here store in database by id?
+        for int_ctx in intent.intentContexts:
+            match int_ctx.contextAttribute:
+                case "API_url":
+                    logger.debug("intent context url case")
+                    logger.debug("url: %s",int_ctx.contextValueRange)
+                            # maybe here store in database by id?
         return [self.__params,exec_params],"sysout"
