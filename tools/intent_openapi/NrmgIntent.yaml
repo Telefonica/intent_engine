@@ -16,4 +16,4 @@ components:
       description: >-
         This set of intents represent the possible request to the network.
       oneOf: 
-        - $ref: "IntentSlice.yaml#/components/schemas/Intent-slice"
+        - $ref: "IntentSlice.yaml#/components/schemas/Debug-slice"

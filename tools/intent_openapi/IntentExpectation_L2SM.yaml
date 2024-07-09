@@ -10,33 +10,33 @@ components:
     L2SMExpectations:
       description: >-
         Different expectations for L2SM mncc adaptor
-      type: object
+      # type: object
       oneOf:
         - $ref: "#/components/schemas/NewNetworkExpectation"
         # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"
-    intentContexts:
-      description: >-
-        Cloud_continuum context specific for name-containe
-      type: array
-      items:
-        $ref : "#/components/schemas/L2SMIntentContext"
+    # intentContexts:
+    #   description: >-
+    #     Cloud_continuum context specific for name-containe
+    #   type: array
+    #   items:
+    #     $ref : "#/components/schemas/L2SMIntentContext"
 
     #-------Definition of the concrete IntentContexts dataType----------------#
-    L2SMIntentContext:
-        description: >-
-            Url where the l2sm http server is located
-        type: object
-        properties:
-          contextAttribute:
-            type: string
-            enum:
-              - l2sm_url
-          contextCondition:
-            type: string
-            enum:
-              - IS_EQUAL_TO
-          contextValueRange:
-            type: string
+    # L2SMIntentContext:
+    #     description: >-
+    #         Url where the l2sm http server is located
+    #     type: object
+    #     properties:
+    #       contextAttribute:
+    #         type: string
+    #         enum:
+    #           - NEMO_WORKLOAD
+    #       contextCondition:
+    #         type: string
+    #         enum:
+    #           - IS_EQUAL_TO
+    #       contextValueRange:
+    #         type: string
     #-------Definition of the concrete IntentExpectations dataType----------------#
     NewNetworkExpectation:
         description: >-
@@ -55,7 +55,7 @@ components:
               objectType:
                 type: string
                 enum:
-                  - L2SM_Network
+                  - L2SM_NETWORK
               objectInstance:
                 type: string
               objectContexts:
@@ -74,6 +74,29 @@ components:
               allOf:
                 -  $ref: "#/components/schemas/secureTarget"
 
+          expectationContexts:
+            type: array
+            items:
+              type: object
+              oneOf:
+                - $ref: "#/components/schemas/urlExpectationContext"
+
+                  #-------Definition of the concrete ExpectationContext dataType----------------#
+    urlExpectationContext:
+        description: >-
+            Url where the l2sm http server is located
+        type: object
+        properties:
+          contextAttribute:
+            type: string
+            enum:
+              - url
+          contextCondition:
+            type: string
+            enum:
+              - IS_EQUAL_TO
+          contextValueRange:
+            type: string
                   #-------Definition of the concrete ObjectContext dataType----------------#
     
     l2smNetworkContext:
@@ -95,7 +118,7 @@ components:
         contextAttribute:
           type: string
           enum:
-            - provider_name
+            - providerName
         contextCondition:
           type: string
           enum:
@@ -121,7 +144,7 @@ components:
         contextAttribute:
           type: string
           enum:
-            - public_key
+            - publicKey
         contextCondition:
           type: string
           enum:
@@ -148,4 +171,19 @@ components:
             type: object
             oneOf:
               -  $ref: '#/components/schemas/securedKeyContext'
-        
+          #-------Definition of the concrete ExpectationContext dataType----------------#
+    L2SMExpectationContext:
+            description: >-
+                Url where the l2sm http server is located
+            type: object
+            properties:
+              contextAttribute:
+                type: string
+                enum:
+                  - url
+              contextCondition:
+                type: string
+                enum:
+                  - IS_EQUAL_TO
+              contextValueRange:
+                type: string

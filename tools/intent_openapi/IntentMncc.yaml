@@ -25,15 +25,31 @@ components:
                 oneOf:
                   - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/NewNetworkExpectation"
                   - $ref: "IntentExpectation_5GCMC.yaml#/components/schemas/New5GFlowExpectation"
-                  # - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/L2SMExpectations"
+                  - $ref: "IntentExpectation_L2VPN.yaml#/components/schemas/NewL2VPNIntentExpectation"
+                  - $ref: "IntentExpectation_TFS.yaml#/components/schemas/NewTFSL2VPNIntentExpectation"              # - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/L2SMExpectations"
                   # - $ref: "IntentExpectation_5GCMC.yaml#/components/schemas/5GCMCExpectations"
                   # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"       
             intentContexts:
               type: array
               items:
                 oneOf:
-                  - $ref : "IntentExpectation_L2SM.yaml#/components/schemas/L2SMIntentContext"
-                  - $ref : "IntentExpectation_5GCMC.yaml#/components/schemas/5GCMCIntentContext"
+                  - $ref : "#/components/schemas/NEMOIntentContext"
               description: >-
                 It describes the list of Context(s) in mNCC which represents the constraints and conditions that should apply 
                 for the entire intent even if there may be specific contexts defined for specific parts of the intent 
+
+    NEMOIntentContext:
+      description: >-
+            NEMO_WORKLOAD identifier
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - NEMO_WORKLOAD
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string

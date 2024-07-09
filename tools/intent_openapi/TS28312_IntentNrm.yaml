@@ -169,7 +169,6 @@ components:
           type: array
           items:
             oneOf:
-              - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/L2SMIntentContext"
               - $ref: '#/components/schemas/Context'
           description: >-
            It describes the list of Context(s) which represents the constraints and conditions to be 

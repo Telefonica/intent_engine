@@ -13,6 +13,7 @@
 # limitations under the License.
 from typing import List
 import logging
+from fastapi.encoders import jsonable_encoder
 from intent_engine.core import IntentNrm
 from pydantic import ValidationError
 logger = logging.getLogger(__name__)
@@ -45,4 +46,14 @@ class IntentModel():
 
     def get_intent(self):
         return self.__intent
-    
+    def set_intent(self,intent):
+        self.__intent=intent
+
+def jsonable_model_encoder(intent : IntentModel | dict) -> dict:
+    """
+    Given a model or a dict with enum values as type enum class, 
+    returns the same model or dict with all literal values.
+    This enables the posibility to parse againt the model as IntentMncc
+    without attributes as custom classes.
+    """
+    return jsonable_encoder(intent)

@@ -1,0 +1,49 @@
+openapi: 3.0.1
+info:
+  title: IntentExpectation for slice
+  version: 1.0.0
+  description: >-
+    OAS 3.0.1 definition for a new slice expectation.
+paths: {}
+components:
+  schemas:
+    SliceServiceExpectation:
+      type: object
+      properties:
+        expectationId:
+          type: string
+        expectationVerb:
+           $ref: "TS28312_IntentNrm.yaml#/components/schemas/ExpectationVerb"
+        expectationObject:
+          type: string
+          
+        expectationTargets:
+          type: array
+          items:
+            type: string
+            enum:
+              - dLThptPerSlice
+              - uLThptPerSlice
+              - energyEfficiency.(ServAttrCom).EEPerfReq.EmbbEEPerfReq
+              - energyEfficiency.(ServAttrCom).EEPerfReq.UrllcEEPerfReq
+              - energyEfficiency.(ServAttrCom).EEPerfReq.MIoTEEPerfReq
+              - availability
+              - "*VirtualCPU"
+              - "*RAM"
+              - "*Storage"
+              - dLPktDelayVariation
+              - uLPktDelayVariation
+              - delayTolerance
+              - qosProfile (transport)
+              - "*packetLoss"
+
+
+        expectationContexts:
+          type: array
+          items:
+            type: object
+            oneOf:
+            #  - $ref: '#/components/schemas/TargetAssuranceTimeContext'
+             - $ref: 'TS28312_IntentNrm.yaml#/components/schemas/Context'
+      required:
+        - expectationId

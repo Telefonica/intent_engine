@@ -57,3 +57,7 @@ class abstract_library(ABC):
     @abstractmethod
     def translator(self,subintent : IntentModel)-> tuple[list , str]:
         pass
+
+    @abstractmethod
+    def generate_subintent(self,subintent : IntentModel) -> IntentModel:
+        pass

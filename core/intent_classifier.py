@@ -69,7 +69,7 @@ class Classifier():
                         # the subintent is for having the same ordering or some minor checks
                         logger.debug("Module is ilu: %s",module)
                         sub_intent=module.generate_subintent(intent)
-                        sub_intents.append(sub_intent)
+                        sub_intents.append(sub_intent.get_intent())
                         translators.append(module.get_name())
                         logger.debug("translators iteration ILU: %s",translators)
                     else:

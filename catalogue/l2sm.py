@@ -51,7 +51,7 @@ class l2sm(abstract_library):
         self.__interface={}
         self.__functions=[]
         self.__decision_tree={"cloud_continuum":{
-                    "DELIVER":{"L2SM_Network":"l2sm"}
+                    "DELIVER":{"L2SM_NETWORK":"l2sm"}
                         }
                     }
         self.__params={"node_name":"",
@@ -128,7 +128,7 @@ class l2sm(abstract_library):
                                     case "network":
                                         logger.debug("network case")
                                         self.__params['network']=obj_ctx.contextValueRange
-                                    case "provider_name":
+                                    case "providerName":
                                         logger.debug("provider case")
                                         self.__params['provider_name']=obj_ctx.contextValueRange
                                     case "domain":
@@ -146,15 +146,15 @@ class l2sm(abstract_library):
                                         # Loop ctx inside trg inside exp
                                         att=trg_ctx.contextAttribute
                                         match att:
-                                            case "public_key":
+                                            case "publicKey":
                                                 logger.debug("signature_trg_ctx case")
                
-        for int_ctx in intent.intentContexts:
-            if isinstance(int_ctx,IntentNrm.L2SMIntentContext):
-                logger.debug("Url: %s",int_ctx.contextValueRange)
-                params['url']=int_ctx.contextValueRange
-                params['headers']={'Content-Type': 'application/x-yaml'}
-        return [self.l2sm_schema(),params],"sysout"
+            for exp_ctx in exp.expectationContexts:
+                if isinstance(exp_ctx,IntentNrm.L2SMIntentContext):
+                    logger.debug("Url: %s",exp_ctx.contextValueRange)
+                    params['url']=exp_ctx.contextValueRange
+                    params['headers']={'Content-Type': 'application/x-yaml'}
+            return [self.l2sm_schema(),params],"sysout"
 
     def create_ilu(self,ilu_ref):
         return ilu_ref

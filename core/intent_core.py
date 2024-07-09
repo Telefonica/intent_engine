@@ -75,8 +75,10 @@ def core():
         classifier=Classifier([m['instance'] for m in module_instances])
         subintents,ill=classifier.classify(intent)
         logger.info("ILL : %s Subintent number: %d",ill, len(subintents))
-        o=[logger.info("ILL : %s Subintent : %s",ill, subintent) for subintent in subintents]
+        # o=[logger.info("ILL : %s Subintent : %s",ill, subintent) for subintent in subintents]
         o=[logger.info("Type: %s", type(subintent)) for subintent in subintents]
+        if len(ill) == 0:
+            logger.info("No library capable of reading that intent!!")
         # ------ Intent translator -------
         for i,ilu in enumerate(ill):
             print("------ Intent translator -------")

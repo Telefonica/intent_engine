@@ -8,36 +8,36 @@ paths: {}
 components:
   schemas:
     5GCMCExpectations:
-      $ref: "#/components/schemas/New5GFlowExpectation"
-      # description: >-
-      #   Different expectations for 5G Cumucore mncc adaptor
-      # type: object
-      # oneOf:
-      #   - $ref: "#/components/schemas/New5GFlowExpectation"
-        # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"
-    intentContexts:
+      # $ref: "#/components/schemas/New5GFlowExpectation"
       description: >-
-        Cloud_continuum context specific for name-containe
-      type: array
-      items:
-        $ref : "#/components/schemas/5GCMCIntentContext"
+        Different expectations for 5G Cumucore mncc adaptor
+      type: object
+      oneOf:
+        - $ref: "#/components/schemas/New5GFlowExpectation"
+        # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"
+    # intentContexts:
+    #   description: >-
+    #     Cloud_continuum context specific for name-containe
+    #   type: array
+    #   items:
+    #     $ref : "#/components/schemas/5GCMCIntentContext"
 
     #-------Definition of the concrete IntentContexts dataType----------------#
-    5GCMCIntentContext:
-        description: >-
-            Url where the 5g Cumucore API is located
-        type: object
-        properties:
-          contextAttribute:
-            type: string
-            enum:
-              - API_url
-          contextCondition:
-            type: string
-            enum:
-              - IS_EQUAL_TO
-          contextValueRange:
-            type: string
+    # 5GCMCIntentContext:
+    #     description: >-
+    #         Url where the 5g Cumucore API is located
+    #     type: object
+    #     properties:
+    #       contextAttribute:
+    #         type: string
+    #         enum:
+    #           - url
+    #       contextCondition:
+    #         type: string
+    #         enum:
+    #           - IS_EQUAL_TO
+    #       contextValueRange:
+    #         type: string
     #-------Definition of the concrete IntentExpectations dataType----------------#
     New5GFlowExpectation:
         description: >-
@@ -56,7 +56,7 @@ components:
               objectType:
                 type: string
                 enum:
-                  - 5g_slice_flow
+                  - 5G_SLICE_FLOW
               objectInstance:
                 type: string
               objectContexts:
@@ -82,7 +82,24 @@ components:
               type: object
               oneOf:
                 -  $ref: "#/components/schemas/5gcmctimeContext"
+                -  $ref: "#/components/schemas/urlExpectationContext"
 
+                  #-------Definition of the concrete ExpectationContext dataType----------------#
+    urlExpectationContext:
+        description: >-
+            Url where the l2sm http server is located
+        type: object
+        properties:
+          contextAttribute:
+            type: string
+            enum:
+              - url
+          contextCondition:
+            type: string
+            enum:
+              - IS_EQUAL_TO
+          contextValueRange:
+            type: string
               #-------Definition of the concrete ExpectationContext dataType----------------#
     
     5gcmctimeContext:
@@ -91,8 +108,8 @@ components:
         contextAttribute:
           type: string
           enum:
-            - startime
-            - stoptime
+            - starTime
+            - stopTime
         contextCondition:
           type: string
           enum:

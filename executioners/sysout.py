@@ -13,6 +13,8 @@
 # limitations under the License.
 from queue import Queue
 
+from devtools import pprint
+
 class sysout():
 
     def __init__(self,queue : Queue):
@@ -20,6 +22,8 @@ class sysout():
         self.__args=[]
         self.__queue=queue
     def execute(self,string):
-        print(" -> -> Executing: ", string, " <- <-")
+        print(" -> -> Executing: ")
+        pprint(string)
+        print(" <- <-")
         # True if no error
         return True

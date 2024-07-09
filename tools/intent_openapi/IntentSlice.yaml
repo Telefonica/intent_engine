@@ -1,13 +1,13 @@
 openapi: 3.0.1
 info:
-  title: Intent for slice
+  title: Attributes for slice. DEBUG purposes
   version: 1.0.0
   description: >-
     OAS 3.0.1 definition for a new slice , NOT AN INTENT YET
 paths: {}
 components:
   schemas:
-    Intent-slice:
+    Debug-slice:
       description: >-
         This set of parameters represent the possible request for a 3gpp slice. NOT INTENT YET
       oneOf:
@@ -17,3 +17,26 @@ components:
       - $ref: "TS28541_SliceNrm.yaml#/components/schemas/RANSliceSubnetProfile"
       - $ref: "TS28541_SliceNrm.yaml#/components/schemas/MnS"
       - $ref: "TS28541_SliceNrm.yaml#/components/schemas/NetworkSliceSubnetProviderCapabilities-Single"
+
+    Intent-slice:
+      description: >-
+        This set of parameters represent the possible request for a 3gpp slice.
+      allOf:
+        - $ref : "TS28312_IntentNrm.yaml#/components/schemas/Intent-Single"
+        - type: object
+          properties:
+            userLabel:
+              type: string
+            intentExpectations:
+              description: >-
+                     Expectations for all the mncc adaptors
+              type: array
+              items:
+                # type: object
+                oneOf:
+                  - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/NewNetworkExpectation"     
+            intentContexts:
+              type: array
+              items:
+                oneOf:
+                  - $ref : "IntentExpectation_L2SM.yaml#/components/schemas/L2SMIntentContext"

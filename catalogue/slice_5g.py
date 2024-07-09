@@ -89,7 +89,7 @@ class slice_5g(abstract_library):
         decision_tree={
             "cloud_continuum" : {
                "CREATE":{
-                   "5g_slice_flow":"slice_5g"}    
+                   "5G_SLICE_FLOW":"slice_5g"}    
                }
         }
         super().__init__(module_name="slice_5g",isILU=True,params=params,decision_tree=decision_tree)
@@ -114,7 +114,7 @@ class slice_5g(abstract_library):
                     logger.debug("create case obj: %s",exp_obj)
                     exp_type=exp_obj.objectType
                     match exp_type:
-                        case "5g_slice_flow":
+                        case "5G_SLICE_FLOW":
                             # Possible list of ipv4 filters
                             ip4filters=[]
                             for obj_ctx in exp_obj.objectContexts:
@@ -171,11 +171,11 @@ class slice_5g(abstract_library):
                                             case "profile":
                                                 logger.debug("profile_exp_trg_ctx case")
 
-        # esto debería context del intent
-        for int_ctx in intent.intentContexts:
-            match int_ctx.contextAttribute:
-                case "API_url":
-                    logger.debug("intent context url case")
-                    logger.debug("url: %s",int_ctx.contextValueRange)
+            # esto debería context del intent
+            for exp_ctx in exp.expectationContexts:
+                match exp_ctx.contextAttribute:
+                    case "url":
+                        logger.debug("intent context url case")
+                        logger.debug("url: %s",exp_ctx.contextValueRange)
                             # maybe here store in database by id?
         return [self.__params,exec_params],"sysout"
