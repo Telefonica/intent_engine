@@ -14,7 +14,8 @@
 # The Intent Engine
 *An Intent Based Network Translator in a Micro-Kernel Architecture*.
 
-![alt text](attached/image.png)
+<img src="https://github.com/Telefonica/intent_engine/assets/44363812/faabaa70-30f8-4761-a500-20e81b88a24b" width="400">
+
 # Introduction
 
 The **Intent Engine** is a translator between different technologies, abstracting the specific details of network components from the general directives of higher-level components. This abstract order is known as Intent (*an intention*). It express an expectation of *what* the underlying technologies should do without knowing the *how*. 
