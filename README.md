@@ -35,7 +35,7 @@ This definition is broad, and is each library in the intent catalog is the one r
 
 As the networks are evolving continuously, the technologies should follow along. **The Intent Engine** is build as a central core that processes the Intent and then, tries to translate it to network configurations using the intent catalogue. The intent catalogue is a set of python libraries, each one containing a set of Intent Logic Units (ILUs). 
 
-![Arquitecture](attached/bssf_update_d3.2-Página-2.drawio.png)
+![Arquitecture](attached/Intent_translation_in_NEMO.png)
 
 Also, there is another type of catalogue, the executioners catalogue. It defines the inbound and outbound interfaces of the core. The executioners are managed by the execution platform as they can run independent communication processes with different technologies.
 
