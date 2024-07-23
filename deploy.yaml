@@ -1,21 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: intent-engine
-  namespace: ie
+  name: mncc-ibs
+  namespace: nemo-net
+  labels:
+    app: nemo
+    type: backend
+    deployment: mncc-ibs
 spec:
   replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1   # for pod anti-affinity to work
+    type: RollingUpdate
   selector:
     matchLabels:
-      app: intent-engine
+      app: mncc-ibs
   template:
     metadata:
       labels:
-        app: intent-engine
+        app: mncc-ibs
+        type: baackend
+        pod: mncc-ibs
     spec:
+      imagePullSecrets:
+        - name: nemo-regcred
       containers:
       - name: intent-engine
-        image: localhost:32000/intent-engine:latest
+        image: nemometaos/mncc-ibs:v0.0.2
         ports:
         - containerPort: 3000
           # containerPort: 8080
