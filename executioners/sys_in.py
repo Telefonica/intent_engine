@@ -23,10 +23,11 @@ class sys_in():
     Executioner to write 
     """
     def __init__(self,queue : Queue):
-        self.__args=["inputs/","l2vpn_tfs.yaml"]
+        self.__args=["inputs/","nemo_adaptors.yaml"]
         self.__queue=queue
         data=yamlParser.yaml_to_data(self.__args[0]+self.__args[1])
-        self.send_to_intent_queue(data)
+        for file in data:
+            self.send_to_intent_queue(file)
     
     def send_to_intent_queue(self,data):
         # add an item to a size limited queue with a timeout

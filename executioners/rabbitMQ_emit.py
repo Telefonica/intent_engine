@@ -11,20 +11,27 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import json
+import logging
 import pika
 import yaml
-import json
 
 """
 Test class simulation NEMO Meta-Orchestrator sending an Intent to the 
 RabbitMQ queue.
 """
+
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
+
 def sender(key,message):
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host='localhost',port=5672))
+
+    credentials = pika.PlainCredentials('nemo-user', 'PRE4utv0ytf0fnbeuv')
+    params=pika.ConnectionParameters(host='132.227.122.23',port=30403,virtual_host='/',
+                                     credentials=credentials)
+    connection = pika.BlockingConnection(parameters=params)
     channel = connection.channel()
 
-    channel.exchange_declare(exchange='mo', exchange_type='topic')
+    # channel.exchange_declare(exchange='create-network-paths', exchange_type='topic')
 
     routing_key = key if len(key) > 2 else 'anonymous.info'
     channel.basic_publish(
@@ -34,7 +41,7 @@ def sender(key,message):
 
 if __name__ == "__main__":
     data={}
-    with open("inputs/6green_int.yaml",'r') as yaml_file:
+    with open("inputs/l2sm.yaml",'r') as yaml_file:
         data = yaml.safe_load(yaml_file)
     print(data)
-    sender("*mncc" ,json.dumps(data))
+    sender("create-network-paths" ,json.dumps(data))

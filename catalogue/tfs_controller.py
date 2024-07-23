@@ -55,7 +55,7 @@ class tfs_controller(abstract_library):
         params={}
         logger.info("Translating TFS connector...")
         logger.debug("debug TFS connector...")
-        subintent=intent_model
+        subintent=intent_model.get_intent()
         for exp in subintent.intentExpectations:
             exp_verb=exp.expectationVerb
             logger.debug("expectation case %s",exp_verb)

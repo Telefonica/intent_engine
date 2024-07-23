@@ -15,7 +15,6 @@ import json
 from typing import List
 from schema import Schema, And, Use, Optional, SchemaError
 from .ib_model import IntentModel
-import jsonpickle
 import logging
 logger = logging.getLogger(__name__)
 
@@ -39,7 +38,7 @@ class Classifier():
             for item in obj:
                 self.find_in_tree(keywords,item,leaves)
         else:
-            print("is leave :",obj)
+            print("is leaf :",obj)
             leaves.append(obj)
 
     def classify(self,intent_model : IntentModel) -> tuple[list[IntentModel],list]:
@@ -69,7 +68,7 @@ class Classifier():
                         # the subintent is for having the same ordering or some minor checks
                         logger.debug("Module is ilu: %s",module)
                         sub_intent=module.generate_subintent(intent)
-                        sub_intents.append(sub_intent.get_intent())
+                        sub_intents.append(sub_intent)
                         translators.append(module.get_name())
                         logger.debug("translators iteration ILU: %s",translators)
                     else:

@@ -1,3 +1,7 @@
 pika
 requests
 pyaml
+devtools
+fastapi
+pydantic==1.10
+schema

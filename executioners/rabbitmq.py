@@ -27,15 +27,49 @@ class rabbitmq():
     queue of the intent_core.
     """
     def __init__(self,queue : Queue):
-        self.__args=["*mncc"]
+
         self.__addr=os.environ.get('AMQP_HOST')
         if(self.__addr):
             # Docker container case where hostname needed
             logger.debug("Reading enviroment RBMQ vars: %s",self.__addr)
         else:
-            self.__addr="localhost"
-        self.__broker_queue=os.environ.get('QUEUE_NAME')
-        self.__port=5672
+            self.__addr="132.227.122.23"
+        self.__broker_exchange=os.environ.get('RMQ_EXCHANGE')
+        if(self.__broker_exchange):
+            logger.debug("Reading enviroment RBMQ vars: %s",self.__broker_exchange)
+        else:
+            self.__broker_exchange="mo"
+        self.__broker_queue=os.environ.get('RMQ_QUEUE')
+        if(self.__broker_queue):
+            logger.debug("Reading enviroment RBMQ vars: %s",self.__broker_queue)
+        else:
+            self.__broker_queue="mncc"
+        self.__broker_port=os.environ.get('RMQ_PORT')
+        if(self.__broker_port):
+            logger.debug("Reading enviroment RBMQ vars: %s",self.__broker_port)
+        else:
+            self.__broker_port=30403
+        
+        self.__broker_user=os.environ.get('RMBQ_USER')
+        if(self.__broker_user):
+            logger.debug("Reading enviroment RBMQ vars: %s",self.__broker_user)
+        else:
+            self.__broker_user='nemo-user'
+
+        self.__broker_pass=os.environ.get('RMBQ_PASSWORD')
+        if(self.__broker_pass):
+            logger.debug("Reading enviroment RBMQ vars: %s",self.__broker_pass)
+        else:
+            self.__broker_pass='PRE4utv0ytf0fnbeuv'
+        
+        self.__args=os.environ.get('RMQ_BINDING')
+        if(self.__args):
+            # Docker container case where hostname needed
+            logger.debug("Reading enviroment RBMQ vars: %s",self.__args)
+        else:
+            self.__args=["create-network-paths"]
+
+        # Intent queue
         self.__queue=queue
         # reduce log level
         logging.getLogger("pika").setLevel(logging.WARNING)
@@ -43,7 +77,11 @@ class rabbitmq():
 
     def start_mq_server(self,args : list,queue : Queue):
         logger.debug("Start threads RMQ")
-        thread=threading.Thread(target=reciver,args=(args,queue,self.__addr,self.__port))
+        thread=threading.Thread(target=reciver,
+                                args=(queue,self.__addr,
+                                      self.__broker_port,self.__broker_exchange,
+                                      self.__broker_queue,self.__broker_user,
+                                      self.__broker_pass,args))
         thread.daemon = True # die when the main thread dies
         thread.start()
     

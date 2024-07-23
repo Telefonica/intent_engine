@@ -18,14 +18,25 @@ spec:
         image: localhost:32000/intent-engine:latest
         ports:
         - containerPort: 3000
-          containerPort: 8080
+          # containerPort: 8080
         env:
-        - name: QUEUE_NAME
-          value: my-queue
         - name: AMQP_HOST
-          value: 172.17.0.2
+          value: '132.227.122.23'
         - name: L2SM_SERVICE
-          value: localhost:8080
+          value: 'localhost:8080'
+        - name: RMQ_EXCHANGE
+          value: 'mo'
+        - name: RMQ_QUEUE
+          value: 'mncc'
+        - name: RMQ_PORT
+          value: "30403"
+        - name: RMBQ_USER
+          value: 'nemo-user'
+        - name: RMBQ_PASSWORD
+          value: 'PRE4utv0ytf0fnbeuv'
+        - name: RMQ_BINDING
+          value: 'create-network-paths'
+
 ---
 apiVersion: v1
 kind: Service

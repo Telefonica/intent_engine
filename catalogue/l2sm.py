@@ -118,7 +118,7 @@ class l2sm(abstract_library):
                     logger.debug("DELIVER case obj: %s",exp_obj)
                     exp_type=exp_obj.objectType.value
                     match exp_type:
-                        case "L2SM_Network":
+                        case "L2SM_NETWORK":
                             for obj_ctx in exp_obj.objectContexts:
                                 # Loop ctx inside obj
                                 logger.debug("objectctx case %s: ",obj_ctx)
@@ -150,7 +150,7 @@ class l2sm(abstract_library):
                                                 logger.debug("signature_trg_ctx case")
                
             for exp_ctx in exp.expectationContexts:
-                if isinstance(exp_ctx,IntentNrm.L2SMIntentContext):
+                if isinstance(exp_ctx,IntentNrm.NEMOIntentContext):
                     logger.debug("Url: %s",exp_ctx.contextValueRange)
                     params['url']=exp_ctx.contextValueRange
                     params['headers']={'Content-Type': 'application/x-yaml'}

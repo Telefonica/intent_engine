@@ -20,17 +20,17 @@ import sys
 logger = logging.getLogger(__name__)
 level = logger.level
 
-def reciver(bind : list, queue : Queue, host, port):
+def reciver(queue : Queue, host, port, exchange, broker_queue, broker_user, broker_pass, bind : list):
 
     logger.info("Starting RMQ server in %s:%s",host,port)
+    credentials = pika.PlainCredentials(broker_user, broker_pass)
     connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host=host,port=port))
+    pika.ConnectionParameters(host=host,port=port,credentials=credentials))
     channel = connection.channel()
 
-    channel.exchange_declare(exchange='mo', exchange_type='topic')
-
-    result = channel.queue_declare('mncc', exclusive=True)
-    queue_name = result.method.queue
+    # channel.exchange_declare(exchange=exchange, exchange_type='topic')
+    # result = channel.queue_declare('mncc', exclusive=True)
+    # queue_name = result.method.queue
     # queue_name = "kern.critical"
 
     binding_keys = bind
@@ -40,9 +40,9 @@ def reciver(bind : list, queue : Queue, host, port):
 
     for binding_key in binding_keys:
         channel.queue_bind(
-            exchange='mo', queue=queue_name, routing_key=binding_key)
+            exchange=exchange, queue=broker_queue, routing_key=binding_key)
     # logging.getLogger().setLevel(level)
-    logger.info(' [*] Waiting for logs. To exit press CTRL+C in: %s %s',queue_name, binding_keys)
+    logger.info(' [*] Waiting for logs. To exit press CTRL+C in: %s %s',broker_queue, binding_keys)
 
     def callback(ch, method, properties, body):
         # logging.debug(f" [x] {method.routing_key}:{json.loads(body)}")
@@ -50,7 +50,7 @@ def reciver(bind : list, queue : Queue, host, port):
         logger.info("New message from RMQ: %s",method.routing_key)
 
     channel.basic_consume(
-        queue=queue_name, on_message_callback=callback, auto_ack=False)
+        queue=broker_queue, on_message_callback=callback, auto_ack=True)
     try:
         channel.start_consuming()
     except KeyboardInterrupt:
