@@ -1,0 +1,123 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mncc-ibs
+  namespace: nemo-net
+  labels:
+    app: nemo
+    type: backend
+    deployment: mncc-ibs
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1   # for pod anti-affinity to work
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: mncc-ibs
+  template:
+    metadata:
+      labels:
+        app: mncc-ibs
+        type: backend
+        pod: mncc-ibs
+    spec:
+      imagePullSecrets:
+        - name: nemo-regcred
+      containers:
+      - name: intent-engine
+        image: localhost:32000/nemometaos/mncc-ibs:v0.0.2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          # containerPort: 8080
+        env:
+        - name: AMQP_HOST
+          value: '132.227.122.23'
+        - name: L2SM_SERVICE
+          value: 'localhost:8080'
+        - name: RMQ_EXCHANGE
+          value: 'mo'
+        - name: RMQ_QUEUE
+          value: 'mncc'
+        - name: RMQ_PORT
+          value: "30403"
+        - name: RMBQ_USER
+          value: 'nemo-user'
+        - name: RMBQ_PASSWORD
+          value: 'PRE4utv0ytf0fnbeuv'
+        - name: RMQ_BINDING
+          value: 'create-network-paths'
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mncc-ibs-ingress
+  namespace: nemo-net
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+spec:
+  ingressClassName: "nginx"
+  tls:
+  - hosts:
+    - mncc-ibs.nemo.onelab.eu
+    secretName: mncc-ibs-tls
+  rules:
+  - host: mncc-ibs.nemo.onelab.eu
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: intent-engine
+            port:
+              number: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: swagger-editor-deployment
+  namespace: nemo-net
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: swagger-editor
+  template:
+    metadata:
+      labels:
+        app: swagger-editor
+    spec:
+      containers:
+      - name: swagger-editor
+        image: swaggerapi/swagger-editor
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SWAGGER_FILE
+          value: "/tmp/NrmgIntent.yaml"
+        volumeMounts:
+        - name: swagger-file-volume
+          mountPath: /tmp
+      volumes:
+      - name: swagger-file-volume
+        hostPath:
+          path: /home/ubuntu/Repos/intent_engine/tools/intent_openapi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: swagger-editor-service
+  namespace: nemo-net
+spec:
+  selector:
+    app: swagger-editor
+  ports:
+  - protocol: TCP
+    port: 81
+    targetPort: 8080
+  type: NodePort

@@ -31,7 +31,7 @@ def sender(key,message):
     connection = pika.BlockingConnection(parameters=params)
     channel = connection.channel()
 
-    # channel.exchange_declare(exchange='create-network-paths', exchange_type='topic')
+    # channel.exchange_declare(exchange='mo', exchange_type='topic')
 
     routing_key = key if len(key) > 2 else 'anonymous.info'
     channel.basic_publish(

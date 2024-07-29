@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-kubectl delete namespace ie
-kubectl create namespace ie
-docker build intent_engine/ -t intent-engine:latest
-docker tag intent-engine:latest localhost:32000/intent-engine
-docker push localhost:32000/intent-engine
-kubectl apply -f intent_engine/deploy.yaml 
+kubectl delete namespace nemo-net
+kubectl create namespace nemo-net
+docker build intent_engine/ -t localhost:32000/nemometaos/mncc-ibs:v0.0.2
+# docker tag mncc-ibs:v0.0.2 nemometaos/mncc-ibs:v0.0.2
+docker push localhost:32000/nemometaos/mncc-ibs:v0.0.2
+kubectl apply -f intent_engine/manifest.yaml 
