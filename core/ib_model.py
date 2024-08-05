@@ -22,9 +22,11 @@ class IntentModel():
     def __init__(self,intent_dict: dict = {}) -> None:
         try:
             self.__intent : IntentNrm.IntentMncc = IntentNrm.IntentMncc(**intent_dict['Intent'])
+            logger.debug("Schema Type Expectation: %s",type(self.__intent.intentExpectations[0]))
         except ValidationError as exc:
             logger.warning("Assurance error %s", exc)
-        logger.debug("Schema Type Expectation: %s",type(self.__intent.intentExpectations[0]))
+            raise
+        
     
     def __str__(self):
         return str(self.__intent)

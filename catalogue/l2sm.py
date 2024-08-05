@@ -14,6 +14,7 @@
 from intent_engine.catalogue.abstract_library import abstract_library
 from intent_engine.core import IntentNrm
 from intent_engine.core.ib_model import IntentModel
+from pydantic import ValidationError
 import logging
 
 logger = logging.getLogger(__name__)
@@ -113,7 +114,10 @@ class l2sm(abstract_library):
             logger.debug("Expectation type: %s", type(exp))
             match exp_verb.value:
                 case "DELIVER":
-                    IntentNrm.NewNetworkExpectation(**(exp.dict()))
+                    try:
+                        IntentNrm.NewNetworkExpectation(**(exp.dict()))
+                    except ValidationError as exc:
+                        logger.warning("Assurance error for L2SM NewNetworkExpectation:  %s", exc)
                     exp_obj=exp.expectationObject
                     logger.debug("DELIVER case obj: %s",exp_obj)
                     exp_type=exp_obj.objectType.value
@@ -134,6 +138,9 @@ class l2sm(abstract_library):
                                     case "domain":
                                         logger.debug("domain case")
                                         self.__params['provider_domain']=obj_ctx.contextValueRange
+                                    case _:
+                                        logger.debug("NOT matching in case: %s",att)
+
                     for trg_ctx in exp.expectationTargets:
                         # Loop trg inside exp
                         att=trg_ctx.targetName

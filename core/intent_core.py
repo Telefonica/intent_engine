@@ -15,10 +15,12 @@ import json
 from queue import Queue
 
 from devtools import pprint
+from pydantic import ValidationError
 from intent_engine.core import yamlParser
 from intent_engine.core.ib_model import IntentModel
 from intent_engine.core import importer
 from intent_engine.core.intent_classifier import Classifier
+from intent_engine.core.intent_assurance import IntentAssurance
 import logging
 
 logger = logging.getLogger(__name__)
@@ -63,10 +65,15 @@ def core():
     # data=yamlParser.yaml_to_data("inputs/6green_int.yaml")
     # intent=ib_object.IB_object(data)
     # logger.info(intent)
+    assurer=IntentAssurance()
 
     while True:
         pop=buffer.get()
-        intent: IntentModel = IntentModel(pop)
+        try:
+            intent: IntentModel = IntentModel(pop)
+        except ValidationError as exception:
+            assurer.format_error_handler(exception)
+            continue
         pprint(intent.get_dict())
         # ------- Intent classifier -------
         print("------- Intent classifier -------")
@@ -79,6 +86,18 @@ def core():
         o=[logger.info("Type: %s", type(subintent)) for subintent in subintents]
         if len(ill) == 0:
             logger.info("No library capable of reading that intent!!")
+        # ------ Intent Assurance --------
+        break_loop=False
+        for i,ilu in enumerate(ill):
+            print("------ Intent assurance -------")
+            subintent=subintents[i]
+            try:
+                assurer.assure_intent(subintent)
+            except ValidationError as exception:
+                assurer.attribute_error_handler(exception)
+                break_loop=True
+                continue
+        if break_loop: continue
         # ------ Intent translator -------
         for i,ilu in enumerate(ill):
             print("------ Intent translator -------")

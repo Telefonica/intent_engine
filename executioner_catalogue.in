@@ -1,5 +1,5 @@
 intent_engine.executioners.sysout
 intent_engine.executioners.http_handler
-intent_engine.executioners.rabbitmq
+intent_engine.executioners.sys_in
 intent_engine.executioners.tfs_connector
 

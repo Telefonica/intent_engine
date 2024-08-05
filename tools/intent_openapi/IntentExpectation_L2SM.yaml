@@ -62,10 +62,11 @@ components:
                 type: array
                 items:
                   type: object
-                  oneOf:
+                  anyOf:
                     - $ref: "#/components/schemas/l2smNetworkContext"
                     - $ref: "#/components/schemas/l2smProviderContext"
                     - $ref: "#/components/schemas/l2smDomainContext"
+                    # - $ref: "#/components/schemas/l2smObjectContext"
                     # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/Context"
           expectationTargets:
             type: array
@@ -92,13 +93,25 @@ components:
             enum:
               - url
           contextCondition:
-            type: string
-            enum:
-              - IS_EQUAL_TO
+            $ref : "TS28312_IntentNrm.yaml#/components/schemas/Condition"
           contextValueRange:
             type: string
                   #-------Definition of the concrete ObjectContext dataType----------------#
     
+    l2smObjectContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - network
+            - providerName
+            - domain
+        contextCondition:
+          $ref : "TS28312_IntentNrm.yaml#/components/schemas/Condition"
+        contextValueRange:
+          type: string
+
     l2smNetworkContext:
       type: object
       properties:
@@ -107,9 +120,7 @@ components:
           enum:
             - network
         contextCondition:
-          type: string
-          enum:
-            - IS_EQUAL_TO
+          $ref : "TS28312_IntentNrm.yaml#/components/schemas/Condition"
         contextValueRange:
           type: string
     l2smProviderContext:
@@ -120,9 +131,7 @@ components:
           enum:
             - providerName
         contextCondition:
-          type: string
-          enum:
-            - IS_EQUAL_TO
+          $ref : "TS28312_IntentNrm.yaml#/components/schemas/Condition"
         contextValueRange:
           type: string
     l2smDomainContext:
@@ -133,9 +142,7 @@ components:
           enum:
             - domain
         contextCondition:
-          type: string
-          enum:
-            - IS_EQUAL_TO
+          $ref : "TS28312_IntentNrm.yaml#/components/schemas/Condition"
         contextValueRange:
           type: string
     securedKeyContext:
@@ -146,9 +153,7 @@ components:
           enum:
             - publicKey
         contextCondition:
-          type: string
-          enum:
-            - IS_EQUAL_TO
+          $ref : "TS28312_IntentNrm.yaml#/components/schemas/Condition"
         contextValueRange:
           type: string
           #-------Definition of the concrete ExpectationTarget dataType----------------#
@@ -160,9 +165,7 @@ components:
           enum:
             - secure
         targetCondition:
-          type: string
-          enum:
-            - IS_EQUAL_TO
+          $ref : "TS28312_IntentNrm.yaml#/components/schemas/Condition"
         targetValueRange:
           type: string
         targetContexts:
@@ -187,3 +190,10 @@ components:
                   - IS_EQUAL_TO
               contextValueRange:
                 type: string
+
+#-------Definition of the concrete Condition dataType, to avoid repetition----------------#
+
+    IS_EQUAL_TO:
+      type: string
+      enum:
+        - IS_EQUAL_TO

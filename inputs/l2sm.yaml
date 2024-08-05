@@ -8,7 +8,7 @@ Intent:
         objectType: 'L2SM_NETWORK'
         objectInstance: 'spain_network'
         objectContexts:
-          - contextAttribute: 'network'
+          - contextAttribute: 'networks'
             contextCondition: 'IS_EQUAL_TO'
             contextValueRange: 'spain_network'
           - contextAttribute: 'providerName'

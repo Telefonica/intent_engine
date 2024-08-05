@@ -160,7 +160,7 @@ components:
             - RAN_SubNetwork  #value for Radio Network Expectation--#
             - Edge_Service_Support  #value for Edge Service Support Expectation--#
             - 5GC_SubNetwork  #value for 5GC Network Expectation--#
-            # - L2SM_Network
+            - L2SM_NETWORK
         objectInstance:
           $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
         contextSelectivity:

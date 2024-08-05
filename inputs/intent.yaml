@@ -1,0 +1,28 @@
+Intent:
+  id: '1'
+  userLabel: ''
+  intentExpectations:
+    - expectationId: ''
+      expectationVerb: ''
+      expectationObject:
+        objectType: ''
+        objectInstance: ''
+        objectContexts:
+         - contextAttribute: ''
+           contextCondition: ''
+           contextValueRange: ''
+      expectationTargets:
+        - targetName: ''
+          targetCondition: ''
+          targetValueRange: ''
+          targetContexts: 
+            - contextAttribute: ''
+              contextCondition: ''
+              contextValueRange: ''
+  intentContexts:
+   - contextAttribute: ''
+     contextCondition: ''
+     contextValueRange: ''
+  intentPriority: 1
+  observationPeriod: 60
+  intentAdminState: 'ACTIVATED'
