@@ -1,15 +1,17 @@
 import os
 import logging
+from devtools import pprint
 import requests
 from rdflib import BNode, ConjunctiveGraph,RDF, XSD, RDFS,FOAF
 from rdflib import Graph, URIRef, Literal
 from rdflib.namespace import Namespace
+from intent_engine.tools.enums import ComparisonType
 # import sys
 # sys.path.insert(1, '/home/ubuntu/Repos/intent_engine/tool')
 from intent_engine.core.ib_model import IntentModel
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.DEBUG)
 
 
 base_folder = "data"
@@ -304,12 +306,29 @@ def get_condition_value(g : ConjunctiveGraph,condition)->tuple[list[URIRef],URIR
                     print("target_name",item)
     return values,pred
 
+def rdf_to_3gpp_condition(rdf) -> ComparisonType:
+    
+    match format_node(rdf):
+        case "icm#chooseFrom":
+            return ComparisonType.IS_ONE_OF.name
+        case "quan#smaller":
+            return ComparisonType.IS_LESS_THAN.name
+        case _:
+            return ComparisonType.IS_EQUAL_TO.name
+
+def generate_id():
+    return 
+    
 if __name__=="__main__":
     
     g = make_graph_from_nquads(product_path,"RAN_Intent")
     print(g.serialize(format="turtle"))
     print("RDF to 3GPP translation...")
-
+    # --- 3gpp intent construction ----
+    intent_expectations=[]
+    object_contexts=[]
+    expectation_targets=[]
+    # ---------------------------------
     intents=get_intents(g)
     logger.info("intents: %s",intents)
     for intent in intents:
@@ -320,15 +339,38 @@ if __name__=="__main__":
         property_expectations=get_property_expectation(g,intent)
         logger.info("property_expectations: %s",property_expectations)
 
+        # --- 3gpp intent construction ----
+        # Only deliver case when something(delivery_type) needs to be deliver
+        expectation_verb='ENSURE'
+        # ---------------------------------
+
         for delivery_expectation in delivery_expectations:
-            target,type=get_delivery_target_and_type(g=g,delivery_subject=delivery_expectation)
-            logger.info("Target: %s ,type: %s",target,type)
-            members,predicate=get_target_members(g,target_subject=target)
-            logger.info("Members: %s, predicate: %s",members,predicate)
+            delivery_target,delivery_type=get_delivery_target_and_type(g=g,delivery_subject=delivery_expectation)
+            logger.info("Target: %s ,type: %s",delivery_target,delivery_type)
+            deliv_trg_members,deliv_trg_predicate=get_target_members(g,target_subject=delivery_target)
+            logger.info("Members: %s, predicate: %s",deliv_trg_members,deliv_trg_predicate)
+
+            # --- 3gpp intent construction ----
+            expectation_verb='DELIVER'
+            for deliv_trg in deliv_trg_members:
+                logger.debug("deliv_trg_ %s", deliv_trg)
+                object_context={
+                                "contextAttribute": format_node(deliv_trg['predicate']),
+                                "contextCondition": rdf_to_3gpp_condition(deliv_trg_predicate),
+                                "contextValueRange": format_node(deliv_trg['object'])
+                                }
+                object_contexts.append(object_context)
+
+            expectation_object={
+                            "objectType": format_node(delivery_type),
+                            "objectInstance": format_node(delivery_expectation),
+                            "objectContexts": object_contexts
+                        }
+            # ---------------------------------
         
         for property_expectation in property_expectations:
-            conditions,predicate=get_property_expectation_members(g=g,expectation_subject=property_expectation)
-            logger.info("conditions: %s, predicate: %s",conditions,predicate)
+            conditions,trg_predicate=get_property_expectation_members(g=g,expectation_subject=property_expectation)
+            logger.info("conditions: %s, trg_predicate: %s",conditions,trg_predicate)
             property_target=get_property_expectation_target(g=g,expectation_subject=property_expectation)
             logger.info("property_target: %s",property_target)
             target_member,member_pred=get_target_members(g=g,target_subject=property_target)
@@ -338,52 +380,43 @@ if __name__=="__main__":
                 o=[logger.info("value: %s %s, predicate: %s",v[RDF.value],v[RDFS.label],format_node(comparator))
                    for v in value]
 
+                # --- 3gpp intent construction ----
+                # format_node(v[RDF.value]) -> str(v[RDF.value]) to avoid decimal word
+                value_labels=[(format_node(v[RDF.value]),format_node(v[RDFS.label])) for v in value]
+                expectation_target={
+                                    "targetName": format_node(condition),
+                                    "targetCondition": rdf_to_3gpp_condition(comparator),
+                                    "targetValueRange": str(value_labels),
+                                    "targetContext": {}
+                                }
+                logger.debug("expectation targets %s",expectation_target)
+                expectation_targets.append(expectation_target)
+                # ---------------------------------
+
+        
+        intent_expectation={
+                        "expectationId": "",
+                        "expectationVerb": expectation_verb,
+                        "expectationObject": expectation_object,
+                        "expectationTargets": expectation_targets
+                    }
+        intent_expectations.append(intent_expectation)
         intent_model={
                 "Intent": {
                     "id": "1",
-                    "userLabel": "",
-                    "intentExpectations": [
-                    {
-                        "expectationId": "",
-                        "expectationVerb": "",
-                        "expectationObject": {
-                        "objectType": "",
-                        "objectInstance": "",
-                        "objectContexts": [
-                            {
-                            "contextAttribute": "",
-                            "contextCondition": "",
-                            "contextValueRange": ""
-                            }
-                        ]
-                        },
-                        "expectationTargets": [
-                        {
-                            "targetName": "",
-                            "targetCondition": "",
-                            "targetValueRange": "",
-                            "targetContexts": [
-                            {
-                                "contextAttribute": "",
-                                "contextCondition": "",
-                                "contextValueRange": ""
-                            }
-                            ]
-                        }
-                        ]
-                    }
-                    ],
-                    "intentContexts": [
-                    {
-                        "contextAttribute": "",
-                        "contextCondition": "",
-                        "contextValueRange": ""
-                    }
-                    ],
+                    "userLabel": "rdf",
+                    "intentExpectations": intent_expectations,
+                    # "intentContexts": [
+                    # {
+                    #     "contextAttribute": "",
+                    #     "contextCondition": "",
+                    #     "contextValueRange": ""
+                    # }
+                    # ],
                     "intentPriority": 1,
                     "observationPeriod": 60,
                     "intentAdminState": "ACTIVATED"
                 }
             }
-        
+        pprint(intent_model)
         intent=IntentModel(intent_model)

@@ -161,6 +161,7 @@ components:
             - Edge_Service_Support  #value for Edge Service Support Expectation--#
             - 5GC_SubNetwork  #value for 5GC Network Expectation--#
             - L2SM_NETWORK
+            - Sub_Slice
         objectInstance:
           $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
         contextSelectivity:
