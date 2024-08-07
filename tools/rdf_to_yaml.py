@@ -280,6 +280,7 @@ def get_condition_value(g : ConjunctiveGraph,condition)->tuple[list[URIRef],URIR
     """
     # targetCondition
     values=[]
+    target_name=None
     pred=None
     for p in g.predicates(subject=condition):
         if p!=RDF.type:
@@ -304,7 +305,10 @@ def get_condition_value(g : ConjunctiveGraph,condition)->tuple[list[URIRef],URIR
                     values.append(nodes)
                 elif isinstance(item,URIRef):
                     print("target_name",item)
-    return values,pred
+                    target_name=item
+                    # nodes['name']=item
+                    # values.append(nodes)
+    return values,pred,target_name
 
 def rdf_to_3gpp_condition(rdf) -> ComparisonType:
     
@@ -376,15 +380,19 @@ if __name__=="__main__":
             target_member,member_pred=get_target_members(g=g,target_subject=property_target)
             o=[logger.info("target_member: %s",format_node(trg_memb)) for trg_memb in target_member]
             for condition in conditions:
-                value,comparator=get_condition_value(g=g,condition=condition)
+                value,comparator,target_name=get_condition_value(g=g,condition=condition)
                 o=[logger.info("value: %s %s, predicate: %s",v[RDF.value],v[RDFS.label],format_node(comparator))
                    for v in value]
 
                 # --- 3gpp intent construction ----
                 # format_node(v[RDF.value]) -> str(v[RDF.value]) to avoid decimal word
                 value_labels=[(format_node(v[RDF.value]),format_node(v[RDFS.label])) for v in value]
+                if target_name:
+                    target_name_3gpp=format_node(target_name)
+                else:
+                    target_name_3gpp=format_node(condition)
                 expectation_target={
-                                    "targetName": format_node(condition),
+                                    "targetName": target_name_3gpp,
                                     "targetCondition": rdf_to_3gpp_condition(comparator),
                                     "targetValueRange": str(value_labels),
                                     "targetContext": {}
@@ -404,7 +412,7 @@ if __name__=="__main__":
         intent_model={
                 "Intent": {
                     "id": "1",
-                    "userLabel": "rdf",
+                    "userLabel": format_node(intent),
                     "intentExpectations": intent_expectations,
                     # "intentContexts": [
                     # {
