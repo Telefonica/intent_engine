@@ -10,10 +10,9 @@ components:
     Intent-nrmg:
       description: >-
         This set of intents represent the possible request to the network.
-      oneOf:
-        - $ref: "IntentMncc.yaml#/components/schemas/Intent-mncc"
-    Slice-request:
-      description: >-
-        This set of intents represent the possible request to the network.
-      oneOf: 
-        - $ref: "IntentSlice.yaml#/components/schemas/Debug-slice"
+      type: object
+      properties:
+        Intent:  
+          oneOf:
+            - $ref: "IntentMncc.yaml#/components/schemas/Intent-mncc"
+            - $ref: "IntentBSSF.yaml#/components/schemas/Intent-bssf"

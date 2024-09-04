@@ -162,6 +162,10 @@ components:
             - 5GC_SubNetwork  #value for 5GC Network Expectation--#
             - L2SM_NETWORK
             - Sub_Slice
+            - Slice_Energy_Saving
+            - Slice_5ginduce
+            - Node_5ginduce
+            - LinkNode_5ginduce
         objectInstance:
           $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
         contextSelectivity:

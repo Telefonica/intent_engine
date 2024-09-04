@@ -13,6 +13,7 @@
 # limitations under the License.
 from typing import List
 import logging
+from devtools import pprint
 from fastapi.encoders import jsonable_encoder
 from intent_engine.core import IntentNrm
 from pydantic import ValidationError
@@ -21,7 +22,8 @@ logger = logging.getLogger(__name__)
 class IntentModel():
     def __init__(self,intent_dict: dict = {}) -> None:
         try:
-            self.__intent : IntentNrm.IntentMncc = IntentNrm.IntentMncc(**intent_dict['Intent'])
+            pprint(intent_dict)
+            self.__intent : IntentNrm.IntentNrmg = IntentNrm.IntentNrmg(**intent_dict).Intent
             logger.debug("Schema Type Expectation: %s",type(self.__intent.intentExpectations[0]))
         except ValidationError as exc:
             logger.warning("Assurance error %s", exc)

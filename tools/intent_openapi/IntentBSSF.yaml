@@ -1,0 +1,51 @@
+openapi: 3.0.1
+info:
+  title: Intent for BSSF
+  version: 1.0.0
+  description: >-
+    OAS 3.0.1 definition for a new intentExpectation for BSSF
+paths: {}
+components:
+  schemas:
+    Intent-bssf:
+      description: >-
+        This set of intents represent the possible request to the BSSF.
+      # $ref : "TS28312_IntentNrm.yaml#/components/schemas/Intent-Single"
+      allOf:
+        - $ref : "TS28312_IntentNrm.yaml#/components/schemas/Intent-Single"
+        - type: object
+          properties:
+            userLabel:
+              type: string
+            intentExpectations:
+              description: >-
+                     Expectations for all the bsff green slices
+              type: array
+              items:
+                # type: object
+                anyOf:
+                  - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"       
+            intentContexts:
+              type: array
+              items:
+                oneOf:
+                  - $ref : "#/components/schemas/GreenIntentContext"
+              description: >-
+                It describes the list of Context(s) in BSSF which represents the constraints and conditions that should apply 
+                for the entire intent even if there may be specific contexts defined for specific parts of the intent 
+
+    GreenIntentContext:
+      description: >-
+            6GREEN identifier
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - 6GREEN_ID
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string

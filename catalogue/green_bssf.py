@@ -28,7 +28,7 @@ class green_bssf(abstract_library):
            "green" : {
                "intent_id":{
                     "Slice_Energy_Saving":{
-                        "ensure":"green_bssf"
+                        "ENSURE":"green_bssf"
                         } #mirar esto
                     }
                 }
