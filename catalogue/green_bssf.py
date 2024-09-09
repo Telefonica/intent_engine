@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import logging
+from typing import List
 
 from devtools import pprint
 from intent_engine.catalogue.abstract_library import abstract_library
@@ -38,7 +39,7 @@ class green_bssf(abstract_library):
         self.__params=params
     
 
-    def generate_subintent(self,intent_model:IntentModel) -> IntentModel:
+    def generate_subintent(self,intent_model:IntentModel) -> list[IntentModel]:
         """
         Return sub intents of a slice in a green context.
         Also return library to porcess the subintent, as green_bssf is not ilu,
@@ -46,32 +47,39 @@ class green_bssf(abstract_library):
         """
         intent=intent_model.get_intent()
         logger.debug("Generating Green subintent...")
+        intent_dict=intent.dict(exclude_defaults=True)
         green_expectations=[]
         slice_expectations=[]
+        subintent_green={}
+        subintent_slice={}
+
         for i,exp in enumerate(intent.intentExpectations):
             if exp.expectationVerb.value == 'ENSURE':
-                intent_dict=intent.dict(exclude_defaults=True)
+                
                 intent_dict['intentExpectations'][i]['expectationObject']['objectType']='Slice_Energy_Saving'
-
-                green_expectations.append(intent_dict)
+                green_expectations.append(intent_dict['intentExpectations'][i])
                 # pprint(intent_dict)
                 
 
             if exp.expectationVerb.value == 'DELIVER':
-                # new_dict=exp.dict()
-                # new_dict['expectationObject']['objectType']='L2VPN_TFS'
-                intent_dict=intent.dict(exclude_defaults=True)
+
                 intent_dict['intentExpectations'][i]['expectationObject']['objectType']='Slice_5ginduce'
-                # pprint(new_dict)
-                # IntentNrm.NewTFSL2VPNIntentExpectation(**new_dict)
-                # pprint(jsonable_model_encoder(intent_dict))
-                
+                slice_expectations.append(intent_dict['intentExpectations'][i])
+
         # TODO: meter la nbi de TFS como parte del context para el subintent
-        subintent_green=IntentNrm.IntentBssf(**jsonable_model_encoder(intent_dict))
-        subintent_slice=IntentNrm.IntentBssf(**jsonable_model_encoder(intent_dict))
+        subintent_green['Intent']={'intentExpectations':green_expectations,
+                                   'id':intent_dict['id'],
+                                    'userLabel':'enif_slice',
+                                    'intentPriority':intent_dict['intentPriority']}
+        # TODO:check intentPriority:  ,observationPeriod: , intentAdminState: ''? maintain?
+
+        subintent_slice['Intent']={'intentExpectations':slice_expectations,
+                                   'id':intent_dict['id'],
+                                    'userLabel':'enif_slice',
+                                    'intentPriority':intent_dict['intentPriority']}
         # logger.debug("Green subintent : %s",subintent)
         # intent_model.set_intent(subintent)
-        return subintent_green,subintent_slice
+        return [IntentModel(subintent_green),IntentModel(subintent_slice)]
     
     def translator(self,subintent : IntentModel)-> tuple[list , str]:
         exec_params=[]

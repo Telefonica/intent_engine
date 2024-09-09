@@ -78,11 +78,19 @@ class Classifier():
                         logger.debug("reclassify...")
                         sub_intent=module.generate_subintent(intent)
                         # TODO: classify for each subintent?
-                        logger.debug("sub_intent iteration noILU: %s",sub_intent)
-                        sub_intent,sub_ilu=self.classify(sub_intent)
-                        translators.extend(sub_ilu)
-                        sub_intents.extend(sub_intent)
-                        logger.debug("translators iteration noILU: %s",translators)
+                        if isinstance(sub_intent,list):
+                            for division in sub_intent:
+                                logger.debug("sub_intent iteration noILU: %s",sub_intent)
+                                sub_intent,sub_ilu=self.classify(division)
+                                translators.extend(sub_ilu)
+                                sub_intents.extend(sub_intent)
+                                logger.debug("translators iteration noILU: %s",translators)
+                        else: 
+                            logger.debug("sub_intent iteration noILU: %s",sub_intent)
+                            sub_intent,sub_ilu=self.classify(sub_intent)
+                            translators.extend(sub_ilu)
+                            sub_intents.extend(sub_intent)
+                            logger.debug("translators iteration noILU: %s",translators)
                     
         # if translators:
             # logger.debug("Translators: %s || Subintent: %s",translators[:],sub_intent)

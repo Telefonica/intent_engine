@@ -25,13 +25,11 @@ class enif_slice(abstract_library):
     """
     def __init__(self):
         decision_tree={
-           "green" : {
-               "intent_id":{
-                   "slice_intent_5ginduce":{
-                       "deploy": "enif_slice",
-                       "ensure": "enif_slice"} #mirar esto
-                    }
-                }
+           "enif_slice" : {
+                   "Slice_5ginduce":{"DELIVER":"enif_slice"},
+                   "Node_5ginduce":{"DELIVER":"enif_slice"},
+                   "LinkNode_5ginduce":{"DELIVER":"enif_slice"},
+                   }
         }
         self.__componentNodeInstances={
           "componentNodeInstanceID": "",
@@ -221,26 +219,26 @@ class enif_slice(abstract_library):
         Return sub intents of a slice in a green context.
         """
         logger.debug("Simple enif_slice")
-        logger.debug("With intent: %s", intent.get_name())
-        subintent=IntentModel()
-        subintent.set_name(intent.get_name())
-        subintent.set_context(intent.get_context())
-        for exp in intent.get_expectations():
-            if exp.get_object().get_type() == 'slice_intent_5ginduce':
-                match exp.get_verb():
-                    # remove any not enif_slice type expectation
-                    case "deploy":
-                        logger.debug("Generating sub intent ENIF->ENIF...")
-                        ilu="enif_slice"
-                        subintent.set_expectations([exp])
-                        subintent.set_context(intent.get_context())
-                        logger.debug("generated subintent:%s",subintent)
-                    case "ensure":
-                        logger.debug("Generating sub intent GREEN(ENIF)->ENIF...")
-                        ilu="enif_slice"
-                        subintent.set_expectations([exp])
-                        subintent.set_context(intent.get_context())
-                        logger.debug("generated subintent:%s",subintent)
+        logger.debug("With intent: %s", intent.get_dict()['userLabel'])
+        subintent=intent.get_intent()
+        # subintent.set_name(intent.get_name())
+        # subintent.set_context(intent.get_context())
+        # for exp in intent.get_expectations():
+        #     if exp.get_object().get_type() == 'slice_intent_5ginduce':
+        #         match exp.get_verb():
+        #             # remove any not enif_slice type expectation
+        #             case "deploy":
+        #                 logger.debug("Generating sub intent ENIF->ENIF...")
+        #                 ilu="enif_slice"
+        #                 subintent.set_expectations([exp])
+        #                 subintent.set_context(intent.get_context())
+        #                 logger.debug("generated subintent:%s",subintent)
+        #             case "ensure":
+        #                 logger.debug("Generating sub intent GREEN(ENIF)->ENIF...")
+        #                 ilu="enif_slice"
+        #                 subintent.set_expectations([exp])
+        #                 subintent.set_context(intent.get_context())
+        #                 logger.debug("generated subintent:%s",subintent)
         return subintent
     
     def slice_schema(self, slice_content: dict):
