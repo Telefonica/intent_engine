@@ -8,10 +8,10 @@ Intent:
         objectType: 'Slice_Energy_Saving'
         objectInstance: '330'
         objectContexts:
-          - contextAttribute: 'node_instance_id'
+          - contextAttribute: 'NodeInstanceID'
             contextCondition: 'IS_EQUAL_TO'
             contextValueRange: ''
-          - contextAttribute: 'node_instance_id'
+          - contextAttribute: 'NodeInstanceID'
             contextCondition: 'IS_EQUAL_TO'
             contextValueRange: ''
       expectationTargets:
