@@ -13,8 +13,11 @@
 # limitations under the License.
 
 import logging
+
+from devtools import pprint
 from intent_engine.catalogue.abstract_library import abstract_library
-from intent_engine.core.ib_model import IntentModel
+from intent_engine.core import IntentNrm
+from intent_engine.core.ib_model import IntentModel, jsonable_model_encoder
 
 logger = logging.getLogger(__name__)
 
@@ -26,45 +29,49 @@ class green_bssf(abstract_library):
         params={}
         decision_tree={
            "green" : {
-               "intent_id":{
                     "Slice_Energy_Saving":{
                         "ENSURE":"green_bssf"
                         } #mirar esto
                     }
-                }
         }
         super().__init__(module_name="green_bssf",isILU=False,params=params,decision_tree=decision_tree)
         self.__params=params
     
 
-    def generate_subintent(self,intent:IntentModel) -> IntentModel:
+    def generate_subintent(self,intent_model:IntentModel) -> IntentModel:
         """
         Return sub intents of a slice in a green context.
         Also return library to porcess the subintent, as green_bssf is not ilu,
         this means have no final tranlation with a technology.
         """
-        subintent=IntentModel()
-        ilu=""
-        subintent.set_name(intent.get_name())
-        subintent.set_context(intent.get_context())
-        for exp in intent.get_expectations():
-            match exp.get_verb():
-                case "ensure":
-                    # Maybe ilu in not needed as next
-                    # library will detect the intent as own
-                    logger.debug("Generating sub intent green->ENIF...")
-                    ilu="enif_slice"
-                    # create new object from existing intent
-                    logger.debug("Context to generate new: ")
-                    ctxs=[ctx.get_dict() for ctx in exp.get_object().get_contexts()]
-                    logger.debug("ctxs: %s",ctxs)
-                    new_obj=Object_expectation('slice_intent_5ginduce','6Green_slice_1',ctxs)
-                    # change type so ENIF library understands
-                    exp.set_object(new_obj)
-                    logger.debug("new expectation for subint: %s",exp)
-                    subintent.set_expectations([exp])
-                    logger.debug("generated subintent green->ENIF:%s",subintent)
-        return subintent
+        intent=intent_model.get_intent()
+        logger.debug("Generating Green subintent...")
+        green_expectations=[]
+        slice_expectations=[]
+        for i,exp in enumerate(intent.intentExpectations):
+            if exp.expectationVerb.value == 'ENSURE':
+                intent_dict=intent.dict(exclude_defaults=True)
+                intent_dict['intentExpectations'][i]['expectationObject']['objectType']='Slice_Energy_Saving'
+
+                green_expectations.append(intent_dict)
+                # pprint(intent_dict)
+                
+
+            if exp.expectationVerb.value == 'DELIVER':
+                # new_dict=exp.dict()
+                # new_dict['expectationObject']['objectType']='L2VPN_TFS'
+                intent_dict=intent.dict(exclude_defaults=True)
+                intent_dict['intentExpectations'][i]['expectationObject']['objectType']='Slice_5ginduce'
+                # pprint(new_dict)
+                # IntentNrm.NewTFSL2VPNIntentExpectation(**new_dict)
+                # pprint(jsonable_model_encoder(intent_dict))
+                
+        # TODO: meter la nbi de TFS como parte del context para el subintent
+        subintent_green=IntentNrm.IntentBssf(**jsonable_model_encoder(intent_dict))
+        subintent_slice=IntentNrm.IntentBssf(**jsonable_model_encoder(intent_dict))
+        # logger.debug("Green subintent : %s",subintent)
+        # intent_model.set_intent(subintent)
+        return subintent_green,subintent_slice
     
     def translator(self,subintent : IntentModel)-> tuple[list , str]:
         exec_params=[]

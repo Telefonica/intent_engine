@@ -40,7 +40,7 @@ Intent:
           contextCondition: 'IS_EQUAL_TO'
           contextValueRange: '6Green_slice_1'
     - expectationId: '2'
-      expectationVerb: 'ENSURE'
+      expectationVerb: 'DELIVER'
       expectationObject:
         objectType: 'Slice_5ginduce'
         objectInstance: 'Minimal-Slice-NAO-OSS-demo'
