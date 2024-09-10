@@ -71,146 +71,149 @@ class enif_slice(abstract_library):
         super().__init__(module_name="enif_slice",isILU=True,params=params,decision_tree=decision_tree)
         self.__params=params
     
-    def translator(self,subintent : IntentModel) -> tuple[list , str]:
+    def translator(self,intent_model : IntentModel) -> tuple[list , str]:
         exec_params=[]
         params={}
         instances={}
+        subintent=intent_model.get_intent()
         logger.info("Translating enif_slice...")
+        # logger.debug(type(subintent.get_intent().intentExpectations[0]))
         logger.debug("debug enif_slice connector...")
         logger.debug("subint: %s",subintent)
-        for exp in subintent.get_expectations():
-            exp_verb=exp.get_verb()
-            logger.debug("expectation case %s",exp_verb)
-            match exp_verb:
-                case "ensure":
-                    exec_params=[]
-                    self.__params={
-                        "Constrain type":"green"
-                    }
-                    logger.info("Translating green_bssf in enif...")
-                    logger.debug("debug enif_slice...")
+        for exp in subintent.intentExpectations:
+            logger.debug(type(exp))
+        #     exp_verb=exp.get_verb()
+        #     logger.debug("expectation case %s",exp_verb)
+        #     match exp_verb:
+        #         case "ensure":
+        #             exec_params=[]
+        #             self.__params={
+        #                 "Constrain type":"green"
+        #             }
+        #             logger.info("Translating green_bssf in enif...")
+        #             logger.debug("debug enif_slice...")
                     
-                    return [self.__params,exec_params],"sysout"
-                case "deploy":
-                    exp_obj=exp.get_object()
-                    logger.debug("deploy case obj: %s",exp_obj)
-                    exp_type=exp_obj.get_type()
-                    match exp_type:
-                        case "slice_intent_5ginduce":
-                            for obj_ctx in exp_obj.get_contexts():
-                                # Loop ctx inside obj
-                                logger.debug("objectctx case %s: ",obj_ctx)
-                                att=obj_ctx.get_attribute()
-                                match att:
-                                    case "name":
-                                        logger.debug("name case %s",obj_ctx.get_value_range())
-                                        self.__params['name']=obj_ctx.get_value_range()
-                                        logger.debug("params after %s",self.__params)
-                                        if obj_ctx.get_name() not in instances.keys():
-                                            instances[obj_ctx.get_name()]={}
-                                        instances[obj_ctx.get_name()]['name']=obj_ctx.get_value_range()
-                                    case "hex_ID":
-                                        logger.debug("hex_ID case")
-                                        if obj_ctx.get_name() not in instances.keys():
-                                            instances[obj_ctx.get_name()]={}
-                                        self.__params['hex_ID']=obj_ctx.get_value_range()
-                                        instances[obj_ctx.get_name()]['hex_ID']=obj_ctx.get_value_range()
-                                    case "type":
-                                        logger.debug("type case")
-                                        if obj_ctx.get_name() not in instances.keys():
-                                            instances[obj_ctx.get_name()]={}
-                                        self.__params['type']=obj_ctx.get_value_range()
-                                        instances[obj_ctx.get_name()]['type']=obj_ctx.get_value_range()
-                                    case "from_to":
-                                        logger.debug("from_to case")
-                                        if obj_ctx.get_name() not in instances.keys():
-                                            instances[obj_ctx.get_name()]={}
-                                        self.__params['from_to']=obj_ctx.get_value_range()
-                                        instances[obj_ctx.get_name()]['from_to']=obj_ctx.get_value_range()
-                                    case "to":
-                                        logger.debug("to case")
-                                        if obj_ctx.get_name() not in instances.keys():
-                                            instances[obj_ctx.get_name()]={}
-                                        self.__params['to']=obj_ctx.get_value_range()
-                                        instances[obj_ctx.get_name()]['to']=obj_ctx.get_value_range()
-                    for trg_ctx in exp.get_target():
-                        # Loop trg inside exp
-                        att=trg_ctx.get_attribute()
-                        match att:
-                            case "RAM":
-                                logger.debug("RAM case")
-                                trg_ctx=trg_ctx.get_context()
-                                if trg_ctx:
-                                    for ctx in trg_ctx:
-                                        # Loop ctx inside trg inside exp
-                                        att=ctx.get_attribute()
-                                        match att:
-                                            case "type":
-                                                logger.debug("type_trg_ctx case")
-                            case "V_CPU":
-                                logger.debug("V_CPU case")
-                                trg_ctx=trg_ctx.get_context()
-                                if trg_ctx:
-                                    for ctx in trg_ctx:
-                                        # Loop ctx inside trg inside exp
-                                        att=ctx.get_attribute()
-                                        match att:
-                                            case "type":
-                                                logger.debug("type_trg_ctx case")
-                            case "region":
-                                logger.debug("region case")
-                                trg_ctx=trg_ctx.get_context()
-                                if trg_ctx:
-                                    for ctx in trg_ctx:
-                                        # Loop ctx inside trg inside exp
-                                        att=ctx.get_attribute()
-                                        match att:
-                                            case "radio_service_type":
-                                                logger.debug("radio_service_type_trg_ctx case")
-                            case "guaranteed_bandwidth":
-                                logger.debug("guaranteed_bandwidth case")
-                                trg_ctx=trg_ctx.get_context()
-                                if trg_ctx:
-                                    for ctx in trg_ctx:
-                                        # Loop ctx inside trg inside exp
-                                        att=ctx.get_attribute()
-                                        match att:
-                                            case "radio_service_type":
-                                                logger.debug("radio_service_type_trg_ctx case")
-                                            case "resource_service_type":
-                                                logger.debug("resource_service_type_trg_ctx case")
-                                            case "qi":
-                                                logger.debug("qi_trg_ctx case")
-                                            case "allocation_priority_profile":
-                                                logger.debug("allocation_priority_profile_trg_ctx case")
+        #             return [self.__params,exec_params],"sysout"
+        #         case "deploy":
+        #             exp_obj=exp.get_object()
+        #             logger.debug("deploy case obj: %s",exp_obj)
+        #             exp_type=exp_obj.get_type()
+        #             match exp_type:
+        #                 case "slice_intent_5ginduce":
+        #                     for obj_ctx in exp_obj.get_contexts():
+        #                         # Loop ctx inside obj
+        #                         logger.debug("objectctx case %s: ",obj_ctx)
+        #                         att=obj_ctx.get_attribute()
+        #                         match att:
+        #                             case "name":
+        #                                 logger.debug("name case %s",obj_ctx.get_value_range())
+        #                                 self.__params['name']=obj_ctx.get_value_range()
+        #                                 logger.debug("params after %s",self.__params)
+        #                                 if obj_ctx.get_name() not in instances.keys():
+        #                                     instances[obj_ctx.get_name()]={}
+        #                                 instances[obj_ctx.get_name()]['name']=obj_ctx.get_value_range()
+        #                             case "hex_ID":
+        #                                 logger.debug("hex_ID case")
+        #                                 if obj_ctx.get_name() not in instances.keys():
+        #                                     instances[obj_ctx.get_name()]={}
+        #                                 self.__params['hex_ID']=obj_ctx.get_value_range()
+        #                                 instances[obj_ctx.get_name()]['hex_ID']=obj_ctx.get_value_range()
+        #                             case "type":
+        #                                 logger.debug("type case")
+        #                                 if obj_ctx.get_name() not in instances.keys():
+        #                                     instances[obj_ctx.get_name()]={}
+        #                                 self.__params['type']=obj_ctx.get_value_range()
+        #                                 instances[obj_ctx.get_name()]['type']=obj_ctx.get_value_range()
+        #                             case "from_to":
+        #                                 logger.debug("from_to case")
+        #                                 if obj_ctx.get_name() not in instances.keys():
+        #                                     instances[obj_ctx.get_name()]={}
+        #                                 self.__params['from_to']=obj_ctx.get_value_range()
+        #                                 instances[obj_ctx.get_name()]['from_to']=obj_ctx.get_value_range()
+        #                             case "to":
+        #                                 logger.debug("to case")
+        #                                 if obj_ctx.get_name() not in instances.keys():
+        #                                     instances[obj_ctx.get_name()]={}
+        #                                 self.__params['to']=obj_ctx.get_value_range()
+        #                                 instances[obj_ctx.get_name()]['to']=obj_ctx.get_value_range()
+        #             for trg_ctx in exp.get_target():
+        #                 # Loop trg inside exp
+        #                 att=trg_ctx.get_attribute()
+        #                 match att:
+        #                     case "RAM":
+        #                         logger.debug("RAM case")
+        #                         trg_ctx=trg_ctx.get_context()
+        #                         if trg_ctx:
+        #                             for ctx in trg_ctx:
+        #                                 # Loop ctx inside trg inside exp
+        #                                 att=ctx.get_attribute()
+        #                                 match att:
+        #                                     case "type":
+        #                                         logger.debug("type_trg_ctx case")
+        #                     case "V_CPU":
+        #                         logger.debug("V_CPU case")
+        #                         trg_ctx=trg_ctx.get_context()
+        #                         if trg_ctx:
+        #                             for ctx in trg_ctx:
+        #                                 # Loop ctx inside trg inside exp
+        #                                 att=ctx.get_attribute()
+        #                                 match att:
+        #                                     case "type":
+        #                                         logger.debug("type_trg_ctx case")
+        #                     case "region":
+        #                         logger.debug("region case")
+        #                         trg_ctx=trg_ctx.get_context()
+        #                         if trg_ctx:
+        #                             for ctx in trg_ctx:
+        #                                 # Loop ctx inside trg inside exp
+        #                                 att=ctx.get_attribute()
+        #                                 match att:
+        #                                     case "radio_service_type":
+        #                                         logger.debug("radio_service_type_trg_ctx case")
+        #                     case "guaranteed_bandwidth":
+        #                         logger.debug("guaranteed_bandwidth case")
+        #                         trg_ctx=trg_ctx.get_context()
+        #                         if trg_ctx:
+        #                             for ctx in trg_ctx:
+        #                                 # Loop ctx inside trg inside exp
+        #                                 att=ctx.get_attribute()
+        #                                 match att:
+        #                                     case "radio_service_type":
+        #                                         logger.debug("radio_service_type_trg_ctx case")
+        #                                     case "resource_service_type":
+        #                                         logger.debug("resource_service_type_trg_ctx case")
+        #                                     case "qi":
+        #                                         logger.debug("qi_trg_ctx case")
+        #                                     case "allocation_priority_profile":
+        #                                         logger.debug("allocation_priority_profile_trg_ctx case")
                     
-                    for exp_ctx in exp.get_context():
-                        att=exp_ctx.get_attribute()
-                        match att:
-                            case "url":
-                                logger.debug("url case")
+        #             for exp_ctx in exp.get_context():
+        #                 att=exp_ctx.get_attribute()
+        #                 match att:
+        #                     case "url":
+        #                         logger.debug("url case")
                                 
-                                params['url']=exp_ctx.get_value_range()
-                                params['headers'] = {'Content-Type': 'multipart/form-data'}
-                                params['connect_type'] = 'get'
-                            case "user":
-                                logger.debug("user case")
-                                params['user']=exp_ctx.get_value_range()
-                            case "password":
-                                logger.debug("pass case")
-                                params['password']=exp_ctx.get_value_range()
+        #                         params['url']=exp_ctx.get_value_range()
+        #                         params['headers'] = {'Content-Type': 'multipart/form-data'}
+        #                         params['connect_type'] = 'get'
+        #                     case "user":
+        #                         logger.debug("user case")
+        #                         params['user']=exp_ctx.get_value_range()
+        #                     case "password":
+        #                         logger.debug("pass case")
+        #                         params['password']=exp_ctx.get_value_range()
 
 
-        # esto debería context del intent
-        logger.debug("int ctx: %s",subintent.get_context())
-        match subintent.get_context().get_name():
-            case "green":
-                logger.debug("intent context green case")
-                match subintent.get_context().get_attribute():
-                    case "state":
-                        logger.debug("intent context att state case")
-                    case "permits":
-                        logger.debug("intent context att permits case")
+        # # esto debería context del intent
+        # logger.debug("int ctx: %s",subintent.get_context())
+        # match subintent.get_context().get_name():
+        #     case "green":
+        #         logger.debug("intent context green case")
+        #         match subintent.get_context().get_attribute():
+        #             case "state":
+        #                 logger.debug("intent context att state case")
+        #             case "permits":
+        #                 logger.debug("intent context att permits case")
 
         return [self.slice_schema(instances),params],"sysout"
 
@@ -218,7 +221,7 @@ class enif_slice(abstract_library):
         """
         Return sub intents of a slice in a green context.
         """
-        logger.debug("Simple enif_slice")
+        logger.debug("Simple enif_slice %s", type(intent))
         logger.debug("With intent: %s", intent.get_dict()['userLabel'])
         subintent=intent.get_intent()
         # subintent.set_name(intent.get_name())
@@ -239,11 +242,12 @@ class enif_slice(abstract_library):
         #                 subintent.set_expectations([exp])
         #                 subintent.set_context(intent.get_context())
         #                 logger.debug("generated subintent:%s",subintent)
-        return subintent
+        return intent
     
     def slice_schema(self, slice_content: dict):
         componentNodeInstances=[]
         graphLinkNodeInstances=[]
+        componentNode={}
         for instace in slice_content:
             logger.debug("split content %s",instace.split("node_instance_"))
             if instace.split("node_instance_")[0] == "":
