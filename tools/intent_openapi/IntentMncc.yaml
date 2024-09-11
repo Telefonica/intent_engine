@@ -29,7 +29,7 @@ components:
                   - $ref: "IntentExpectation_L2VPN.yaml#/components/schemas/NewL2VPNIntentExpectation"
                   - $ref: "IntentExpectation_TFS.yaml#/components/schemas/NewTFSL2VPNIntentExpectation"              # - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/L2SMExpectations"
                   # - $ref: "IntentExpectation_5GCMC.yaml#/components/schemas/5GCMCExpectations"
-                  - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"       
+                  # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"       
             intentContexts:
               type: array
               items:

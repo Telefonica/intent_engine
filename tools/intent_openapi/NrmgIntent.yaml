@@ -16,3 +16,4 @@ components:
           oneOf:
             - $ref: "IntentMncc.yaml#/components/schemas/Intent-mncc"
             - $ref: "IntentBSSF.yaml#/components/schemas/Intent-bssf"
+            - $ref : "TS28312_IntentNrm.yaml#/components/schemas/Intent-Single"

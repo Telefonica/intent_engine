@@ -41,6 +41,7 @@ class IntentAssurance():
         logger.debug("Fields in IntentNrmg %s",get_args(IntentNrm.IntentNrmg.__fields__['Intent'].type_))
         schema_type=get_args(IntentNrm.IntentNrmg.__fields__['Intent'].type_)
         # for exp in intent.intentExpectations:
+        # TODO: por cada expectation?
         for schema in schema_type:
             try:
                 exp_class=schema(**(intent_dict))
@@ -58,14 +59,23 @@ class IntentAssurance():
                     if len(loc['loc'])>deepness:
                         deepness=len( loc['loc'] )
                 errors_in=[]
+                error_in=[]
                 for loc in min_error:
                     error_loc=loc['loc']
                     if len(error_loc)==deepness:
-                        # logger.debug("Error_location %s", error_loc)
+                        logger.debug("Deepness: %s, Error_location:  %s", deepness,error_loc)
                         for i,err in enumerate(error_loc):
                             # logger.debug("Error_location possition i: %s", i)
+                            # logger.debug("schema: %s error_loc[i]: %s",schema ,error_loc[i])
                             if i==0:
-                                error_in=getattr(exp, error_loc[i])
+                                # schema ?? before was exp->schema due2 for
+                                # if isinstance(error_loc[i],int):
+                                #     error_in=error_in[error_loc[i]]
+                                # else:
+                                error_in=getattr(intent, error_loc[i])
+                                # logger.debug("%s ","-")
+                            # elif i==1:
+                            #     error_in=getattr(schema, (error_loc[i-1])[error_loc[i]])
                             else:
                                 if isinstance(error_loc[i],int):
                                     error_in=error_in[error_loc[i]]
@@ -78,12 +88,13 @@ class IntentAssurance():
                 o=[logger.debug("Attribute error in %s", err) for err in unique_errors]
                 raise exc
             else:
-                if not isinstance(exp_class,IntentNrm.IntentExpectation):
-                    logger.warning("Assure for %s",schema)
-                    # return True
-                else:
-                    logger.warning("General intentExpectaion assurance %s",schema)
-                    # return True
+                for expectation in exp_class.intentExpectations:
+                    if not isinstance(expectation,IntentNrm.IntentExpectation):
+                        logger.warning("Assure for %s",schema)
+                        # return True
+                    else:
+                        logger.warning("General intentExpectaion assurance %s",schema)
+                        # return True
                 return True
 
     

@@ -68,6 +68,7 @@ def core():
     assurer=IntentAssurance()
 
     while True:
+        print("------- Wating Intent -------")
         pop=buffer.get()
         try:
             intent: IntentModel = IntentModel(pop)
@@ -97,7 +98,9 @@ def core():
                 assurer.attribute_error_handler(exception)
                 break_loop=True
                 continue
-        if break_loop: continue
+        if break_loop: 
+            logger.warning("Breaking intent closed loop")
+            continue
         # ------ Intent translator -------
         for i,ilu in enumerate(ill):
             print("------ Intent translator -------")
