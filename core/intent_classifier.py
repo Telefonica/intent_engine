@@ -52,6 +52,7 @@ class Classifier():
         intent=intent_model
         for tree in self.__trees:
             # get all libraries capable of translate the intent
+            logger.debug("Keywords: %s",intent_model.get_keywords())
             self.find_in_tree(intent_model.get_keywords(),tree,ill)
         # unique list in case of duplicities
         unique_ill=list(set(ill))
@@ -77,12 +78,25 @@ class Classifier():
                         # this loops until ilu
                         logger.debug("reclassify...")
                         sub_intent=module.generate_subintent(intent)
+                        # If is a list of sub_intents
                         # TODO: classify for each subintent?
-                        logger.debug("sub_intent iteration noILU: %s",sub_intent)
-                        sub_intent,sub_ilu=self.classify(sub_intent)
-                        translators.extend(sub_ilu)
-                        sub_intents.extend(sub_intent)
-                        logger.debug("translators iteration noILU: %s",translators)
+                        if isinstance(sub_intent,list):
+                            # If is a list this means that the expectations must be separated in order 
+                            # to be processed?
+                            # TODO: maybe not necessary since each librar only takes its own part
+                            print(sub_intent)
+                            for division in sub_intent:
+                                logger.debug("division iteration noILU: %s",division)
+                                sub_intent,sub_ilu=self.classify(division)
+                                translators.extend(sub_ilu)
+                                sub_intents.extend(sub_intent)
+                                logger.debug("translators iteration noILU: %s",translators)
+                        else:    
+                            logger.debug("sub_intent iteration noILU: %s",sub_intent)
+                            sub_intent,sub_ilu=self.classify(sub_intent)
+                            translators.extend(sub_ilu)
+                            sub_intents.extend(sub_intent)
+                            logger.debug("translators iteration noILU: %s",translators)
                     
         # if translators:
             # logger.debug("Translators: %s || Subintent: %s",translators[:],sub_intent)

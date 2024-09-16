@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 class IntentModel():
     def __init__(self,intent_dict: dict = {}) -> None:
         try:
-            pprint(intent_dict)
+            # pprint(intent_dict)
             self.__intent : IntentNrm.IntentNrmg = IntentNrm.IntentNrmg(**intent_dict).Intent
             logger.debug("Schema Type Expectation: %s",type(self.__intent.intentExpectations[0]))
         except ValidationError as exc:

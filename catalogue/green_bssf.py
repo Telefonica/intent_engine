@@ -13,8 +13,12 @@
 # limitations under the License.
 
 import logging
+
+from devtools import pprint
+from pydantic import ValidationError
 from intent_engine.catalogue.abstract_library import abstract_library
-from intent_engine.core.ib_model import IntentModel
+from intent_engine.core.ib_model import IntentModel, jsonable_model_encoder
+from intent_engine.core import IntentNrm
 
 logger = logging.getLogger(__name__)
 
@@ -26,12 +30,15 @@ class green_bssf(abstract_library):
         params={}
         decision_tree={
            "green" : {
-               "intent_id":{
-                    "Slice_Energy_Saving":{
-                        "ENSURE":"green_bssf"
-                        } #mirar esto
-                    }
+               "Slice_Energy_Saving":{
+                    "ENSURE":"green_bssf",
+                    "DELIVER":"green_bssf"
+                },
+                "Slice_5ginduce":{
+                    "ENSURE":"green_bssf",
+                    "DELIVER":"green_bssf"
                 }
+           }
         }
         super().__init__(module_name="green_bssf",isILU=False,params=params,decision_tree=decision_tree)
         self.__params=params
@@ -43,28 +50,53 @@ class green_bssf(abstract_library):
         Also return library to porcess the subintent, as green_bssf is not ilu,
         this means have no final tranlation with a technology.
         """
-        subintent=IntentModel()
-        ilu=""
-        subintent.set_name(intent.get_name())
-        subintent.set_context(intent.get_context())
-        for exp in intent.get_expectations():
-            match exp.get_verb():
-                case "ensure":
-                    # Maybe ilu in not needed as next
-                    # library will detect the intent as own
-                    logger.debug("Generating sub intent green->ENIF...")
-                    ilu="enif_slice"
-                    # create new object from existing intent
-                    logger.debug("Context to generate new: ")
-                    ctxs=[ctx.get_dict() for ctx in exp.get_object().get_contexts()]
-                    logger.debug("ctxs: %s",ctxs)
-                    new_obj=Object_expectation('slice_intent_5ginduce','6Green_slice_1',ctxs)
-                    # change type so ENIF library understands
-                    exp.set_object(new_obj)
-                    logger.debug("new expectation for subint: %s",exp)
-                    subintent.set_expectations([exp])
-                    logger.debug("generated subintent green->ENIF:%s",subintent)
-        return subintent
+        # subintent = intent.get_intent()
+        subintents=[]
+        logger.info("Generating subintent green_bssf...")
+        logger.debug("debug green_bssf...")
+        green_expectations=[]
+        slice_expectations=[]
+        green_expectation={}
+        slice_expectation={}
+        try:
+            subintent=IntentNrm.IntentBssf(**(intent.get_dict()))
+        except ValidationError as exc:
+            logger.warning("Assurance error for IntentBssf:  %s", exc)
+            return
+        # separate green expectations from enif 5gslice
+        # reclassify in such a way that enif understands
+        for i,exp in enumerate(subintent.intentExpectations):
+            if exp.expectationVerb.value == 'ENSURE':
+                intent_dict=subintent.dict(exclude_defaults=True)
+                green_expectation=intent_dict['intentExpectations'][i]
+                green_expectations.append(green_expectation)
+
+            if exp.expectationVerb.value == 'DELIVER':
+                intent_dict=subintent.dict(exclude_defaults=True)
+                slice_expectation=intent_dict['intentExpectations'][i]
+                slice_expectations.append(slice_expectation)
+
+        # join all the expectations
+        slice_expectations={
+                'Intent':
+                    {'id':intent_dict['id'],
+                     'userLabel':intent_dict['userLabel'],
+                    'intentContexts': intent_dict['intentContexts'],
+                    'intentExpectations': slice_expectations}
+                }
+        green_expectations={
+            'Intent':
+                    {'id':intent_dict['id'],
+                     'userLabel':intent_dict['userLabel'],
+                    'intentContexts': intent_dict['intentContexts'],
+                    'intentExpectations': green_expectations}
+                }
+        # TODO: what to do with   intentPriority: 1
+                                # observationPeriod: 60
+                                # intentAdminState: 'ACTIVATED'
+        # keep everithing except for the exp and ctx
+        return [IntentModel(slice_expectations),
+                IntentModel(green_expectations)]
     
     def translator(self,subintent : IntentModel)-> tuple[list , str]:
         exec_params=[]

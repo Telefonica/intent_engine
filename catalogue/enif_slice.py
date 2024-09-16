@@ -26,10 +26,8 @@ class enif_slice(abstract_library):
     def __init__(self):
         decision_tree={
            "green" : {
-               "intent_id":{
-                   "slice_intent_5ginduce":{
-                       "deploy": "enif_slice",
-                       "ensure": "enif_slice"} #mirar esto
+               "Slice_Energy_Saving":{
+                   "DEPLOY":"enif_slice"
                     }
                 }
         }
