@@ -13,12 +13,12 @@
 # limitations under the License.
 
 import logging
+from typing import List
 
 from devtools import pprint
-from pydantic import ValidationError
 from intent_engine.catalogue.abstract_library import abstract_library
-from intent_engine.core.ib_model import IntentModel, jsonable_model_encoder
 from intent_engine.core import IntentNrm
+from intent_engine.core.ib_model import IntentModel, jsonable_model_encoder
 
 logger = logging.getLogger(__name__)
 
@@ -44,59 +44,47 @@ class green_bssf(abstract_library):
         self.__params=params
     
 
-    def generate_subintent(self,intent:IntentModel) -> IntentModel:
+    def generate_subintent(self,intent_model:IntentModel) -> list[IntentModel]:
         """
         Return sub intents of a slice in a green context.
         Also return library to porcess the subintent, as green_bssf is not ilu,
         this means have no final tranlation with a technology.
         """
-        # subintent = intent.get_intent()
-        subintents=[]
-        logger.info("Generating subintent green_bssf...")
-        logger.debug("debug green_bssf...")
+        intent=intent_model.get_intent()
+        logger.debug("Generating Green subintent...")
+        intent_dict=intent.dict(exclude_defaults=True)
         green_expectations=[]
         slice_expectations=[]
-        green_expectation={}
-        slice_expectation={}
-        try:
-            subintent=IntentNrm.IntentBssf(**(intent.get_dict()))
-        except ValidationError as exc:
-            logger.warning("Assurance error for IntentBssf:  %s", exc)
-            return
-        # separate green expectations from enif 5gslice
-        # reclassify in such a way that enif understands
-        for i,exp in enumerate(subintent.intentExpectations):
+        subintent_green={}
+        subintent_slice={}
+
+        for i,exp in enumerate(intent.intentExpectations):
             if exp.expectationVerb.value == 'ENSURE':
-                intent_dict=subintent.dict(exclude_defaults=True)
-                green_expectation=intent_dict['intentExpectations'][i]
-                green_expectations.append(green_expectation)
+                
+                intent_dict['intentExpectations'][i]['expectationObject']['objectType']='Slice_Energy_Saving'
+                green_expectations.append(intent_dict['intentExpectations'][i])
+                # pprint(intent_dict)
+                
 
             if exp.expectationVerb.value == 'DELIVER':
-                intent_dict=subintent.dict(exclude_defaults=True)
-                slice_expectation=intent_dict['intentExpectations'][i]
-                slice_expectations.append(slice_expectation)
 
-        # join all the expectations
-        slice_expectations={
-                'Intent':
-                    {'id':intent_dict['id'],
-                     'userLabel':intent_dict['userLabel'],
-                    'intentContexts': intent_dict['intentContexts'],
-                    'intentExpectations': slice_expectations}
-                }
-        green_expectations={
-            'Intent':
-                    {'id':intent_dict['id'],
-                     'userLabel':intent_dict['userLabel'],
-                    'intentContexts': intent_dict['intentContexts'],
-                    'intentExpectations': green_expectations}
-                }
-        # TODO: what to do with   intentPriority: 1
-                                # observationPeriod: 60
-                                # intentAdminState: 'ACTIVATED'
-        # keep everithing except for the exp and ctx
-        return [IntentModel(slice_expectations),
-                IntentModel(green_expectations)]
+                intent_dict['intentExpectations'][i]['expectationObject']['objectType']='Slice_5ginduce'
+                slice_expectations.append(intent_dict['intentExpectations'][i])
+
+        # TODO: meter la nbi de TFS como parte del context para el subintent
+        subintent_green['Intent']={'intentExpectations':green_expectations,
+                                   'id':intent_dict['id'],
+                                    'userLabel':'enif_slice',
+                                    'intentPriority':intent_dict['intentPriority']}
+        # TODO:check intentPriority:  ,observationPeriod: , intentAdminState: ''? maintain?
+
+        subintent_slice['Intent']={'intentExpectations':slice_expectations,
+                                   'id':intent_dict['id'],
+                                    'userLabel':'enif_slice',
+                                    'intentPriority':intent_dict['intentPriority']}
+        # logger.debug("Green subintent : %s",subintent)
+        # intent_model.set_intent(subintent)
+        return [IntentModel(subintent_green),IntentModel(subintent_slice)]
     
     def translator(self,subintent : IntentModel)-> tuple[list , str]:
         exec_params=[]

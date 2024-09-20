@@ -59,5 +59,5 @@ class abstract_library(ABC):
         pass
 
     @abstractmethod
-    def generate_subintent(self,subintent : IntentModel) -> IntentModel:
+    def generate_subintent(self,subintent : IntentModel) -> list[IntentModel]:
         pass

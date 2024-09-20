@@ -23,7 +23,7 @@ class sys_in():
     Executioner to write 
     """
     def __init__(self,queue : Queue):
-        self.__args=["inputs/","green_v2.yaml"]
+        self.__args=["inputs/","l2sm.yaml"]
         self.__queue=queue
         data=yamlParser.yaml_to_data(self.__args[0]+self.__args[1])
         for file in data:

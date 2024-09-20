@@ -25,11 +25,11 @@ class gst_gsma(abstract_library):
     def __init__(self):
         decision_tree={
            "gst" : {
-               "intent_id":{
-                   "slice_intent":{
-                       "deploy": "slice"} #mirar esto
-                    }
-                }
+                   "Slice_5ginduce":{"DELIVER":"enif_slice"},
+                   "Node_5ginduce":{"DELIVER":"enif_slice"},
+                   "LinkNode_5ginduce":{"DELIVER":"enif_slice"},
+                   }
+
         }
         params={}
         self.__gst_to_3gpp={

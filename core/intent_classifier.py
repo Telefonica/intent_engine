@@ -81,17 +81,13 @@ class Classifier():
                         # If is a list of sub_intents
                         # TODO: classify for each subintent?
                         if isinstance(sub_intent,list):
-                            # If is a list this means that the expectations must be separated in order 
-                            # to be processed?
-                            # TODO: maybe not necessary since each librar only takes its own part
-                            print(sub_intent)
                             for division in sub_intent:
-                                logger.debug("division iteration noILU: %s",division)
+                                logger.debug("sub_intent iteration noILU: %s",sub_intent)
                                 sub_intent,sub_ilu=self.classify(division)
                                 translators.extend(sub_ilu)
                                 sub_intents.extend(sub_intent)
                                 logger.debug("translators iteration noILU: %s",translators)
-                        else:    
+                        else: 
                             logger.debug("sub_intent iteration noILU: %s",sub_intent)
                             sub_intent,sub_ilu=self.classify(sub_intent)
                             translators.extend(sub_ilu)
