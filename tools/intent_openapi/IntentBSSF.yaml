@@ -24,7 +24,7 @@ components:
               items:
                 # type: object
                 anyOf:
-                  - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"       
+                  - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"  
             intentContexts:
               type: array
               items:

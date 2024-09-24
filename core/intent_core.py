@@ -92,13 +92,14 @@ def core():
         for i,ilu in enumerate(ill):
             print("------ Intent assurance -------")
             subintent=subintents[i]
+            general=True
+            assured_schema=...
             try:
-                assurer.assure_intent(subintent)
+                assurer.assure_intent(subintent,general,assured_schema)
             except ValidationError as exception:
                 assurer.attribute_error_handler(exception)
-                break_loop=True
                 continue
-        if break_loop: 
+        if not general:
             logger.warning("Breaking intent closed loop")
             continue
         # ------ Intent translator -------

@@ -79,7 +79,7 @@ class enif_slice(abstract_library):
         logger.info("Translating enif_slice...")
         # logger.debug(type(subintent.get_intent().intentExpectations[0]))
         logger.debug("debug enif_slice connector...")
-        logger.debug("subint: %s",subintent)
+        # logger.debug("subint: %s",subintent)
         for exp in subintent.intentExpectations:
             logger.debug(type(exp))
         #     exp_verb=exp.get_verb()
