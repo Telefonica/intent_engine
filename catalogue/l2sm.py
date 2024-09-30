@@ -59,7 +59,7 @@ class l2sm(abstract_library):
                        "network":"",
                        "provider_name":"",
                        "provider_domain":"",
-                       "access_list":["public-key-1", "public-key-2"]}
+                       "pod_cidr":""}
 
     def get_name(self):
         return self.__module_name
@@ -70,7 +70,7 @@ class l2sm(abstract_library):
     def isILU(self):
         """
         Return true if this library is able to procces atomic
-        intetns.
+        intents.
         """
         return self.__isILU
     
@@ -121,6 +121,7 @@ class l2sm(abstract_library):
                     exp_obj=exp.expectationObject
                     logger.debug("DELIVER case obj: %s",exp_obj)
                     exp_type=exp_obj.objectType.value
+                    params['service']="create_network"
                     match exp_type:
                         case "L2SM_NETWORK":
                             for obj_ctx in exp_obj.objectContexts:
@@ -161,34 +162,29 @@ class l2sm(abstract_library):
                     logger.debug("Url: %s",exp_ctx.contextValueRange)
                     params['url']=exp_ctx.contextValueRange
                     params['headers']={'Content-Type': 'application/x-yaml'}
-            return [self.l2sm_schema(),params],"sysout"
+            params['connector']="l2smmd"
+            return [self.l2sm_schema(params['service']),params],"grpc_connector"
 
     def create_ilu(self,ilu_ref):
         return ilu_ref
 
-    def l2sm_schema(self):
+    def l2sm_schema(self, request_type):
 
-        config= {
-                    "provider": {
-                        "name": self.__params['provider_name'], #si
-                        "domain": self.__params['provider_domain'] #si
+        if request_type == "create_network":
+            request={
+                "network":{
+                    "name":self.__params['network'],
+                    "provider":{
+                        "name": self.__params['provider_name'],
+                        "domain":self.__params['provider_domain']
                     },
-                    "accessList": self.__params['access_list'] #si publickeys
+                    "pod_cidr":""
                 }
-        structure = {
-                    "apiVersion": "l2sm.k8s.local/v1",
-                    "kind": "L2SMNetwork",
-                    "metadata": {
-                        "name": self.__params['network']
-                    },
-                    "spec": {
-                        "type": "inter-vnet",
-                        "config": config,
-                        "signature": "sxySO0jHw4h1kcqO/LMLDgOoOeH8dOn8vZWv4KMBq0upxz3lcbl+o/36JefpEwSlBJ6ukuKiQ79L4rsmmZgglk6y/VL54DFyLfPw9RJn3mzl99YE4qCaHyEBANSw+d5hPaJ/I8q+AMtjrYpglMTRPf0iMZQMNtMd0CdeX2V8aZOPCQP75PsZkWukPdoAK/++y1vbFQ6nQKagvpUZfr7Ecb4/QY+hIAzepm6N6lNiFNTgj6lGTrFK0qCVfRhMD+vXbBP6xzZjB2N1nIheK9vx7kvj3HORjZ+odVMa+AOU5ShSKpzXTvknrtcRTcWWmXPNUZLoq5k3U+z1g1OTFcjMdQ===="
-                    }
-                }
+            }
+        if request_type == "delete_network":
+            request={"network_name":self.__params['network']}
 
-        return structure
+        return request
     
     def get_blue_print(self):
 

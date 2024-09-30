@@ -1,0 +1,81 @@
+syntax = "proto3";
+package l2smmd;
+
+message Provider {
+    string name = 1;
+    string domain = 2;
+}
+message L2Network {
+    string name = 1;
+    Provider provider = 2;
+    string pod_cidr = 3;  // Optional field for the pod CIDR
+}
+message CreateNetworkRequest {
+    L2Network network = 1;
+}
+message DeleteNetworkRequest {
+    string network_name = 1;
+}
+message Cluster {
+    string name = 1;
+}
+message Link {
+    string endpointA = 1;
+    string endpointB = 2;
+}
+message OverlayTopology {
+    Provider provider = 1;
+    repeated Cluster clusters = 2;
+    repeated Link links = 3;
+}
+message CreateOverlayRequest {
+    OverlayTopology overlay = 1;
+}
+message AddClusterRequest {
+    string provider_name = 1;
+    string provider_domain = 2;
+    string overlay_name = 3;
+    Cluster cluster = 4;
+}
+message RemoveClusterRequest {
+    string provider_name = 1;
+    string provider_domain = 2;
+    string overlay_name = 3;
+    string cluster_name = 4;
+}
+message DeleteOverlayRequest {
+    string provider_name = 1;
+    string provider_domain = 2;
+    string overlay_name = 3;
+}
+// Response messages for operations
+message CreateNetworkResponse {
+    string message = 1;
+}
+message DeleteNetworkResponse {
+    string message = 1;
+}
+message CreateOverlayResponse {
+    string message = 1;
+}
+message AddClusterResponse {
+    string message = 1;
+}
+message RemoveClusterResponse {
+    string message = 1;
+}
+message DeleteOverlayResponse {
+    string message = 1;
+}
+
+// Service definition
+service L2SMMultiDomainService {
+    // Methods for network management
+    rpc CreateNetwork(CreateNetworkRequest) returns (CreateNetworkResponse);
+    rpc DeleteNetwork(DeleteNetworkRequest) returns (DeleteNetworkResponse);
+    // Methods for overlay topology management
+    rpc CreateOverlay(CreateOverlayRequest) returns (CreateOverlayResponse);
+    rpc AddCluster(AddClusterRequest) returns (AddClusterResponse);
+    rpc RemoveCluster(RemoveClusterRequest) returns (RemoveClusterResponse);
+    rpc DeleteOverlay(DeleteOverlayRequest) returns (DeleteOverlayResponse);
+}
