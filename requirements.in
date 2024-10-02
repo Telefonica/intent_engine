@@ -5,3 +5,7 @@ devtools
 fastapi
 pydantic==1.10
 schema
+
+protobuf
+grpcio
+grpcio-tools
