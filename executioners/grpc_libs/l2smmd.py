@@ -7,13 +7,20 @@ import logging
 logger = logging.getLogger(__name__)
 
 def get_l2smmd_enviroment():
-    __addr=os.environ.get('GRPC_SERVER_L2SM')
+    __addr=os.environ.get('GRPC_SERVICE_L2SM_ADDRESS')
     if(__addr):
         # Docker container case where hostname needed
-        logger.debug("Reading enviroment GRPC_SERVER_L2SM vars: %s",__addr)
+        logger.debug("Reading enviroment GRPC_SERVICE_L2SM_ADDRESS vars: %s",__addr)
     else:
-        __addr="localhost:50051"
-    return __addr
+        __addr="localhost"
+        
+    __port=os.environ.get('GRPC_SERVICE_L2SM_PORT')
+    if(__port):
+        # Docker container case where hostname needed
+        logger.debug("Reading enviroment GRPC_SERVICE_L2SM_PORT vars: %s",__port)
+    else:
+        __port="50051"
+    return __addr+":"+__port
 
 # Create a function to send a CreateNetwork request
 def create_network(stub,data):

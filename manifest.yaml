@@ -49,6 +49,10 @@ spec:
           value: 'PRE4utv0ytf0fnbeuv'
         - name: RMQ_BINDING
           value: 'create-network-paths'
+        - name: GRPC_SERVICE_L2SM_ADDRESS
+          value: 'l2smmd.nemo-net.svc.cluster.local'
+        - name: GRPC_SERVICE_L2SM_PORT
+          value: '50051'
 
 ---
 apiVersion: networking.k8s.io/v1
