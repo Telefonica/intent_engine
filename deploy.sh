@@ -14,7 +14,7 @@
 
 kubectl delete namespace nemo-net
 kubectl create namespace nemo-net
-docker build intent_engine/ -t localhost:32000/nemometaos/mncc-ibs:v0.0.2
+docker build intent_engine/ -t localhost:5001/nemometaos/mncc-ibs:v0.0.2
 # docker tag mncc-ibs:v0.0.2 nemometaos/mncc-ibs:v0.0.2
 docker push localhost:5001/nemometaos/mncc-ibs:v0.0.2
 kubectl apply -f intent_engine/manifest.yaml 
