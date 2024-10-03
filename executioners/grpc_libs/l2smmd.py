@@ -20,6 +20,7 @@ def get_l2smmd_enviroment():
         logger.debug("Reading enviroment GRPC_SERVICE_L2SM_PORT vars: %s",__port)
     else:
         __port="50051"
+    logger.debug("Reading vars: %s",__addr+":"+__port)
     return __addr+":"+__port
 
 # Create a function to send a CreateNetwork request
