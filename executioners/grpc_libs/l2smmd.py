@@ -69,7 +69,8 @@ def create_overlay(stub,data):
 def run(params,data):
 
     # Connect to the gRPC server (assumed running on localhost:50051)
-    with grpc.insecure_channel(get_l2smmd_enviroment()) as channel:
+    address_port=get_l2smmd_enviroment()
+    with grpc.insecure_channel(address_port) as channel:
         # Create a stub (client) using the generated gRPC classes
         stub = l2smmd_pb2_grpc.L2SMMultiDomainServiceStub(channel)
 
