@@ -12,7 +12,7 @@ def get_l2smmd_enviroment():
         # Docker container case where hostname needed
         logger.debug("Reading enviroment GRPC_SERVICE_L2SM_ADDRESS vars: %s",__addr)
     else:
-        __addr="l2smmd.nemo-net.svc.cluster.local"
+        __addr="l2sm-md-server.nemo-net.svc.cluster.local"
 
     __port=os.environ.get('GRPC_SERVICE_L2SM_PORT')
     if(__port):
