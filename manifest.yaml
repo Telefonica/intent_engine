@@ -50,7 +50,7 @@ spec:
         - name: RMQ_BINDING
           value: 'create-network-paths'
         - name: GRPC_SERVICE_L2SM_ADDRESS
-          value: 'l2smmd.nemo-net.svc.cluster.local'
+          value: 'l2sm-md-server'
         - name: GRPC_SERVICE_L2SM_PORT
           value: '50051'
 
