@@ -27,8 +27,8 @@ spec:
         - name: nemo-regcred
       containers:
       - name: intent-engine
-        image: localhost:32000/nemometaos/mncc-ibs:v0.0.2
-        imagePullPolicy: Always
+        image: kind-registry:5000/nemometaos/mncc-ibs:v0.0.2
+        imagePullPolicy: Never
         ports:
         - containerPort: 3000
           # containerPort: 8080
