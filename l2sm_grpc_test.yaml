@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: l2sm-md-server
+  namespace: nemo-net
+  labels:
+    app: l2sm-md-server
+    type: backend
+    deployment: l2sm-md-server
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: l2sm-md-server
+  template:
+    metadata:
+      labels:
+        app: l2sm-md-server
+        type: backend
+        pod: l2sm-md-server
+    spec:
+      imagePullSecrets:
+        - name: nemo-regcred
+      containers:
+      - name: mncc-ibs-grpc-l2sm
+        image: localhost:32000/nemometaos/mncc-ibs-grpc-l2sm:v0.0.2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 50051
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 50051
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
+        # livenessProbe:
+        #   tcpSocket:
+        #     port: 50051
+        #   initialDelaySeconds: 15
+        #   periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: l2sm-md-server-service
+  namespace: nemo-net
+spec:
+  selector:
+    app: l2sm-md-server
+  ports:
+  - protocol: TCP
+    port: 50051
+    targetPort: 50051
+  type: ClusterIP

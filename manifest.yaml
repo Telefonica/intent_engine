@@ -27,7 +27,7 @@ spec:
         - name: nemo-regcred
       containers:
       - name: intent-engine
-        image: localhost:5001/nemometaos/mncc-ibs:v0.0.2
+        image: localhost:32000/nemometaos/mncc-ibs:v0.0.2
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
@@ -50,7 +50,7 @@ spec:
         - name: RMQ_BINDING
           value: 'create-network-paths'
         - name: GRPC_SERVICE_L2SM_ADDRESS
-          value: 'l2sm-md-server'
+          value: 'l2sm-md-server-service.nemo-net.svc.cluster.local'
         - name: GRPC_SERVICE_L2SM_PORT
           value: '50051'
 
