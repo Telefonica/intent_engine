@@ -28,7 +28,7 @@ spec:
         - name: nemo-regcred
       containers:
       - name: mncc-ibs-grpc-l2sm
-        image: localhost:5001/nemometaos/mncc-ibs-grpc-l2sm:v0.0.2
+        image: kind-registry/nemometaos/mncc-ibs-grpc-l2sm:v0.0.2
         imagePullPolicy: Always
         ports:
         - containerPort: 50051
