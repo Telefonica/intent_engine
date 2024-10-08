@@ -29,7 +29,7 @@ spec:
       containers:
       - name: mncc-ibs-grpc-l2sm
         image: kind-registry:5000/nemometaos/mncc-ibs-grpc-l2sm:v0.0.2
-        imagePullPolicy: Always
+        imagePullPolicy: Never
         ports:
         - containerPort: 50051
         # readinessProbe:
