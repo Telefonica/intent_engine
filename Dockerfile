@@ -34,4 +34,4 @@ ENV NAME World
 
 WORKDIR /
 # Run app.py when the container launches
-CMD ["python", "-m" ,"intent_engine"]
+CMD ["python", "-u","-m" ,"intent_engine"]

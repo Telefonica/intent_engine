@@ -7,6 +7,7 @@ logger.setLevel(level=logging.DEBUG)
 # Implement the service
 class L2SMMultiDomainServiceServicer(l2smmd_pb2_grpc.L2SMMultiDomainServiceServicer):
     def CreateNetwork(self, request, context):
+        print(request)
         logger.info(request)
         return l2smmd_pb2.CreateNetworkResponse(message="Network created successfully!")
 
@@ -27,8 +28,11 @@ def serve():
     l2smmd_pb2_grpc.add_L2SMMultiDomainServiceServicer_to_server(L2SMMultiDomainServiceServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
+    print("Server started on port 50051")
     logger.info("Server started on port 50051")
     server.wait_for_termination()
 
 if __name__ == "__main__":
+    logger.setLevel(level=logging.DEBUG)
+    logger.info("Running server...")
     serve()

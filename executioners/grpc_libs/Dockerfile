@@ -30,4 +30,4 @@ EXPOSE 50051
 # Run app.py when the container launches
 # ENTRYPOINT [ "ls","-la","-R" ]
 # WORKDIR /grpc_libs
-CMD ["python3","test_server_l2sm.py"]
+CMD ["python3","-u","test_server_l2sm.py"]
