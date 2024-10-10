@@ -44,18 +44,12 @@ class nemo():
         self.__checker={}
         self.__interface={}
         self.__functions=["deploy"]
-        self.__decision_tree={
-                            "cloud_continuum": {
-                                "nemo_deployment":{
-                                    "request":{
-                                        "vpnl2":"vpn",
-                                        "overlay":"l2sm"
-                                    },
-                                    "modify":"l2sm",
-                                    "migrate":"sdnc l2sm"
-                                    }
-                                }
-                            }
+        self.__decision_tree={"cloud_continuum":{
+                    "DELIVER":{"K8S_L2_NETWORK":"l2sm",
+                               "5G_NETWORK_SLICE":"5g_cumucore",
+                               "L2_VPN":"l2vpn"}
+                        }
+                    }
 
     def get_name(self):
         return self.__module_name

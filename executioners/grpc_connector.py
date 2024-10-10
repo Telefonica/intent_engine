@@ -37,9 +37,9 @@ class grpc_connector():
         params=data_and_params[1]
         match params['connector']:
             case "l2smmd":
-                logger.debug("l2smmd grpc connector")
+                logger.debug("l2smmd grpc proto")
                 l2smmd.run(params,data)
             case _:
-                  logger.debug("NO grpc connector implemented")
+                logger.debug("NO grpc proto implemented")
 
         return True
