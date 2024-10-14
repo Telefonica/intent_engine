@@ -88,7 +88,7 @@ class slice_5g(abstract_library):
             }
         decision_tree={
             "cloud_continuum" : {
-               "CREATE":{
+               "CREATE":{ # care ,this is create cos is subintent of NEMO
                    "5G_SLICE_FLOW":"slice_5g"}    
                }
         }
@@ -178,4 +178,4 @@ class slice_5g(abstract_library):
                         logger.debug("intent context url case")
                         logger.debug("url: %s",exp_ctx.contextValueRange)
                             # maybe here store in database by id?
-        return [self.__params,exec_params],"sysout"
+        return [self.__params,exec_params],"sys_out"

@@ -57,6 +57,7 @@ components:
                 type: string
                 enum:
                   - 5G_SLICE_FLOW
+                  - 5G_NETWORK_SLICE # NEMO general case
               objectInstance:
                 type: string
               objectContexts:

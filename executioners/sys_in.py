@@ -15,6 +15,7 @@ import logging
 from queue import Queue
 import threading
 from intent_engine.core import yamlParser
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,11 @@ class sys_in():
     Executioner to write 
     """
     def __init__(self,queue : Queue):
-        self.__args=["inputs/","l2sm.yaml"]
+
+        if len(sys.argv)<2:
+            self.__args=["inputs/","5g_flow.yaml"]
+        else:
+            self.__args=["inputs/",sys.argv[1]]
         self.__queue=queue
         data=yamlParser.yaml_to_data(self.__args[0]+self.__args[1])
         for file in data:

@@ -166,6 +166,9 @@ components:
             - Slice_5ginduce
             - Node_5ginduce
             - LinkNode_5ginduce
+            - 5G_NETWORK_SLICE
+            - 5G_SLICE_FLOW
+            - K8S_L2_NETWORK
         objectInstance:
           $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
         contextSelectivity:

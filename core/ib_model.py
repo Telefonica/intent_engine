@@ -42,8 +42,8 @@ class IntentModel():
         keywords.append(self.__intent.userLabel)
         # intent_expectations: List[IntentNrm.IntentExpectation] = self.__intent.intentExpectations
         for exp in iter(self.__intent.intentExpectations):
-            keywords.append(exp.expectationVerb.value)
-            keywords.append(exp.expectationObject.objectType.value)
+            keywords.append(exp.expectationVerb)
+            keywords.append(exp.expectationObject.objectType)
             # keywords.extend([trg.targetName for trg in exp.expectationTargets])
 
         return keywords

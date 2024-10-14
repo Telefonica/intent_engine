@@ -112,7 +112,7 @@ class l2sm(abstract_library):
             logger.debug("expectation case %s",exp_verb)
             # assert isinstance(exp, IntentNrm.L2SMExpectation)
             logger.debug("Expectation type: %s", type(exp))
-            match exp_verb.value:
+            match exp_verb:
                 case "DELIVER":
                     try:
                         IntentNrm.NewNetworkExpectation(**(exp.dict()))
@@ -120,14 +120,14 @@ class l2sm(abstract_library):
                         logger.warning("Assurance error for L2SM NewNetworkExpectation:  %s", exc)
                     exp_obj=exp.expectationObject
                     logger.debug("DELIVER case obj: %s",exp_obj)
-                    exp_type=exp_obj.objectType.value
+                    exp_type=exp_obj.objectType
                     params['service']="create_network"
                     match exp_type:
                         case "L2SM_NETWORK":
                             for obj_ctx in exp_obj.objectContexts:
                                 # Loop ctx inside obj
                                 logger.debug("objectctx case %s: ",obj_ctx)
-                                att=obj_ctx.contextAttribute.value
+                                att=obj_ctx.contextAttribute
                                 logger.debug("attobjectctx case %s: ",att)
                                 match att:
                                     case "network":
@@ -163,7 +163,7 @@ class l2sm(abstract_library):
                     params['url']=exp_ctx.contextValueRange
                     params['headers']={'Content-Type': 'application/x-yaml'}
             params['connector']="l2smmd"
-            return [self.l2sm_schema(params['service']),params],"grpc_connector"
+            return [self.l2sm_schema(params['service']),params],"sys_out"
 
     def create_ilu(self,ilu_ref):
         return ilu_ref

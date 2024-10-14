@@ -87,6 +87,7 @@ def core():
         o=[logger.info("Type: %s", type(subintent)) for subintent in subintents]
         if len(ill) == 0:
             logger.info("No library capable of reading that intent!!")
+            continue
         # ------ Intent Assurance --------
         break_loop=False
         for i,ilu in enumerate(ill):

@@ -5,8 +5,8 @@ Intent:
     - expectationId: '1'
       expectationVerb: 'DELIVER'
       expectationObject:
-        objectType: '5G_SLICE_FLOW'
-        objectInstance: 'cmc_slice_1'
+        objectType: '5G_NETWORK_SLICE'
+        objectInstance: '5g_slice'
         objectContexts:
           - contextAttribute: 'ip4Address'
             contextCondition: 'IS_EQUAL_TO'

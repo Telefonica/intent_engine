@@ -11,7 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
+
+from devtools import pprint
 from intent_engine.core.ib_model import IntentModel
+
+logger = logging.getLogger(__name__)
 
 class nemo():
     """
@@ -45,8 +50,8 @@ class nemo():
         self.__interface={}
         self.__functions=["deploy"]
         self.__decision_tree={"cloud_continuum":{
-                    "DELIVER":{"K8S_L2_NETWORK":"l2sm",
-                               "5G_NETWORK_SLICE":"5g_cumucore",
+                    "DELIVER":{"K8S_L2_NETWORK":"nemo",
+                               "5G_NETWORK_SLICE":"nemo",
                                "L2_VPN":"l2vpn"}
                         }
                     }
@@ -59,9 +64,36 @@ class nemo():
     def isILU(self):
         return self.__isILU
     
-    def generate_subintent(self,intent:IntentModel):
-        intent.set_name("l2sm_deploy")
-        return intent
+    def generate_subintent(self,intent_model:IntentModel):
+        
+        intent=intent_model.get_intent()
+        logger.debug("Generating NEMO subintent...")
+        intent_dict=intent.dict(exclude_defaults=True)
+        intent_expectations=[]
+        subintent={}
+
+        for i,exp in enumerate(intent.intentExpectations):
+            if exp.expectationVerb == 'DELIVER':
+                # Check which adaptor
+                logger.debug("Deliver case NEMO subintent %s", exp.expectationObject.objectType)
+                if exp.expectationObject.objectType =='5G_NETWORK_SLICE':
+                    logger.debug("5g_slice case NEMO subintent")
+                    intent_dict['intentExpectations'][i]['expectationObject']['objectType']='5G_SLICE_FLOW'
+                    intent_dict['intentExpectations'][i]['expectationVerb']='CREATE'
+                    intent_expectations.append(intent_dict['intentExpectations'][i])
+                
+                if exp.expectationObject.objectType =='K8S_L2_NETWORK':
+                    logger.debug("l2sm_network case NEMO subintent")
+                    intent_dict['intentExpectations'][i]['expectationObject']['objectType']='L2SM_NETWORK'
+                    intent_expectations.append(intent_dict['intentExpectations'][i])
+
+        subintent['Intent']={'intentExpectations':intent_expectations,
+                                    'id':intent_dict['id'],
+                                    'userLabel':'cloud_continuum',
+                                    'intentPriority':intent_dict['intentPriority']}
+        logger.debug("NEMO subintent: ")
+        pprint(subintent)
+        return [IntentModel(subintent)]
 
     def checker(self,intent:IntentModel):
         print("checker intent get name: ",intent.get_context().get_name())
@@ -70,6 +102,7 @@ class nemo():
             # return self.__classifier tree para que la decisón esté fuera
             return True
         return False
+    
     def executioner(self):
         
         return

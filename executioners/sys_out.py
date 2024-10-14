@@ -15,10 +15,10 @@ from queue import Queue
 
 from devtools import pprint
 
-class sysout():
+class sys_out():
 
     def __init__(self,queue : Queue):
-        self.__name="sysout"
+        self.__name="sys_out"
         self.__args=[]
         self.__queue=queue
     def execute(self,string):
