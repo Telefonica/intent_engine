@@ -15,7 +15,8 @@ logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.DEBUG)
 
 
 base_folder = "data"
-product_path = "intent_engine/tools/data/ran_intent.ttl"
+product_path = "intent_engine/tools/data/example_1.ttl"
+# product_path = "intent_engine/tools/data/ran_intent.ttl"
 
 # TODO: import namespaces like default
 nLOG=Namespace("http://example.org/log#")
@@ -185,7 +186,7 @@ def get_delivery_target_and_type(g : ConjunctiveGraph, delivery_subject)->tuple[
         print("target ",target)
         targets.append(target)
     # Pnly one target per exp_delivery?
-    return targets[0],delivery_type
+    return targets,delivery_type
 
 def get_target_members(g : ConjunctiveGraph, target_subject) -> tuple[list[URIRef],URIRef]:
     """
@@ -196,8 +197,10 @@ def get_target_members(g : ConjunctiveGraph, target_subject) -> tuple[list[URIRe
     """
     bnode_values=[]
     predicate=None
+    label_target={}
     if nICM.Target==g.value(subject=target_subject, predicate=RDF.type):
         for pred,obj in g.predicate_objects(subject=target_subject):
+            logger.debug("counting targets %s", obj)
             if obj != nICM.Target:
                 # Posible target types or constructions
                 if pred==nICM.chooseFrom:
@@ -218,6 +221,14 @@ def get_target_members(g : ConjunctiveGraph, target_subject) -> tuple[list[URIRe
                     # target_context=traverse_rdf_list(g,obj)
                     print("obj ",obj)
                     bnode_values.append(obj)
+                if pred==RDFS.label:
+                    print("target %s compose by string label",target_subject)
+                    predicate=pred
+                    # target_context=traverse_rdf_list(g,obj)
+                    label_target['predicate']=target_subject
+                    label_target['object']=obj
+                    print("value ",obj)
+                    bnode_values.append(label_target)
 
 
     return bnode_values,predicate
@@ -349,12 +360,18 @@ if __name__=="__main__":
         # ---------------------------------
 
         for delivery_expectation in delivery_expectations:
-            delivery_target,delivery_type=get_delivery_target_and_type(g=g,delivery_subject=delivery_expectation)
-            logger.info("Target: %s ,type: %s",delivery_target,delivery_type)
-            deliv_trg_members,deliv_trg_predicate=get_target_members(g,target_subject=delivery_target)
+            # Target list inside an object, several targets are possible and have to be fulfilled all
+            delivery_targets,delivery_type=get_delivery_target_and_type(g=g,delivery_subject=delivery_expectation)
+            logger.info("Target: %s ,type: %s",delivery_targets,delivery_type)
+            for delivery_target in delivery_targets:
+                # Members in target are the different valueRange attributes in 3gpp
+                deliv_trg_members,deliv_trg_predicate=get_target_members(g,target_subject=delivery_target)
+            
             logger.info("Members: %s, predicate: %s",deliv_trg_members,deliv_trg_predicate)
 
             # --- 3gpp intent construction ----
+            # Aqui hay que tener en cuenta si es choose from or all of
+            # Si uno lista, si otro valores
             expectation_verb='DELIVER'
             for deliv_trg in deliv_trg_members:
                 logger.debug("deliv_trg_ %s", deliv_trg)

@@ -1,0 +1,48 @@
+@prefix ex: <http://example.org/> .
+@prefix icm: <http://example.org/icm#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix log: <http://example.org/log#> .
+@prefix quan: <http://example.org/quan#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix unit: <http://example.org/unit#> .
+@prefix set: <http://example.org/set#> .
+
+ex:T1
+    a icm:Target ;
+    rdfs:member ex:RBS1, ex:RBS2 .
+
+ex:E1
+    a icm:PropertyExpectation ;
+    icm:target ex:T1 ;
+    log:allOf ( ex:C1 ex:C2 ) .
+
+ex:C1
+    a log:Condition ;
+    quan:smaller (
+        [
+            quan:sum (
+                [ icm:valuesOfTargetProperty ( ex:powerUsage ) ]
+            )
+        ]
+        [
+            rdf:value 10.0 ;
+            unit:unit "kW"
+        ]
+    ) .
+
+ex:C2
+    a log:Condition ;
+    set:forAll (
+        _:X
+        [
+            icm:valuesOfTargetProperty ( ex:powerUsage )
+        ]
+        quan:smaller (
+            _:X 
+            [
+                rdf:value 1.0^^xsd:decimal ;
+                unit:unit "kW"
+            ]
+        )
+    ) .

@@ -1,0 +1,42 @@
+# Define prefixes for namespaces used
+@prefix ex: <http://example.org/> .
+@prefix icm: <http://example.org/icm#> .
+@prefix log: <http://example.org/log#> .
+@prefix set: <http://example.org/set#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix quan: <http://example.org/quan#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+ex:L2SM_network
+  a icm:Intent ;
+  log:allOf ( ex:Exp1_delivery ex:Exp2_property ) .
+
+ex:network
+  a icm:Target ;
+  rdfs:label "spain_network".
+
+ex:providerName
+  a icm:Target ;
+  rdfs:label "uc3m".
+
+ex:Exp1_delivery
+  a icm:DeliveryExpectation ;
+  icm:target ex:network ;
+  icm:target ex:providerName ;
+  icm:deliveryType ex:K8S_L2_NETWORK .
+
+ex:T2
+  a icm:Target ;
+  rdfs:member ex:Sub_Slice .
+
+ex:Exp2_property
+  a icm:PropertyExpectation ;
+  icm:target ex:T2 ;
+  log:allOf ( ex:C1_Latency ex:C2_Time ) .
+
+ex:C2_Time
+  a icm:Condition ;
+  quan:smaller (
+    ex:latency [ rdf:value "6"^^xsd:decimal ; rdfs:label "ms" ]
+  ) .

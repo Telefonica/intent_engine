@@ -1,0 +1,55 @@
+# Define prefixes for namespaces used
+@prefix ex: <http://example.org/> .
+@prefix icm: <http://example.org/icm#> .
+@prefix log: <http://example.org/log#> .
+@prefix set: <http://example.org/set#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix quan: <http://example.org/quan#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+ex:RAN_Intent
+  a icm:Intent ;
+  log:allOf ( ex:E1 ex:Exp1_delivery ) .
+
+ex:T1
+  a icm:Target ;
+  icm:chooseFrom (
+      [
+          set:resourcesOfType ex:PremiumSlice 
+      ]
+
+      [
+          set:resourcesOfType ex:NotSoPremium 
+      ]
+  ) .
+
+ex:T2
+  a icm:Target ;
+  icm:chooseFrom (
+      [
+          set:resourcesOfType ex:Slice 
+      ]
+  ) .
+
+ex:Exp1_delivery
+  a icm:DeliveryExpectation ;
+  icm:target ex:T1 ;
+  icm:deliveryType ex:Sub_Slice .
+
+ex:E1
+  a icm:PropertyExpectation ;
+  icm:target ex:T1 ;
+  log:allOf ( ex:C1 ex:C2 ) .
+
+ex:C1
+  a icm:Condition ;
+  quan:smaller ( ex:PowerUsageAggregate 
+  [ rdf:value "10"^^xsd:decimal ; 
+    rdfs:label "kW" ] ) .
+
+ex:C2
+    a log:Condition ;
+    quan:smaller ( ex:RBSPowerUsage 
+    [ rdf:value "1"^^xsd:decimal;
+    rdfs:label "kW" ] ) .
