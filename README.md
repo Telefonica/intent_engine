@@ -1,7 +1,7 @@
 # The Intent Engine
 *An Intent Based Network Translator in a Micro-Kernel Architecture*
 
-![logo](images/desire_logo.png)
+![logo](attached/desire_logo.png)
 
 Original repository: https://github.com/Telefonica/intent_engine/tree/desire6g
 # Introduction
@@ -23,7 +23,7 @@ This definition is broad, and is each library in the intent catalog is the one r
 
 As the networks are evolving continuously, the technologies should follow along. **The Intent Engine** is build as a central core that processes the Intent and then, tries to translate it to network configurations using the intent catalogue. The intent catalogue is a set of python libraries, each one containing a set of Intent Logic Units (ILUs). 
 
-![Arquitecture](images/Intent_translation_in_Desire6g.png)
+![Arquitecture](attached/Intent_translation_in_Desire6g.png)
 
 Also, there is another type of catalogue, the executioners catalogue. It defines the inbound and outbound interfaces of the core. The executioners are managed by the execution platform as they can run independent communication processes with different technologies.
 
@@ -35,7 +35,7 @@ The expectation for pervasive network intelligence, setting AI as the cornerston
 
 The transport SDN controller considered in the DESIRE6G architecture is connected to the SMO through and intent-based networking (IBN) interface for the purpose of managing the transport network (see Figure). The IBN module, acts as a translator connecting the DESIRE6G architecture to the transport subdomain, being technological agnostic and therefore being also independent of the SDN controller managing the transport network. This gives the SMO ability to adapt to different transport technologies, relying on the flexibility inherited by the IBN paradigm. One such SDN controller could be Teraflow, if extended to support the Intent Based Network interface used by the SMO. The SMO interface to the transport subdomain follows an RDF structure defined in the TM Forum. 
 
-![archiDesire](images/desire.png)
+![archiDesire](attached/desire.png)
 
 ## About this repository
 
@@ -100,5 +100,6 @@ For any feedback or doubts about **The Intent Engine** don't hesitate to contact
 # Acknowledgments
 
 The work in this open-source project has partially been granted by :
+- [DESIRE6G](https://desire6g.eu/) (EU Horizon Europe Grant Agreement no. 101096466)
 - [NEMO]([HOME - META-OS](https://meta-os.eu/)) (EU Horizon Europe Grant Agreement No. 101070118).
 - [6Green](6Green - Web) (101096925 – 6Green – HORIZON-JU-SNS-2022)
