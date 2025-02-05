@@ -19,6 +19,7 @@ from devtools import pprint
 from intent_engine.catalogue.abstract_library import abstract_library
 from intent_engine.core import IntentNrm
 from intent_engine.core.ib_model import IntentModel, jsonable_model_encoder
+from intent_engine.core.database_utils import create_intent_graph, store_graph_in_graphdb
 
 logger = logging.getLogger(__name__)
 
@@ -59,14 +60,14 @@ class green_bssf(abstract_library):
         subintent_slice={}
 
         for i,exp in enumerate(intent.intentExpectations):
-            if exp.expectationVerb.value == 'ENSURE':
+            if exp.expectationVerb == 'ENSURE':
                 
                 intent_dict['intentExpectations'][i]['expectationObject']['objectType']='Slice_Energy_Saving'
                 green_expectations.append(intent_dict['intentExpectations'][i])
                 # pprint(intent_dict)
                 
 
-            if exp.expectationVerb.value == 'DELIVER':
+            if exp.expectationVerb == 'DELIVER':
 
                 intent_dict['intentExpectations'][i]['expectationObject']['objectType']='Slice_5ginduce'
                 slice_expectations.append(intent_dict['intentExpectations'][i])
@@ -84,6 +85,7 @@ class green_bssf(abstract_library):
                                     'intentPriority':intent_dict['intentPriority']}
         # logger.debug("Green subintent : %s",subintent)
         # intent_model.set_intent(subintent)
+        store_graph_in_graphdb(create_intent_graph(intent_model), "http://localhost:7200", "6green")
         return [IntentModel(subintent_green),IntentModel(subintent_slice)]
     
     def translator(self,subintent : IntentModel)-> tuple[list , str]:

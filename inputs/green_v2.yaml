@@ -31,10 +31,10 @@ Intent:
               contextValueRange: ''
         - targetName: 'renewable_energy_rate'
           targetCondition: 'IS_GREATER_THAN'
-          targetValueRange: ''
+          targetValueRange: '2'
         - targetName: 'energy_efficiency'
           targetCondition: 'IS_GREATER_THAN'
-          targetValueRange: ''
+          targetValueRange: '4'
       expectationContexts:
         - contextAttribute: 'application_instance_ID_330'
           contextCondition: 'IS_EQUAL_TO'

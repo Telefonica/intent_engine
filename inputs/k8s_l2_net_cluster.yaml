@@ -1,0 +1,52 @@
+Intent:
+  id: 'mncc_l2sm_1'
+  userLabel: 'cloud_continuum'
+  intentExpectations:
+    - expectationId: '1'
+      expectationVerb: 'DELIVER'
+      expectationObject: 
+        objectType: 'K8S_L2_NETWORK'
+        objectInstance: 'spain_network'
+        objectContexts:
+          - contextAttribute: 'name'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'spain_network'
+          - contextAttribute: 'providerName'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'uc3m'
+          - contextAttribute: 'domain'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: '172.18.0.2'
+      expectationContexts:
+        - contextAttribute: 'url'
+          contextCondition: 'IS_EQUAL_TO'
+          contextValueRange: 'http://192.168.165.168:8080'
+    - expectationId: '2'
+      expectationVerb: 'DELIVER'
+      expectationObject: 
+        objectType: 'K8S_CLUSTER_CONFIG'
+        objectInstance: 'spain-network'
+        objectContexts:
+          - contextAttribute: 'name'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'kind-worker-cluster-1'
+          - contextAttribute: 'bearer_token'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'eyJhbGciOiJSUzI1NiIsImtpZCI6Iktrd1hiRk9RWGZBVkFVWU82Rk5RQUs1WUtFRjBTX2JLa21wZkVGWWR5REUifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjo1OTM0NjAxMjk4LCJpYXQiOjE3MzQ2MDEzNTgsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJsMnNtLXN5c3RlbSIsInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJsMnNtLWNvbnRyb2xsZXItbWFuYWdlciIsInVpZCI6ImI1OWQxMmQ0LTg2NTQtNDhmYi05MTc1LTBmZjY5YzNlZjBkYiJ9fSwibmJmIjoxNzM0NjAxMzU4LCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6bDJzbS1zeXN0ZW06bDJzbS1jb250cm9sbGVyLW1hbmFnZXIifQ.F555ru_UVzsyCbMvb4kLHK7dFxkRnhOtIvFu4H0dVSnRjG_zntN279-m6pR9YCFgyGm7KTLnewivM-5dM05FdxQiXFTEvR1mYn4Tfug31tHCQnhNykgNAqjeobyKMBgptouv40_5vpgj5w1d0lSm3X71HQIciw_w62JiiTp3XvZQZEhn7tbuhX9GFH7jcZLAFbAHBMftxaazfvvvTWl08G5AzStXEMSCDhW62YeGMEyclojR2kpilmtc8nKvIJEAntvqp9K7__E3mjglhWOO-riavH5-UoTH2S2iclW1CpGCHW4P38ghDnbdPiOIW7dDAjDY_SrlPX1mWekTm7ZMQQ'
+          - contextAttribute: 'api_key'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'https://172.18.0.3:6443'
+      expectationContexts:
+        - contextAttribute: 'k8s_l2_network'
+          contextCondition: 'IS_EQUAL_TO'
+          contextValueRange: 'spain-network'
+        - contextAttribute: 'url'
+          contextCondition: 'IS_EQUAL_TO'
+          contextValueRange: 'http://192.168.165.168:8080'
+  intentContexts:
+    - contextAttribute: 'NEMO_WORKLOAD'
+      contextCondition: 'IS_EQUAL_TO'
+      contextValueRange: 'cbcb208a-d535-434b-bb35-217a64bd516b'
+  intentPriority: 1
+  observationPeriod: 60
+  intentAdminState: 'ACTIVATED'

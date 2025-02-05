@@ -3,4 +3,4 @@ intent_engine.executioners.rabbitmq
 intent_engine.executioners.tfs_connector
 intent_engine.executioners.grpc_connector
 intent_engine.executioners.sys_in
-
+intent_engine.executioners.http_handler

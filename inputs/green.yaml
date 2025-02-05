@@ -124,3 +124,4 @@ Intent:
   intentPriority: 1
   observationPeriod: 60
   intentAdminState: 'ACTIVATED'
+  
