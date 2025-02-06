@@ -18,17 +18,17 @@
         }
     ],
     "constraints": [{
-    "constraintID": "47",
-    "interfaceInstanceID": "590",
-    "qi": "10",
-    "radioServiceType": "1",
-    "resourceType": "DELAY_CRITICAL_GBR",
-    "allocationRetentionPriorityProfile": 1,
-    "minimumGuaranteedBandwidth": 120.0,
-    "maximumRequiredBandwidth": 200.0,
-    "constraintUnit": "kbps",
-    "category": "ACCESS",
-    "type": "HARD"
+      "constraintID": "47",
+      "interfaceInstanceID": "590",
+      "qi": "10",
+      "radioServiceType": "1",
+      "resourceType": "DELAY_CRITICAL_GBR",
+      "allocationRetentionPriorityProfile": 1,
+      "minimumGuaranteedBandwidth": 120.0,
+      "maximumRequiredBandwidth": 200.0,
+      "constraintUnit": "kbps",
+      "category": "ACCESS",
+      "type": "HARD"
     },{
           "constraintID": "46",
           "category": "COMPONENT_HOSTING",
