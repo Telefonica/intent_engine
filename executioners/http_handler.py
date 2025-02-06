@@ -16,6 +16,7 @@ from queue import Queue
 import requests
 import yaml
 import json
+from flask import Flask, request, jsonify
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +25,11 @@ class http_handler():
         self.__args=[]
         self.__addr='localhost' # Should come in config file (or intent?)
         self.__port=80
+        # self.__port_flask=5000
         self.__queue=queue
         logger.debug("Http init")
+        self.app = Flask(__name__)
+        # self.setup_routes()
         # reduce log level
         # self.start_https_server(self.__args, queue)
     
@@ -48,3 +52,35 @@ class http_handler():
             response = session.post(url, headers=headers, data=json.dumps(data),timeout=20)
         logger.info("Http response: %s",response)
         return True
+
+    def setup_routes(self,route,processing_function):
+
+        full_route='/api' + route
+        logger.debug("Setting up routes %s",full_route)
+        print("Setting up routes %s",full_route)
+
+        @self.app.route(full_route, methods=['POST'])
+        def api():
+            if request.method == 'GET':
+                return jsonify(isError= False,
+                        message= "Success",
+                        statusCode= 200,
+                        data= "data"), 200
+            if request.method == 'POST':
+                data = request.get_json()
+                logger.debug("Received data: %s", data)
+                # Process the data as needed
+                response = {"status": "success", "data": data}
+                processing_function(data)
+                return jsonify(response)
+
+    def start_server(self, server_port):
+        logger.debug("Starting server at %s:%s", self.__addr, server_port)
+        self.app.run(host=self.__addr, port=server_port)
+
+
+# Example usage
+if __name__ == "__main__":
+    queue = Queue()
+    handler = http_handler(queue)
+    handler.start_server(5000)
