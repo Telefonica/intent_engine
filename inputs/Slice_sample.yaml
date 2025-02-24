@@ -1,0 +1,109 @@
+apiVersion: athena.trirematics.io/v1
+kind: Slice
+metadata:
+  name: athena-slices
+  namespace: trirematics
+spec:
+  slices:
+    - regions:
+        - name: "Eurecom-portable-cluster-edge"
+          user-density: 10
+      isolation-model:
+        private-sectors: ["database","control-plane","data-plane"]
+      plmn:
+        mcc: "001"
+        mnc: "01"
+      sst: 1
+      sd: 0
+      ambr:
+        downlink: 100000000
+        uplink: 100000000
+      sessions:
+        - id: 0
+          type: "IPV4"
+          dnn: internet
+          ambr:
+            downlink: 100000000
+            uplink: 100000000
+          flows:
+            - qfi: 9
+              quality: 9
+              arp:
+                priority-level: 1
+                preemption-capability: true
+                preemption-vulnerability: true
+              gbr:
+                downlink: 100000000
+                uplink: 100000000
+              mbr:
+                downlink: 100000000
+                uplink: 100000000
+              plr: 100
+    - regions:
+        - name: "Eurecom-portable-cluster-fog"
+          user-density: 10
+      isolation-model:
+        private-sectors: ["data-plane"]
+      plmn:
+        mcc: "001"
+        mnc: "01"
+      sst: 1
+      sd: 1
+      ambr:
+        downlink: 100000000
+        uplink: 100000000
+      sessions:
+        - id: 0
+          type: "IPV4"
+          dnn: internet
+          ambr:
+            downlink: 100000000
+            uplink: 100000000
+          flows:
+            - qfi: 9
+              quality: 9
+              arp:
+                priority-level: 1
+                preemption-capability: true
+                preemption-vulnerability: true
+              gbr:
+                downlink: 100000000
+                uplink: 100000000
+              mbr:
+                downlink: 100000000
+                uplink: 100000000
+              plr: 100
+    - regions:
+        - name: "Eurecom-portable-cluster-fog"
+          user-density: 10
+      plmn:
+        mcc: "001"
+        mnc: "01"
+      sst: 1
+      sd: 2
+      ambr:
+        downlink: 100000000
+        uplink: 100000000
+      sessions:
+        - id: 0
+          type: "IPV4"
+          dnn: internet
+          ambr:
+            downlink: 100000000
+            uplink: 100000000
+          flows:
+            - qfi: 9
+              quality: 9
+              arp:
+                priority-level: 1
+                preemption-capability: true
+                preemption-vulnerability: true
+              gbr:
+                downlink: 100000000
+                uplink: 100000000
+              mbr:
+                downlink: 100000000
+                uplink: 100000000
+              plr: 100
+
+

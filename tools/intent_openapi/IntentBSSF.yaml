@@ -24,12 +24,16 @@ components:
               items:
                 # type: object
                 anyOf:
-                  - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"  
+                  - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"
+                  - $ref: "IntentExpectation_NSMF.yaml#/components/schemas/NewNSMFSliceIntentExpectation"  
             intentContexts:
               type: array
               items:
                 oneOf:
                   - $ref : "#/components/schemas/GreenIntentContext"
+                  - $ref : "#/components/schemas/nsmfNameIntentContext"
+                  - $ref : "#/components/schemas/nsmfNamespaceIntentContext"
+
               description: >-
                 It describes the list of Context(s) in BSSF which represents the constraints and conditions that should apply 
                 for the entire intent even if there may be specific contexts defined for specific parts of the intent 
@@ -43,6 +47,37 @@ components:
           type: string
           enum:
             - 6GREEN_ID
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    nsmfNameIntentContext:
+      description: >-
+            NSMF name identifier
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - name
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+
+    nsmfNamespaceIntentContext:
+      description: >-
+            NSMF namespace identifier
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - namespace
         contextCondition:
           type: string
           enum:

@@ -1,0 +1,329 @@
+openapi: 3.0.1
+info:
+  title: IntentExpectaions for NSFM
+  version: 1.0.0
+  description: >-
+    OAS 3.0.1 definition for a new intentExpectation for 6G NSMF Slice
+paths: {}
+components:
+  schemas:
+    NSMFExpectations:
+      description: >-
+        Different expectations for NSMF core component
+      type: object
+      oneOf:
+        - $ref: "#/components/schemas/NewNSMFSliceIntentExpectation"
+
+    NewNSMFSliceExpectation:
+        description: >-
+            Expectation to create a new flow in NSMF component
+        type: object
+        properties:
+          expectationId:
+            type: string
+          expectationVerb:
+            type: string
+            enum:
+              - DELIVER
+          expectationObject:
+            type: object
+            properties:
+              objectType:
+                type: string
+                enum:
+                  - NSMF_SLICE
+                  - NSMF_SESSION
+              objectInstance:
+                type: string
+              objectContexts:
+                type: array
+                items:
+                  type: object
+                  oneOf:
+                    - $ref: "#/components/schemas/NSMFSstObjectContext"
+                    - $ref: "#/components/schemas/NSMFIsolationModelObjectContext"
+                    - $ref: "#/components/schemas/NSMFPlmnObjectContext"
+                    # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/Context"
+          expectationTargets:
+            type: array
+            items:
+              type: object
+              oneOf:
+                - $ref: "#/components/schemas/NSMFAmbrTarget"
+                - $ref: "#/components/schemas/NSMFQfiTarget"
+                - $ref: "#/components/schemas/NSMFQualityTarget"
+                - $ref: "#/components/schemas/NSMFArpPriorityLevelTarget"
+                - $ref: "#/components/schemas/NSMFArpPreemptionCapabilityTarget"
+                - $ref: "#/components/schemas/NSMFArpPreemptionVulnerabilityTarget"
+                - $ref: "#/components/schemas/NSMFGbrTarget"
+                - $ref: "#/components/schemas/NSMFMbrTarget"
+                - $ref: "#/components/schemas/NSMFPlrTarget"
+          
+          expectationContexts:
+            type: array
+            items:
+              type: object
+              oneOf:
+                -  $ref: "#/components/schemas/NSMFNameContext"
+                -  $ref: "#/components/schemas/NSMFUserDensityContext"
+
+                  #-------Definition of the concrete ExpectationContext dataType----------------#
+    urlExpectationContext:
+        description: >-
+            Url where the l2sm http server is located
+        type: object
+        properties:
+          contextAttribute:
+            type: string
+            enum:
+              - url
+          contextCondition:
+            type: string
+            enum:
+              - IS_EQUAL_TO
+          contextValueRange:
+            type: string
+
+              #-------Definition of the concrete ExpectationContext dataType----------------#
+    NSMFNameContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - name
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    NSMFUserDensityContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - userDensity
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+              #-------Definition of the concrete ObjectContext dataType----------------#
+    
+    NSMFSstObjectContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - sst
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    NSMFIsolationModelObjectContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - isolation-model
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    NSMFPlmnObjectContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - plmn
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+
+          #-------Definition of the concrete ExpectationTarget dataType----------------#
+
+    NSMFAmbrTarget:
+      type: object
+      properties:
+        targetName:
+          type: string
+          enum:
+            - dLAmbr
+            - uLAmbr
+        targetCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO_OR_GREATER_THAN
+        targetValueRange:
+          type: string
+
+    NSMFQfiTarget:
+      type: object
+      properties:
+        targetName:
+          type: string
+          enum:
+            - qfi
+        targetCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO_OR_GREATER_THAN
+        targetValueRange:
+          type: string
+        targetContexts:
+          type: array
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/NSMFFlowContext'
+
+    NSMFQualityTarget:
+      type: object
+      properties:
+        targetName:
+          type: string
+          enum:
+            - quality
+        targetCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        targetValueRange:
+          type: string
+        targetContexts:
+          type: array
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/NSMFFlowContext'
+
+    NSMFArpPriorityLevelTarget:
+      type: object
+      properties:
+        targetName:
+          type: string
+          enum:
+            - arpPriorityLevel
+        targetCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        targetValueRange:
+          type: string
+        targetContexts:
+          type: array
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/NSMFFlowContext'
+
+    NSMFArpPreemptionCapabilityTarget:
+      type: object
+      properties:
+        targetName:
+          type: string
+          enum:
+            - arpPreemptionCapability
+        targetCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        targetValueRange:
+          type: string
+        targetContexts:
+          type: array
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/NSMFFlowContext'
+
+    NSMFArpPreemptionVulnerabilityTarget:
+      type: object
+      properties:
+        targetName:
+          type: string
+          enum:
+            - arpPreemptionVulnerability
+        targetCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        targetValueRange:
+          type: string
+        targetContexts:
+          type: array
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/NSMFFlowContext'
+
+    NSMFGbrTarget:
+      type: object
+      properties:
+        targetName:
+          type: string
+          enum:
+            - dLGbr
+            - uLGbr
+        targetCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO_OR_GREATER_THAN
+        targetValueRange:
+          type: string
+
+    NSMFMbrTarget:
+      type: object
+      properties:
+        targetName:
+          type: string
+          enum:
+            - dLMbr
+            - uLMbr
+        targetCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO_OR_GREATER_THAN
+        targetValueRange:
+          type: string
+
+    NSMFPlrTarget:
+      type: object
+      properties:
+        targetName:
+          type: string
+          enum:
+            - plr
+        targetCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        targetValueRange:
+          type: string
+
+    NSMFFlowContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - flow
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string

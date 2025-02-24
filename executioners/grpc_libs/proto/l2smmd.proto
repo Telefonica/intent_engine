@@ -68,6 +68,18 @@ message DeleteOverlayResponse {
     string message = 1;
 }
 
+// Slice addition
+
+message CreateSliceRequest {
+Slice slice = 1;
+string namespace = 2;
+}
+message Slice {
+Provider provider = 1;
+repeated Cluster clusters = 2;
+repeated Link links = 3;
+}
+
 // Service definition
 service L2SMMultiDomainService {
     // Methods for network management
@@ -78,4 +90,5 @@ service L2SMMultiDomainService {
     rpc AddCluster(AddClusterRequest) returns (AddClusterResponse);
     rpc RemoveCluster(RemoveClusterRequest) returns (RemoveClusterResponse);
     rpc DeleteOverlay(DeleteOverlayRequest) returns (DeleteOverlayResponse);
+    rpc CreateSlice(CreateSliceRequest) returns (CreateSliceResponse);
 }
