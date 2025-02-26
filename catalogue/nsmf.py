@@ -284,56 +284,62 @@ class nsmf(abstract_library):
                                                     case "flow":
                                                         logger.debug("flow case")
                                                         flow_id=trg_ctx.contextValueRange
-                                        if str(flow_id) not in str(flow_id):
+                                        if str(flow_id) not in flow:
                                             flow[str(flow_id)]={}
                                         flow[str(flow_id)]['qfi']=exp_trg.targetValueRange
                                     case "quality":
                                         logger.debug("quality case")
-                                        if trg_ctx.targetContexts:
+                                        if exp_trg.targetContexts:
                                             for trg_ctx in exp_trg.targetContexts:
                                                 att=trg_ctx.contextAttribute
                                                 match att:
                                                     case "flow":
                                                         logger.debug("flow case")
                                                         flow_id=trg_ctx.contextValueRange
-                                        if str(flow_id) not in str(flow_id):
+                                        if str(flow_id) not in flow:
                                             flow[str(flow_id)]={}
                                         flow[str(flow_id)]['quality']=exp_trg.targetValueRange
                                     case "arpPriorityLevel":
                                         logger.debug("arpPriorityLevel case")
-                                        if trg_ctx.targetContexts:
+                                        if exp_trg.targetContexts:
                                             for trg_ctx in exp_trg.targetContexts:
                                                 att=trg_ctx.contextAttribute
                                                 match att:
                                                     case "flow":
                                                         logger.debug("flow case")
                                                         flow_id=trg_ctx.contextValueRange
-                                        if str(flow_id) not in str(flow_id):
+                                        if str(flow_id) not in flow:
                                             flow[str(flow_id)]={}
+                                            if 'arp' not in flow[str(flow_id)]:
+                                                flow[str(flow_id)]['arp']={}
                                         flow[str(flow_id)]['arp']['priority-level']=exp_trg.targetValueRange
                                     case "arpPreemptionCapability":
                                         logger.debug("arpPreemptionCapability case")
-                                        if trg_ctx.targetContexts:
+                                        if exp_trg.targetContexts:
                                             for trg_ctx in exp_trg.targetContexts:
                                                 att=trg_ctx.contextAttribute
                                                 match att:
                                                     case "flow":
                                                         logger.debug("flow case")
                                                         flow_id=trg_ctx.contextValueRange
-                                        if str(flow_id) not in str(flow_id):
+                                        if str(flow_id) not in flow:
                                             flow[str(flow_id)]={}
+                                            if 'arp' not in flow[str(flow_id)]:
+                                                flow[str(flow_id)]['arp']={}
                                         flow[str(flow_id)]['arp']['preemption-capability']=exp_trg.targetValueRange
                                     case "arpPreemptionVulnerability":
                                         logger.debug("arpPreemptionVulnerability case")
-                                        if trg_ctx.targetContexts:
+                                        if exp_trg.targetContexts:
                                             for trg_ctx in exp_trg.targetContexts:
                                                 att=trg_ctx.contextAttribute
                                                 match att:
                                                     case "flow":
                                                         logger.debug("flow case")
                                                         flow_id=trg_ctx.contextValueRange
-                                        if str(flow_id) not in str(flow_id):
+                                        if str(flow_id) not in flow:
                                             flow[str(flow_id)]={}
+                                            if 'arp' not in flow[str(flow_id)]:
+                                                flow[str(flow_id)]['arp']={}
                                         flow[str(flow_id)]['arp']['preemption-vulnerability']=exp_trg.targetValueRange
                                     case "dLGbr":
                                         logger.debug("dLGbr case")
@@ -347,18 +353,18 @@ class nsmf(abstract_library):
                                         slice_session['gbr']['uplink']=exp_trg.targetValueRange
                                     case "dLMbr":
                                         logger.debug("dLMbr case")
-                                        if 'gbr' not in slice_session:
-                                            slice_session['gbr'] = {}
+                                        if 'mbr' not in slice_session:
+                                            slice_session['mbr'] = {}
                                         slice_session['mbr']['downlink']=exp_trg.targetValueRange
                                     case "uLMbr":
                                         logger.debug("uLMbr case")
-                                        if 'gbr' not in slice_session:
-                                            slice_session['gbr'] = {}
+                                        if 'mbr' not in slice_session:
+                                            slice_session['mbr'] = {}
                                         slice_session['mbr']['uplink']=exp_trg.targetValueRange
                                     case "plr":
                                         logger.debug("plr case")
-                                        if 'gbr' not in slice_session:
-                                            slice_session['gbr'] = {}
+                                        if 'plr' not in slice_session:
+                                            slice_session['plr'] = {}
                                         slice_session['plr']=exp_trg.targetValueRange
                                     case _:
                                         logger.debug("NOT matching in case: %s",att)
