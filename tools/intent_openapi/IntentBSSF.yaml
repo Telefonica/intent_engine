@@ -24,8 +24,9 @@ components:
               items:
                 # type: object
                 anyOf:
-                  - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"
-                  - $ref: "IntentExpectation_NSMF.yaml#/components/schemas/NewNSMFSliceIntentExpectation"  
+                  - $ref: "IntentExpectation_NSMF.yaml#/components/schemas/NewNSMFSliceIntentExpectation"
+                  # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"
+                    
             intentContexts:
               type: array
               items:

@@ -14,7 +14,7 @@ components:
       oneOf:
         - $ref: "#/components/schemas/NewNSMFSliceIntentExpectation"
 
-    NewNSMFSliceExpectation:
+    NewNSMFSliceIntentExpectation:
         description: >-
             Expectation to create a new flow in NSMF component
         type: object

@@ -42,6 +42,7 @@ class IntentModel():
         keywords.append(self.__intent.userLabel)
         # intent_expectations: List[IntentNrm.IntentExpectation] = self.__intent.intentExpectations
         for exp in iter(self.__intent.intentExpectations):
+            # logger.debug("Each expectation is being classified: %s %s", exp, type(exp))
             keywords.append(exp.expectationVerb)
             keywords.append(exp.expectationObject.objectType)
             # keywords.extend([trg.targetName for trg in exp.expectationTargets])

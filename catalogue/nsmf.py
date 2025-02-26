@@ -29,12 +29,11 @@ class nsmf(abstract_library):
                     "ENSURE":"green_bssf",
                     "DELIVER":"slice"
                 },
-                "Slice_nsmf":{
-                    "ENSURE":"green_bssf",
-                    "DELIVER":
-                        {"NSFM_SESSION":"nsmf",
-                         "NSFM_SLICE":"nsmf"},
-                }
+                "ENSURE":{"NSMF_SESSION":"nsmf"},
+                "DELIVER":
+                    {"NSMF_SESSION":"nsmf",
+                        "NSMF_SLICE":"nsmf"},
+
            }
         }
         super().__init__(module_name="nsmf",isILU=True,params=params,decision_tree=decision_tree)
@@ -53,8 +52,27 @@ class nsmf(abstract_library):
         intent_dict=intent.dict(exclude_defaults=True)
         logger.debug("Intent dict: %s",intent_dict)
         params={}
-
+        
+        slices=[] # Each expectation is a region
+        sessions=[] # Each expectation has a session
+        
         for exp in intent.intentExpectations:
+            slice_region={}
+            slice_session={}
+            for exp_ctx in exp.expectationContexts:
+                if isinstance(exp_ctx,IntentNrm.GreenIntentContext): # placeholder
+                    logger.debug("Url: %s",exp_ctx.contextValueRange)
+                    params['url']=exp_ctx.contextValueRange
+                    params['headers']={'Content-Type': 'application/x-yaml'} # - 
+
+                match exp_ctx.contextAttribute:
+                    case "name":
+                        slice_region['name']=exp_ctx.contextValueRange
+                        logger.debug("Region name: %s",slice_region['name'])
+                    case "user-density":
+                        slice_region['user-density']=exp_ctx.contextValueRange
+                        logger.debug("User density: %s",slice_region['user-density'])
+
             exp_verb=exp.expectationVerb
             logger.debug("expectation case %s",exp_verb)
             # assert isinstance(exp, IntentNrm.L2SMExpectation)
@@ -79,67 +97,295 @@ class nsmf(abstract_library):
                                 match att:
                                     case "sst":
                                         logger.debug("sst case")
-                                        self.__params['sst']=obj_ctx.contextValueRange
+                                        slice_region['sst']=obj_ctx.contextValueRange
                                     case "isolation-model":
                                         logger.debug("isolation-model")
-                                        self.__params['isolation-model']=obj_ctx.contextValueRange
+                                        if 'isolation-model' not in slice_region:
+                                            slice_region['isolation-model'] = {}
+                                        slice_region['isolation-model']['private-sectors'] = obj_ctx.contextValueRange
                                     case "plmn":
                                         logger.debug("plmn case")
-                                        self.__params['plmn']=obj_ctx.contextValueRange # This is directly a dict
+                                        slice_region['plmn']=obj_ctx.contextValueRange # This is directly a dict
                                     case _:
                                         logger.debug("NOT matching in case: %s",att)
 
-                    for trg_ctx in exp.expectationTargets:
-                        # Loop trg inside exp
-                        att=trg_ctx.targetName
-                        match att:
-                            case "dLAmbr":
-                                logger.debug("dLAmbr case")
-                                trg_ctxs=trg_ctx.targetContexts
-                                if trg_ctxs: # Not targets in principle
-                                    for trg_ctx in trg_ctxs:
-                                        # Loop ctx inside trg inside exp
-                                        att=trg_ctx.contextAttribute
-                                        match att:
-                                            case "area":
-                                                logger.debug("area case")
-                            case "uLAmbr":
-                                logger.debug("uLAmbr case")
-                                trg_ctxs=trg_ctx.targetContexts
-                                if trg_ctxs: # Not targets in principle
-                                    for trg_ctx in trg_ctxs:
-                                        # Loop ctx inside trg inside exp
-                                        att=trg_ctx.contextAttribute
-                                        match att:
-                                            case "area":
-                                                logger.debug("area case")
-                
-            for exp_ctx in exp.expectationContexts:
-                if isinstance(exp_ctx,IntentNrm.GreenIntentContext): # placeholder
-                    logger.debug("Url: %s",exp_ctx.contextValueRange)
-                    params['url']=exp_ctx.contextValueRange
-                    params['headers']={'Content-Type': 'application/x-yaml'}
-                
-                match exp_ctx.contextAttribute:
-                    case "name":
-                        self.__params['name']=exp_ctx.contextValueRange
-                        logger.debug("Region name: %s",self.__params['name'])
-                    case "user-density":
-                        self.__params['user-density']=exp_ctx.contextValueRange
-                        logger.debug("User density: %s",self.__params['user-density'])
-                        
+                            for exp_trg in exp.expectationTargets:
+                                # Loop trg inside exp
+                                att=exp_trg.targetName
+                                match att:
+                                    case "dLAmbr":
+                                        logger.debug("dLAmbr case")
+                                        # trg_ctxs=exp_trg.targetContexts
+                                        if 'ambr' not in slice_region:
+                                            slice_region['ambr'] = {}
+                                        slice_region['ambr']['downlink']=exp_trg.targetValueRange
+                                    case "uLAmbr":
+                                        logger.debug("uLAmbr case")
+                                        # trg_ctxs=trg_ctx.targetContexts
+                                        if 'ambr' not in slice_region:
+                                            slice_region['ambr'] = {}
+                                        slice_region['ambr']['uplink']=exp_trg.targetValueRange
+                            slices.append(slice_region)
+                            pprint(slices)
+
+                        case "NSMF_SESSION":
+                            # DUPLICATED IN CASE NSMFSESiON IS DELIVER not ENSURE VERB
+                            for obj_ctx in exp_obj.objectContexts:
+                                # Loop ctx inside obj
+                                logger.debug("objectctx case %s: ",obj_ctx)
+                                att=obj_ctx.contextAttribute
+                                logger.debug("attobjectctx case %s: ",att)
+                                match att:
+                                    case "id":
+                                        logger.debug("id case")
+                                        slice_session['id']=obj_ctx.contextValueRange
+                                    case "type":
+                                        logger.debug("type case")
+                                        slice_session['type']=obj_ctx.contextValueRange
+                                    case "dnn":
+                                        logger.debug("dnn case")
+                                        slice_session['dnn']=obj_ctx.contextValueRange
+                                    case _:
+                                        logger.debug("NOT matching in case: %s",att)
+
+                            for exp_trg in exp.expectationTargets:
+                                # Loop trg inside exp
+                                flows=[]
+                                flow={}
+                                att=exp_trg.targetName
+                                match att:
+                                    case "dLAmbr":
+                                        logger.debug("dLAmbr case")
+                                        trg_ctxs=exp_trg.targetContexts
+                                        slice_session['ambr']['downlink']=exp_trg.targetValueRange
+                                    case "uLAmbr":
+                                        logger.debug("uLAmbr case")
+                                        trg_ctxs=exp_trg.targetContexts
+                                        slice_session['ambr']['uplink']=exp_trg.targetValueRange
+                                    case "qfi":
+                                        logger.debug("qfi case")
+                                        if trg_ctx.targetContexts:
+                                            for trg_ctx in exp_trg.targetContexts:
+                                                att=trg_ctx.contextAttribute
+                                                match att:
+                                                    case "flow":
+                                                        logger.debug("flow case")
+                                                        flow_id=trg_ctx.contextValueRange
+                                        flow[flow_id]['qfi']=exp_trg.targetValueRange
+                                    case "quality":
+                                        logger.debug("quality case")
+                                        if trg_ctx.targetContexts:
+                                            for trg_ctx in exp_trg.targetContexts:
+                                                att=trg_ctx.contextAttribute
+                                                match att:
+                                                    case "flow":
+                                                        logger.debug("flow case")
+                                                        flow_id=trg_ctx.contextValueRange
+                                        flow[flow_id]['quality']=exp_trg.targetValueRange
+                                    case "arpPriorityLevel":
+                                        logger.debug("arpPriorityLevel case")
+                                        if trg_ctx.targetContexts:
+                                            for trg_ctx in exp_trg.targetContexts:
+                                                att=trg_ctx.contextAttribute
+                                                match att:
+                                                    case "flow":
+                                                        logger.debug("flow case")
+                                                        flow_id=trg_ctx.contextValueRange
+                                        flow[flow_id]['arp']['priority-level']=exp_trg.targetValueRange
+                                    case "arpPreemptionCapability":
+                                        logger.debug("arpPreemptionCapability case")
+                                        if trg_ctx.targetContexts:
+                                            for trg_ctx in exp_trg.targetContexts:
+                                                att=trg_ctx.contextAttribute
+                                                match att:
+                                                    case "flow":
+                                                        logger.debug("flow case")
+                                                        flow_id=trg_ctx.contextValueRange
+                                        flow[flow_id]['arp']['preemption-capability']=exp_trg.targetValueRange
+                                    case "arpPreemptionVulnerability":
+                                        logger.debug("arpPreemptionVulnerability case")
+                                        if trg_ctx.targetContexts:
+                                            for trg_ctx in exp_trg.targetContexts:
+                                                att=trg_ctx.contextAttribute
+                                                match att:
+                                                    case "flow":
+                                                        logger.debug("flow case")
+                                                        flow_id=trg_ctx.contextValueRange
+                                        flow[flow_id]['arp']['preemption-vulnerability']=exp_trg.targetValueRange
+                                    case "dLGbr":
+                                        logger.debug("dLGbr case")
+                                        slice_session['gbr']['downlink']=exp_trg.targetValueRange
+                                    case "uLGbr":
+                                        logger.debug("uLGbr case")
+                                        slice_session['gbr']['uplink']=exp_trg.targetValueRange
+                                    case "dLMbr":
+                                        logger.debug("dLMbr case")
+                                        slice_session['mbr']['downlink']=exp_trg.targetValueRange
+                                    case "uLMbr":
+                                        logger.debug("uLMbr case")
+                                        slice_session['mbr']['uplink']=exp_trg.targetValueRange
+                                    case "plr":
+                                        logger.debug("plr case")
+                                        slice_session['plr']=exp_trg.targetValueRange
+                                    case _:
+                                        logger.debug("NOT matching in case: %s",att)
+                                slice_session['flows'].append(flow)
+                                pprint(slice_session)
+                            sessions.append(slice_session)
+
+                case "ENSURE":
+                    exp_obj=exp.expectationObject
+                    logger.debug("DELIVER case obj: %s",exp_obj)
+                    exp_type=exp_obj.objectType
+                    params['service']="create_network" # TODO: only create slice?
+                    match exp_type:
+                        case "NSMF_SESSION":
+                            for obj_ctx in exp_obj.objectContexts:
+                                # Loop ctx inside obj
+                                logger.debug("objectctx case %s: ",obj_ctx)
+                                att=obj_ctx.contextAttribute
+                                logger.debug("attobjectctx case %s: ",att)
+                                match att:
+                                    case "id":
+                                        logger.debug("id case")
+                                        slice_session['id']=obj_ctx.contextValueRange
+                                    case "type":
+                                        logger.debug("type case")
+                                        slice_session['type']=obj_ctx.contextValueRange
+                                    case "dnn":
+                                        logger.debug("dnn case")
+                                        slice_session['dnn']=obj_ctx.contextValueRange
+                                    case _:
+                                        logger.debug("NOT matching in case: %s",att)
+
+                            for exp_trg in exp.expectationTargets:
+                                # Loop trg inside exp
+                                flows=[]
+                                flow={}
+                                att=exp_trg.targetName
+                                match att:
+                                    case "dLAmbr":
+                                        logger.debug("dLAmbr case")
+                                        # trg_ctxs=exp_trg.targetContexts
+                                        if 'ambr' not in slice_session:
+                                            slice_session['ambr'] = {}
+                                        slice_session['ambr']['downlink']=exp_trg.targetValueRange
+                                    case "uLAmbr":
+                                        logger.debug("uLAmbr case")
+                                        if 'ambr' not in slice_session:
+                                            slice_session['ambr'] = {}
+                                        slice_session['ambr']['uplink']=exp_trg.targetValueRange
+                                    case "qfi":
+                                        logger.debug("qfi case")
+                                        if exp_trg.targetContexts:
+                                            for trg_ctx in exp_trg.targetContexts:
+                                                att=trg_ctx.contextAttribute
+                                                match att:
+                                                    case "flow":
+                                                        logger.debug("flow case")
+                                                        flow_id=trg_ctx.contextValueRange
+                                        if str(flow_id) not in str(flow_id):
+                                            flow[str(flow_id)]={}
+                                        flow[str(flow_id)]['qfi']=exp_trg.targetValueRange
+                                    case "quality":
+                                        logger.debug("quality case")
+                                        if trg_ctx.targetContexts:
+                                            for trg_ctx in exp_trg.targetContexts:
+                                                att=trg_ctx.contextAttribute
+                                                match att:
+                                                    case "flow":
+                                                        logger.debug("flow case")
+                                                        flow_id=trg_ctx.contextValueRange
+                                        if str(flow_id) not in str(flow_id):
+                                            flow[str(flow_id)]={}
+                                        flow[str(flow_id)]['quality']=exp_trg.targetValueRange
+                                    case "arpPriorityLevel":
+                                        logger.debug("arpPriorityLevel case")
+                                        if trg_ctx.targetContexts:
+                                            for trg_ctx in exp_trg.targetContexts:
+                                                att=trg_ctx.contextAttribute
+                                                match att:
+                                                    case "flow":
+                                                        logger.debug("flow case")
+                                                        flow_id=trg_ctx.contextValueRange
+                                        if str(flow_id) not in str(flow_id):
+                                            flow[str(flow_id)]={}
+                                        flow[str(flow_id)]['arp']['priority-level']=exp_trg.targetValueRange
+                                    case "arpPreemptionCapability":
+                                        logger.debug("arpPreemptionCapability case")
+                                        if trg_ctx.targetContexts:
+                                            for trg_ctx in exp_trg.targetContexts:
+                                                att=trg_ctx.contextAttribute
+                                                match att:
+                                                    case "flow":
+                                                        logger.debug("flow case")
+                                                        flow_id=trg_ctx.contextValueRange
+                                        if str(flow_id) not in str(flow_id):
+                                            flow[str(flow_id)]={}
+                                        flow[str(flow_id)]['arp']['preemption-capability']=exp_trg.targetValueRange
+                                    case "arpPreemptionVulnerability":
+                                        logger.debug("arpPreemptionVulnerability case")
+                                        if trg_ctx.targetContexts:
+                                            for trg_ctx in exp_trg.targetContexts:
+                                                att=trg_ctx.contextAttribute
+                                                match att:
+                                                    case "flow":
+                                                        logger.debug("flow case")
+                                                        flow_id=trg_ctx.contextValueRange
+                                        if str(flow_id) not in str(flow_id):
+                                            flow[str(flow_id)]={}
+                                        flow[str(flow_id)]['arp']['preemption-vulnerability']=exp_trg.targetValueRange
+                                    case "dLGbr":
+                                        logger.debug("dLGbr case")
+                                        if 'gbr' not in slice_session:
+                                            slice_session['gbr'] = {}
+                                        slice_session['gbr']['downlink']=exp_trg.targetValueRange
+                                    case "uLGbr":
+                                        logger.debug("uLGbr case")
+                                        if 'gbr' not in slice_session:
+                                            slice_session['gbr'] = {}
+                                        slice_session['gbr']['uplink']=exp_trg.targetValueRange
+                                    case "dLMbr":
+                                        logger.debug("dLMbr case")
+                                        if 'gbr' not in slice_session:
+                                            slice_session['gbr'] = {}
+                                        slice_session['mbr']['downlink']=exp_trg.targetValueRange
+                                    case "uLMbr":
+                                        logger.debug("uLMbr case")
+                                        if 'gbr' not in slice_session:
+                                            slice_session['gbr'] = {}
+                                        slice_session['mbr']['uplink']=exp_trg.targetValueRange
+                                    case "plr":
+                                        logger.debug("plr case")
+                                        if 'gbr' not in slice_session:
+                                            slice_session['gbr'] = {}
+                                        slice_session['plr']=exp_trg.targetValueRange
+                                    case _:
+                                        logger.debug("NOT matching in case: %s",att)
+                                if 'flows' not in slice_session:
+                                    slice_session['flows']=[]
+                                slice_session['flows'].append(flow)
+                                pprint(slice_session)
+                            sessions.append(slice_session)
+            pprint(slice_region)
+            pprint(slice_session)
+        self.__params['slices']=slices
+        
         for ctx in intent.intentContexts:
             match ctx.contextAttribute:
                 case "name":
                     logger.debug("intent context name case")
+                    self.__params['name']=ctx.contextValueRange
                 case "namespace":
                     logger.debug("intent context namespace case")
+                    self.__params['namespace']=ctx.contextValueRange
 
         params['connector']="nsmf"
+        pprint(self.__params)
         return [self.nsmf_schema(params['service']),params],"sys_out"
     
 
-    def nsmf_schema(self, params):
+    def nsmf_schema(self, service):
         """
         Create a schema for the NSMF component.
         """
@@ -147,8 +393,8 @@ class nsmf(abstract_library):
             "apiVersion": "athena.trirematics.io/v1",
             "kind": "Slice",
             "metadata": {
-                "name": params.get("name", ""),
-                "namespace": params.get("namespace", "")
+                "name": self.__params.get("name", ""),
+                "namespace": self.__params.get("namespace", "")
             },
             "spec": {
                 "slices": []
@@ -158,26 +404,26 @@ class nsmf(abstract_library):
         slice_spec = {
             "regions": [],
             "isolation-model": {
-                "private-sectors": params.get("isolation-model", [])
+                "private-sectors": self.__params.get("isolation-model", [])
             },
-            "plmn": params.get("plmn", {}),
-            "sst": params.get("sst", ""),
-            "sd": params.get("sd", ""),
+            "plmn": self.__params.get("plmn", {}),
+            "sst": self.__params.get("sst", ""),
+            "sd": self.__params.get("sd", ""),
             "ambr": {
-                "downlink": params.get("dLAmbr", ""),
-                "uplink": params.get("uLAmbr", "")
+                "downlink": self.__params.get("dLAmbr", ""),
+                "uplink": self.__params.get("uLAmbr", "")
             },
             "sessions": []
         }
 
-        for region in params.get("regions", []):
+        for region in self.__params.get("regions", []):
             region_spec = {
                 "name": region.get("name", ""),
                 "user-density": region.get("user-density", "")
             }
             slice_spec["regions"].append(region_spec)
 
-        for session in params.get("sessions", []):
+        for session in self.__params.get("sessions", []):
             session_spec = {
                 "id": session.get("id", ""),
                 "type": session.get("type", ""),
