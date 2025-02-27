@@ -229,8 +229,9 @@ class nsmf(abstract_library):
                                         slice_session['plr']=exp_trg.targetValueRange
                                     case _:
                                         logger.debug("NOT matching in case: %s",att)
-                                slice_session['flows'].append(flow)
-                                pprint(slice_session)
+                                # slice_session['flows'].append(flow)
+                                # pprint(slice_session)
+                            slice_session['flows'].append(flow)
                             sessions.append(slice_session)
 
                 case "ENSURE":
@@ -257,12 +258,14 @@ class nsmf(abstract_library):
                                         slice_session['dnn']=obj_ctx.contextValueRange
                                     case _:
                                         logger.debug("NOT matching in case: %s",att)
-
+                            flows=[]
+                            flow={}
                             for exp_trg in exp.expectationTargets:
                                 # Loop trg inside exp
-                                flows=[]
-                                flow={}
+                                pprint("START FOR ")
+                                pprint(flow)
                                 att=exp_trg.targetName
+                                                
                                 match att:
                                     case "dLAmbr":
                                         logger.debug("dLAmbr case")
@@ -310,8 +313,11 @@ class nsmf(abstract_library):
                                                         flow_id=trg_ctx.contextValueRange
                                         if str(flow_id) not in flow:
                                             flow[str(flow_id)]={}
-                                            if 'arp' not in flow[str(flow_id)]:
-                                                flow[str(flow_id)]['arp']={}
+                                        if 'arp' not in flow[str(flow_id)] and str(flow_id) in flow:
+                                            flow[str(flow_id)]['arp']={}
+                                        if str(flow_id) in flow and 'arp' in flow[str(flow_id)]:
+                                            if 'priority-level' not in flow[str(flow_id)]['arp']:
+                                                flow[str(flow_id)]['arp']['priority-level']={}
                                         flow[str(flow_id)]['arp']['priority-level']=exp_trg.targetValueRange
                                     case "arpPreemptionCapability":
                                         logger.debug("arpPreemptionCapability case")
@@ -324,8 +330,10 @@ class nsmf(abstract_library):
                                                         flow_id=trg_ctx.contextValueRange
                                         if str(flow_id) not in flow:
                                             flow[str(flow_id)]={}
-                                            if 'arp' not in flow[str(flow_id)]:
-                                                flow[str(flow_id)]['arp']={}
+                                        if 'arp' not in flow[str(flow_id)] and str(flow_id) in flow:
+                                            flow[str(flow_id)]['arp']={}
+                                        if str(flow_id) in flow and 'arp' in flow[str(flow_id)]:
+                                            flow[str(flow_id)]['arp']['preemption-capability']={}
                                         flow[str(flow_id)]['arp']['preemption-capability']=exp_trg.targetValueRange
                                     case "arpPreemptionVulnerability":
                                         logger.debug("arpPreemptionVulnerability case")
@@ -338,8 +346,10 @@ class nsmf(abstract_library):
                                                         flow_id=trg_ctx.contextValueRange
                                         if str(flow_id) not in flow:
                                             flow[str(flow_id)]={}
-                                            if 'arp' not in flow[str(flow_id)]:
-                                                flow[str(flow_id)]['arp']={}
+                                        if 'arp' not in flow[str(flow_id)] and str(flow_id) in flow:
+                                            flow[str(flow_id)]['arp']={}
+                                        if str(flow_id) in flow and 'arp' in flow[str(flow_id)]:
+                                            flow[str(flow_id)]['arp']['preemption-vulnerability']={}
                                         flow[str(flow_id)]['arp']['preemption-vulnerability']=exp_trg.targetValueRange
                                     case "dLGbr":
                                         logger.debug("dLGbr case")
@@ -370,8 +380,9 @@ class nsmf(abstract_library):
                                         logger.debug("NOT matching in case: %s",att)
                                 if 'flows' not in slice_session:
                                     slice_session['flows']=[]
-                                slice_session['flows'].append(flow)
-                                pprint(slice_session)
+                                
+                                # pprint(slice_session)
+                            slice_session['flows'].append(flow)
                             sessions.append(slice_session)
             pprint(slice_region)
             pprint(slice_session)
