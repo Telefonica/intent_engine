@@ -19,7 +19,7 @@ from devtools import pprint
 from intent_engine.catalogue.abstract_library import abstract_library
 from intent_engine.core import IntentNrm
 from intent_engine.core.ib_model import IntentModel, jsonable_model_encoder
-from intent_engine.core.database_utils import create_intent_graph, store_graph_in_graphdb
+from intent_engine.core.database_utils import create_intent_graph, get_intent_from_userLabel, store_graph_in_graphdb
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,13 @@ class green_bssf(abstract_library):
                     "ENSURE":"green_bssf",
                     "DELIVER":"green_bssf"
                 }
-           }
+           },
+           "green_nest" : {
+                "NEST":{
+                      "ENSURE":"green_bssf",
+                      "DELIVER":"green_bssf"
+                 }
+              }
         }
         super().__init__(module_name="green_bssf",isILU=False,params=params,decision_tree=decision_tree)
         self.__params=params
@@ -58,35 +64,59 @@ class green_bssf(abstract_library):
         slice_expectations=[]
         subintent_green={}
         subintent_slice={}
+        if intent.userLabel == 'green_nest':
+            nest_expectations=[]
+            logger.debug("Green NEST subintent")
+            for i,exp in enumerate(intent.intentExpectations):
+                if exp.expectationVerb == 'DELIVER':
+                    if exp.expectationObject.objectType=='NEST':
+                        for obj_ctx in exp.expectationObject.objectContexts:
+                            logger.debug("look for NEST type: %s",obj_ctx)
+                            if obj_ctx.contextAttribute=='ServiceType':
+                                if obj_ctx.contextValueRange=='eMBB':
+                                    intent_dict['intentExpectations'][i]['expectationObject']['objectType']='NEST_eMBB'
+                                    nest_expectations.append(intent_dict['intentExpectations'][i])
+                                    logger.debug("NEST for eMBB")
+            
 
-        for i,exp in enumerate(intent.intentExpectations):
-            if exp.expectationVerb == 'ENSURE':
-                
-                intent_dict['intentExpectations'][i]['expectationObject']['objectType']='Slice_Energy_Saving'
-                green_expectations.append(intent_dict['intentExpectations'][i])
-                # pprint(intent_dict)
-                
+            subintent_green['Intent']={'intentExpectations':nest_expectations,
+                                    'id':intent_dict['id'],
+                                        'userLabel':'enif_slice',
+                                        'intentPriority':intent_dict['intentPriority']}
+        
+            store_graph_in_graphdb(create_intent_graph(intent_model), "http://192.168.159.253:7200", "6green")
+            get_intent_from_userLabel("green_nest","http://192.168.159.253:7200", "6green")
+            return [IntentModel(subintent_green)]
 
-            if exp.expectationVerb == 'DELIVER':
+        else:
+            for i,exp in enumerate(intent.intentExpectations):
+                if exp.expectationVerb == 'ENSURE':
+                    
+                    intent_dict['intentExpectations'][i]['expectationObject']['objectType']='Slice_Energy_Saving'
+                    green_expectations.append(intent_dict['intentExpectations'][i])
+                    # pprint(intent_dict)
+                    
 
-                intent_dict['intentExpectations'][i]['expectationObject']['objectType']='Slice_5ginduce'
-                slice_expectations.append(intent_dict['intentExpectations'][i])
+                if exp.expectationVerb == 'DELIVER':
 
-        # TODO: meter la nbi de TFS como parte del context para el subintent
-        subintent_green['Intent']={'intentExpectations':green_expectations,
-                                   'id':intent_dict['id'],
-                                    'userLabel':'enif_slice',
-                                    'intentPriority':intent_dict['intentPriority']}
-        # TODO:check intentPriority:  ,observationPeriod: , intentAdminState: ''? maintain?
+                    intent_dict['intentExpectations'][i]['expectationObject']['objectType']='Slice_5ginduce'
+                    slice_expectations.append(intent_dict['intentExpectations'][i])
 
-        subintent_slice['Intent']={'intentExpectations':slice_expectations,
-                                   'id':intent_dict['id'],
-                                    'userLabel':'enif_slice',
-                                    'intentPriority':intent_dict['intentPriority']}
+            # TODO: meter la nbi de TFS como parte del context para el subintent
+            subintent_green['Intent']={'intentExpectations':green_expectations,
+                                    'id':intent_dict['id'],
+                                        'userLabel':'enif_slice',
+                                        'intentPriority':intent_dict['intentPriority']}
+            # TODO:check intentPriority:  ,observationPeriod: , intentAdminState: ''? maintain?
+
+            subintent_slice['Intent']={'intentExpectations':slice_expectations,
+                                    'id':intent_dict['id'],
+                                        'userLabel':'enif_slice',
+                                        'intentPriority':intent_dict['intentPriority']}
         # logger.debug("Green subintent : %s",subintent)
         # intent_model.set_intent(subintent)
-        store_graph_in_graphdb(create_intent_graph(intent_model), "http://localhost:7200", "6green")
-        return [IntentModel(subintent_green),IntentModel(subintent_slice)]
+            # store_graph_in_graphdb(create_intent_graph(intent_model), "http://localhost:7200", "6green")
+            return [IntentModel(subintent_green),IntentModel(subintent_slice)]
     
     def translator(self,subintent : IntentModel)-> tuple[list , str]:
         exec_params=[]

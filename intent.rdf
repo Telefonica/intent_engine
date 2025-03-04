@@ -1,273 +1,63 @@
 @prefix ns1: <http://example.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/intent/green_energy_saving_intent> a ns1:Intent ;
+<http://example.org/intent/1> a ns1:Intent ;
     ns1:intentAdminState "ACTIVATED"^^xsd:string ;
-    ns1:intentContext <http://example.org/intent/green_energy_saving_intent/context/6GREEN_ID> ;
-    ns1:intentExpectation <http://example.org/intent/green_energy_saving_intent/expectation/1>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/2>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/3>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/4>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/5>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/6> ;
+    ns1:intentContext <http://example.org/intent/1/context/EnergyEfficiency>,
+        <http://example.org/intent/1/context/IsolationLevel> ;
+    ns1:intentExpectation <http://example.org/intent/1/expectation/1> ;
     ns1:intentPriority "1"^^xsd:int ;
-    ns1:intentTarget <http://example.org/intent/green_energy_saving_intent/expectation/1/target/carbon_emissions>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/1/target/energy_efficiency>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/1/target/network_slice_consumption>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/1/target/renewable_energy_rate>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/2/target/DELAY_CRITICAL_GBR>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/2/target/MIN_RAM> ;
+    ns1:intentTarget <http://example.org/intent/1/expectation/1/target/DownlinkThroughputPerUE>,
+        <http://example.org/intent/1/expectation/1/target/Latency> ;
     ns1:observationPeriod "60"^^xsd:int ;
-    ns1:userLabel "green"^^xsd:string .
+    ns1:userLabel "green_nest"^^xsd:string .
 
-<http://example.org/intent/green_energy_saving_intent/context/6GREEN_ID> a ns1:Context ;
-    ns1:contextAttribute "6GREEN_ID"^^xsd:string ;
+<http://example.org/intent/1/context/EnergyEfficiency> a ns1:Context ;
+    ns1:contextAttribute "EnergyEfficiency"^^xsd:string ;
+    ns1:contextCondition "IS_EQUAL_TO_OR_GREATER_THAN"^^xsd:string ;
+    ns1:contextValueRange "90%"^^xsd:string .
+
+<http://example.org/intent/1/context/IsolationLevel> a ns1:Context ;
+    ns1:contextAttribute "IsolationLevel"^^xsd:string ;
     ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "flavor? lifetime? priority?"^^xsd:string .
+    ns1:contextValueRange "DedicatedResources"^^xsd:string .
 
-<http://example.org/intent/green_energy_saving_intent/expectation/1> a ns1:Expectation ;
-    ns1:expectationVerb "ENSURE"^^xsd:string ;
-    ns1:intentContext <http://example.org/intent/green_energy_saving_intent/expectation/1/context/NodeInstanceID> ;
-    ns1:objectInstance "330"^^xsd:string ;
-    ns1:objectType "Slice_Energy_Saving"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/1/context/NodeInstanceID> a ns1:Context ;
-    ns1:contextAttribute "NodeInstanceID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange ""^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/1/target/carbon_emissions> a ns1:Target ;
-    ns1:targetCondition "IS_LESS_THAN"^^xsd:string ;
-    ns1:targetContext <http://example.org/intent/green_energy_saving_intent/expectation/1/target/carbon_emissions/context/location_based> ;
-    ns1:targetName "carbon_emissions"^^xsd:string ;
-    ns1:targetValueRange ""^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/1/target/carbon_emissions/context/location_based> a ns1:Context ;
-    ns1:contextAttribute "location_based"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange ""^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/1/target/energy_efficiency> a ns1:Target ;
-    ns1:targetCondition "IS_GREATER_THAN"^^xsd:string ;
-    ns1:targetName "energy_efficiency"^^xsd:string ;
-    ns1:targetValueRange "4.0"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/1/target/network_slice_consumption> a ns1:Target ;
-    ns1:targetCondition "IS_LESS_THAN"^^xsd:string ;
-    ns1:targetContext <http://example.org/intent/green_energy_saving_intent/expectation/1/target/network_slice_consumption/context/network_parts> ;
-    ns1:targetName "network_slice_consumption"^^xsd:string ;
-    ns1:targetValueRange ""^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/1/target/network_slice_consumption/context/network_parts> a ns1:Context ;
-    ns1:contextAttribute "network_parts"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "data_center/IT_equipment"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/1/target/renewable_energy_rate> a ns1:Target ;
-    ns1:targetCondition "IS_GREATER_THAN"^^xsd:string ;
-    ns1:targetName "renewable_energy_rate"^^xsd:string ;
-    ns1:targetValueRange "2.0"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/2> a ns1:Expectation ;
+<http://example.org/intent/1/expectation/1> a ns1:Expectation ;
     ns1:expectationVerb "DELIVER"^^xsd:string ;
-    ns1:intentContext <http://example.org/intent/green_energy_saving_intent/expectation/2/context/componentNodeInstances>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/2/context/graphLinkNodeInstances> ;
-    ns1:objectInstance "Minimal-Slice-NAO-OSS-demo"^^xsd:string ;
-    ns1:objectType "Slice_5ginduce"^^xsd:string .
+    ns1:intentContext <http://example.org/intent/1/expectation/1/context/AreaOfService>,
+        <http://example.org/intent/1/expectation/1/context/ServiceType> ;
+    ns1:objectInstance "Slice_001"^^xsd:string ;
+    ns1:objectType "NEST"^^xsd:string .
 
-<http://example.org/intent/green_energy_saving_intent/expectation/2/context/componentNodeInstances> a ns1:Context ;
-    ns1:contextAttribute "componentNodeInstances"^^xsd:string ;
+<http://example.org/intent/1/expectation/1/context/AreaOfService> a ns1:Context ;
+    ns1:contextAttribute "AreaOfService"^^xsd:string ;
     ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "[\"12\",\"11\"]"^^xsd:string .
+    ns1:contextValueRange "Urban"^^xsd:string .
 
-<http://example.org/intent/green_energy_saving_intent/expectation/2/context/graphLinkNodeInstances> a ns1:Context ;
-    ns1:contextAttribute "graphLinkNodeInstances"^^xsd:string ;
+<http://example.org/intent/1/expectation/1/context/ServiceType> a ns1:Context ;
+    ns1:contextAttribute "ServiceType"^^xsd:string ;
     ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "[\"6\",\"ACCESS_12\"]"^^xsd:string .
+    ns1:contextValueRange "eMBB"^^xsd:string .
 
-<http://example.org/intent/green_energy_saving_intent/expectation/2/target/DELAY_CRITICAL_GBR> a ns1:Target ;
-    ns1:targetCondition "IS_WITHIN_RANGE"^^xsd:string ;
-    ns1:targetContext <http://example.org/intent/green_energy_saving_intent/expectation/2/target/DELAY_CRITICAL_GBR/context/constraintID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/2/target/DELAY_CRITICAL_GBR/context/interfaceInstanceID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/2/target/DELAY_CRITICAL_GBR/context/qi>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/2/target/DELAY_CRITICAL_GBR/context/radioServiceType>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/2/target/DELAY_CRITICAL_GBR/context/type> ;
-    ns1:targetName "DELAY_CRITICAL_GBR"^^xsd:string ;
-    ns1:targetValueRange "[120.0,200.0] kbps"^^xsd:string .
+<http://example.org/intent/1/expectation/1/target/DownlinkThroughputPerUE> a ns1:Target ;
+    ns1:targetCondition "IS_EQUAL_TO_OR_GREATER_THAN"^^xsd:string ;
+    ns1:targetContext <http://example.org/intent/1/expectation/1/target/DownlinkThroughputPerUE/context/TrafficPattern> ;
+    ns1:targetName "DownlinkThroughputPerUE"^^xsd:string ;
+    ns1:targetValueRange "1Gbps"^^xsd:string .
 
-<http://example.org/intent/green_energy_saving_intent/expectation/2/target/DELAY_CRITICAL_GBR/context/constraintID> a ns1:Context ;
-    ns1:contextAttribute "constraintID"^^xsd:string ;
+<http://example.org/intent/1/expectation/1/target/DownlinkThroughputPerUE/context/TrafficPattern> a ns1:Context ;
+    ns1:contextAttribute "TrafficPattern"^^xsd:string ;
     ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "47.0"^^xsd:string .
+    ns1:contextValueRange "HighUsagePeakHours"^^xsd:string .
 
-<http://example.org/intent/green_energy_saving_intent/expectation/2/target/DELAY_CRITICAL_GBR/context/interfaceInstanceID> a ns1:Context ;
-    ns1:contextAttribute "interfaceInstanceID"^^xsd:string ;
+<http://example.org/intent/1/expectation/1/target/Latency> a ns1:Target ;
+    ns1:targetCondition "IS_EQUAL_TO_OR_LESS_THAN"^^xsd:string ;
+    ns1:targetContext <http://example.org/intent/1/expectation/1/target/Latency/context/TimeCriticality> ;
+    ns1:targetName "Latency"^^xsd:string ;
+    ns1:targetValueRange "10ms"^^xsd:string .
+
+<http://example.org/intent/1/expectation/1/target/Latency/context/TimeCriticality> a ns1:Context ;
+    ns1:contextAttribute "TimeCriticality"^^xsd:string ;
     ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "590.0"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/2/target/DELAY_CRITICAL_GBR/context/qi> a ns1:Context ;
-    ns1:contextAttribute "qi"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "10.0"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/2/target/DELAY_CRITICAL_GBR/context/radioServiceType> a ns1:Context ;
-    ns1:contextAttribute "radioServiceType"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "1.0"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/2/target/DELAY_CRITICAL_GBR/context/type> a ns1:Context ;
-    ns1:contextAttribute "type"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "HARD"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/2/target/MIN_RAM> a ns1:Target ;
-    ns1:targetCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:targetContext <http://example.org/intent/green_energy_saving_intent/expectation/2/target/MIN_RAM/context/category>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/2/target/MIN_RAM/context/constraintID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/2/target/MIN_RAM/context/node_instanceHexID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/2/target/MIN_RAM/context/node_instanceID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/2/target/MIN_RAM/context/type> ;
-    ns1:targetName "MIN_RAM"^^xsd:string ;
-    ns1:targetValueRange "2048 mb"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/2/target/MIN_RAM/context/category> a ns1:Context ;
-    ns1:contextAttribute "category"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "COMPONENT_HOSTING"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/2/target/MIN_RAM/context/constraintID> a ns1:Context ;
-    ns1:contextAttribute "constraintID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "46.0"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/2/target/MIN_RAM/context/node_instanceHexID> a ns1:Context ;
-    ns1:contextAttribute "node_instanceHexID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "sdbwjcZKvP"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/2/target/MIN_RAM/context/node_instanceID> a ns1:Context ;
-    ns1:contextAttribute "node_instanceID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "12.0"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/2/target/MIN_RAM/context/type> a ns1:Context ;
-    ns1:contextAttribute "type"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "HARD"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/3> a ns1:Expectation ;
-    ns1:expectationVerb "DELIVER"^^xsd:string ;
-    ns1:intentContext <http://example.org/intent/green_energy_saving_intent/expectation/3/context/componentNodeInstanceHexID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/3/context/componentNodeInstanceID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/3/context/componentNodeInstanceName> ;
-    ns1:objectInstance "12"^^xsd:string ;
-    ns1:objectType "Node_5ginduce"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/3/context/componentNodeInstanceHexID> a ns1:Context ;
-    ns1:contextAttribute "componentNodeInstanceHexID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "sdbwjcZKvP"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/3/context/componentNodeInstanceID> a ns1:Context ;
-    ns1:contextAttribute "componentNodeInstanceID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "12.0"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/3/context/componentNodeInstanceName> a ns1:Context ;
-    ns1:contextAttribute "componentNodeInstanceName"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "PhpMyAdmin"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/4> a ns1:Expectation ;
-    ns1:expectationVerb "DELIVER"^^xsd:string ;
-    ns1:intentContext <http://example.org/intent/green_energy_saving_intent/expectation/4/context/componentNodeInstanceHexID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/4/context/componentNodeInstanceID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/4/context/componentNodeInstanceName> ;
-    ns1:objectInstance "11"^^xsd:string ;
-    ns1:objectType "Node_5ginduce"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/4/context/componentNodeInstanceHexID> a ns1:Context ;
-    ns1:contextAttribute "componentNodeInstanceHexID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "eaXB7aYR9e"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/4/context/componentNodeInstanceID> a ns1:Context ;
-    ns1:contextAttribute "componentNodeInstanceID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "11.0"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/4/context/componentNodeInstanceName> a ns1:Context ;
-    ns1:contextAttribute "componentNodeInstanceName"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "MariaDB"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/5> a ns1:Expectation ;
-    ns1:expectationVerb "DELIVER"^^xsd:string ;
-    ns1:intentContext <http://example.org/intent/green_energy_saving_intent/expectation/5/context/fromComponentNodeInstanceHexID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/5/context/fromComponentNodeInstanceID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/5/context/graphLinkNodeInstanceID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/5/context/toComponentNodeInstanceHexID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/5/context/toComponentNodeInstanceID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/5/context/type> ;
-    ns1:objectInstance "6"^^xsd:string ;
-    ns1:objectType "LinkNode_5ginduce"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/5/context/fromComponentNodeInstanceHexID> a ns1:Context ;
-    ns1:contextAttribute "fromComponentNodeInstanceHexID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "sdbwjcZKvP"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/5/context/fromComponentNodeInstanceID> a ns1:Context ;
-    ns1:contextAttribute "fromComponentNodeInstanceID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "12.0"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/5/context/graphLinkNodeInstanceID> a ns1:Context ;
-    ns1:contextAttribute "graphLinkNodeInstanceID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "6.0"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/5/context/toComponentNodeInstanceHexID> a ns1:Context ;
-    ns1:contextAttribute "toComponentNodeInstanceHexID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "eaXB7aYR9e"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/5/context/toComponentNodeInstanceID> a ns1:Context ;
-    ns1:contextAttribute "toComponentNodeInstanceID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "11.0"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/5/context/type> a ns1:Context ;
-    ns1:contextAttribute "type"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "CORE"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/6> a ns1:Expectation ;
-    ns1:expectationVerb "DELIVER"^^xsd:string ;
-    ns1:intentContext <http://example.org/intent/green_energy_saving_intent/expectation/6/context/graphLinkNodeInstanceID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/6/context/toComponentNodeInstanceHexID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/6/context/toComponentNodeInstanceID>,
-        <http://example.org/intent/green_energy_saving_intent/expectation/6/context/type> ;
-    ns1:objectInstance "ACCESS_12"^^xsd:string ;
-    ns1:objectType "LinkNode_5ginduce"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/6/context/graphLinkNodeInstanceID> a ns1:Context ;
-    ns1:contextAttribute "graphLinkNodeInstanceID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "ACCESS_12"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/6/context/toComponentNodeInstanceHexID> a ns1:Context ;
-    ns1:contextAttribute "toComponentNodeInstanceHexID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "sdbwjcZKvP"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/6/context/toComponentNodeInstanceID> a ns1:Context ;
-    ns1:contextAttribute "toComponentNodeInstanceID"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "12.0"^^xsd:string .
-
-<http://example.org/intent/green_energy_saving_intent/expectation/6/context/type> a ns1:Context ;
-    ns1:contextAttribute "type"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "ACCESS"^^xsd:string .
+    ns1:contextValueRange "High"^^xsd:string .
 

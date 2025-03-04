@@ -171,6 +171,7 @@ components:
             - K8S_L2_NETWORK
             - NSMF_SESSION
             - NSMF_SLICE
+            - NEST
         objectInstance:
           $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
         contextSelectivity:

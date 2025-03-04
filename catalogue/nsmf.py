@@ -6,6 +6,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import logging
 from typing import List
 
@@ -55,6 +56,7 @@ class nsmf(abstract_library):
         
         slices=[] # Each expectation is a region
         sessions=[] # Each expectation has a session
+        slices_sessions={}
         
         for exp in intent.intentExpectations:
             slice_region={}
@@ -68,9 +70,11 @@ class nsmf(abstract_library):
                 match exp_ctx.contextAttribute:
                     case "name":
                         slice_region['name']=exp_ctx.contextValueRange
+                        slice_session['name']=exp_ctx.contextValueRange
                         logger.debug("Region name: %s",slice_region['name'])
                     case "user-density":
                         slice_region['user-density']=exp_ctx.contextValueRange
+                        slice_session['user-density']=exp_ctx.contextValueRange
                         logger.debug("User density: %s",slice_region['user-density'])
 
             exp_verb=exp.expectationVerb
@@ -126,7 +130,7 @@ class nsmf(abstract_library):
                                             slice_region['ambr'] = {}
                                         slice_region['ambr']['uplink']=exp_trg.targetValueRange
                             slices.append(slice_region)
-                            pprint(slices)
+                            # pprint(slices)
 
                         case "NSMF_SESSION":
                             # DUPLICATED IN CASE NSMFSESiON IS DELIVER not ENSURE VERB
@@ -262,8 +266,8 @@ class nsmf(abstract_library):
                             flow={}
                             for exp_trg in exp.expectationTargets:
                                 # Loop trg inside exp
-                                pprint("START FOR ")
-                                pprint(flow)
+                                # pprint("START FOR ")
+                                # pprint(flow)
                                 att=exp_trg.targetName
                                                 
                                 match att:
@@ -383,10 +387,12 @@ class nsmf(abstract_library):
                                 
                                 # pprint(slice_session)
                             slice_session['flows'].append(flow)
-                            sessions.append(slice_session)
-            pprint(slice_region)
-            pprint(slice_session)
+                            slices.append(slice_session)
+            # pprint(slice_region)
+            # pprint(slice_session)
+        # slices['sessions']=sessions
         self.__params['slices']=slices
+        self.__params['sessions']=sessions
         
         for ctx in intent.intentContexts:
             match ctx.contextAttribute:
@@ -398,7 +404,7 @@ class nsmf(abstract_library):
                     self.__params['namespace']=ctx.contextValueRange
 
         params['connector']="nsmf"
-        pprint(self.__params)
+        # pprint(self.__params)
         return [self.nsmf_schema(params['service']),params],"sys_out"
     
 
@@ -406,6 +412,77 @@ class nsmf(abstract_library):
         """
         Create a schema for the NSMF component.
         """
+        region_type=[]
+        session_type=[]
+        for type_a in self.__params.get("slices", []):
+            if 'sst' in type_a:
+                region_type.append(type_a)
+                logger.debug("Type_a type appended")
+        for type_b in self.__params.get("slices", []):
+            if 'flows' in type_b:
+                logger.debug("Type_b type appended")
+                session_type.append(type_b)
+
+        for region in region_type:
+            for session in session_type:
+                if region['name']==session['name']:
+                    logger.debug("Region and session match")
+                    pprint(region)
+                    pprint("---------")
+                    pprint(session)
+                    flows=[]
+                    for flow in session.get("flows", []):
+                        for key in flow.keys():
+                            logger.debug("Key: %s",key)
+                            pprint("----flow-----")
+                            pprint(flow[key]['arp'])
+                            unique_flow = {
+                                "qfi": flow[key].get("qfi", ""),
+                                "quality": flow[key].get("quality", ""),
+                                "arp": {
+                                    "priority-level": (flow[key]['arp']).get("priority-level", ""),
+                                    "preemption-capability": (flow[key]['arp']).get("preemption-capability"),
+                                    "preemption-vulnerability": (flow[key]['arp']).get("preemption-vulnerability")
+                                },
+                                "gbr": {
+                                    "downlink": session['gbr'].get("downlink", ""),
+                                    "uplink": session['gbr'].get("uplink", "")
+                                },
+                                "mbr": {
+                                    "downlink": session['mbr'].get("downlink", ""),
+                                    "uplink": session['mbr'].get("uplink", "")
+                                },
+                                "plr": session.get("plr", "")
+                            }
+                            flows.append(unique_flow)
+                    session_spec = {
+                        "id": session.get("id", ""),
+                        "type": session.get("type", ""),
+                        "dnn": session.get("dnn", ""),
+                        "ambr": {
+                            "downlink": session['ambr'].get("downlink", ""),
+                            "uplink": session['ambr'].get("uplink", "")
+                        },
+                        "flows": flows
+                    }
+                    
+                    slice_spec = {
+                    "name": region.get("name", ""),
+                    "user-density": region.get("user-density", ""),
+                    "isolation-model": {
+                        "private-sectors": json.loads(region['isolation-model'].get("private-sectors", ""))
+                    },
+                    "plmn": json.loads(region.get("plmn", {})),
+                    "sst": region.get("sst", ""),
+                    "sd": region.get("sd", ""),
+                    "ambr": {
+                        "downlink": region['ambr'].get("downlink", ""),
+                        "uplink": region['ambr'].get("uplink", "")
+                    },
+                    "sessions": []
+                }
+                    slice_spec["sessions"].append(session_spec)
+                
         schema = {
             "apiVersion": "athena.trirematics.io/v1",
             "kind": "Slice",
@@ -417,64 +494,6 @@ class nsmf(abstract_library):
                 "slices": []
             }
         }
-
-        slice_spec = {
-            "regions": [],
-            "isolation-model": {
-                "private-sectors": self.__params.get("isolation-model", [])
-            },
-            "plmn": self.__params.get("plmn", {}),
-            "sst": self.__params.get("sst", ""),
-            "sd": self.__params.get("sd", ""),
-            "ambr": {
-                "downlink": self.__params.get("dLAmbr", ""),
-                "uplink": self.__params.get("uLAmbr", "")
-            },
-            "sessions": []
-        }
-
-        for region in self.__params.get("regions", []):
-            region_spec = {
-                "name": region.get("name", ""),
-                "user-density": region.get("user-density", "")
-            }
-            slice_spec["regions"].append(region_spec)
-
-        for session in self.__params.get("sessions", []):
-            session_spec = {
-                "id": session.get("id", ""),
-                "type": session.get("type", ""),
-                "dnn": session.get("dnn", ""),
-                "ambr": {
-                    "downlink": session.get("dLAmbr", ""),
-                    "uplink": session.get("uLAmbr", "")
-                },
-                "flows": []
-            }
-
-            for flow in session.get("flows", []):
-                flow_spec = {
-                    "qfi": flow.get("qfi", ""),
-                    "quality": flow.get("quality", ""),
-                    "arp": {
-                        "priority-level": flow.get("priority-level", ""),
-                        "preemption-capability": flow.get("preemption-capability", ""),
-                        "preemption-vulnerability": flow.get("preemption-vulnerability", "")
-                    },
-                    "gbr": {
-                        "downlink": flow.get("dLGbr", ""),
-                        "uplink": flow.get("uLGbr", "")
-                    },
-                    "mbr": {
-                        "downlink": flow.get("dLMbr", ""),
-                        "uplink": flow.get("uLMbr", "")
-                    },
-                    "plr": flow.get("plr", "")
-                }
-                session_spec["flows"].append(flow_spec)
-
-            slice_spec["sessions"].append(session_spec)
-
         schema["spec"]["slices"].append(slice_spec)
 
         return schema
