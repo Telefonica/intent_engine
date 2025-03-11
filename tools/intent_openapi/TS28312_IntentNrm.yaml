@@ -58,6 +58,7 @@ components:
             enum:
               - ACTIVATED
               - DEACTIVATED
+              - MANAGED # Custom value to manage intents as admin.
             description: >-
               It describes the intent administrative state. 
               This attribute is used when MnS consumer-suspension mechanism is supported

@@ -91,20 +91,15 @@ class gst_gsma(abstract_library):
 
     def translator(self,subintent : IntentModel) -> tuple[list , str]:
         """
-        This functions translate an atomic intent into a CRD L2S-M software
-        can understand. This function will decide which functionality (deploy,
-        modify, migrate) will be called.
-
-        This decision can be done using the same idea of the decision tree or a more
-        direct way.
+        This functions translate a subintent NEST to a technology specific.
         """
         # TODO: los subintents direan si hay que desplegar/migrar/eliminar
         # logger.debug("intent model: %s",subintent)
         logger.debug("Intent model type: %s",type(subintent))
         intent = subintent.get_intent()
         params={}
-        logger.info("Translating L2S-M...")
-        logger.debug("debug L2S-M...")
+        logger.info("Translating GST GSMA...")
+        logger.debug("debug GST GSMA...")
         for exp in intent.intentExpectations:
             exp_verb=exp.expectationVerb
             logger.debug("expectation case %s",exp_verb)
@@ -112,10 +107,6 @@ class gst_gsma(abstract_library):
             logger.debug("Expectation type: %s", type(exp))
             match exp_verb:
                 case "DELIVER":
-                    try:
-                        IntentNrm.NewNetworkExpectation(**(exp.dict()))
-                    except ValidationError as exc:
-                        logger.warning("Assurance error for L2SM NewNetworkExpectation:  %s", exc)
                     exp_obj=exp.expectationObject
                     logger.debug("DELIVER case obj: %s",exp_obj)
                     exp_type=exp_obj.objectType
@@ -156,30 +147,8 @@ class gst_gsma(abstract_library):
                                                 logger.debug("signature_trg_ctx case")
                
             for exp_ctx in exp.expectationContexts:
-                if isinstance(exp_ctx,IntentNrm.NEMOIntentContext):
-                    logger.debug("Url: %s",exp_ctx.contextValueRange)
-                    params['url']=exp_ctx.contextValueRange
-                    params['headers']={'Content-Type': 'application/x-yaml'}
             params['connector']="l2smmd"
             return [self.l2sm_schema(params['service']),params],"sys_out"
 
     def create_ilu(self,ilu_ref):
         return ilu_ref
-
-    def l2sm_schema(self, request_type):
-
-        if request_type == "create_network":
-            request={
-                "network":{
-                    "name":self.__params['network'],
-                    "provider":{
-                        "name": self.__params['provider_name'],
-                        "domain":self.__params['provider_domain']
-                    },
-                    "pod_cidr":""
-                }
-            }
-        if request_type == "delete_network":
-            request={"network_name":self.__params['network']}
-
-        return request

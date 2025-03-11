@@ -1,63 +1,39 @@
 @prefix ns1: <http://example.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/intent/1> a ns1:Intent ;
+<http://example.org/intent/2> a ns1:Intent ;
     ns1:intentAdminState "ACTIVATED"^^xsd:string ;
-    ns1:intentContext <http://example.org/intent/1/context/EnergyEfficiency>,
-        <http://example.org/intent/1/context/IsolationLevel> ;
-    ns1:intentExpectation <http://example.org/intent/1/expectation/1> ;
+    ns1:intentContext <http://example.org/intent/2/context/EnergyEfficiency>,
+        <http://example.org/intent/2/context/IsolationLevel> ;
+    ns1:intentExpectation <http://example.org/intent/2/expectation/1> ;
     ns1:intentPriority "1"^^xsd:int ;
-    ns1:intentTarget <http://example.org/intent/1/expectation/1/target/DownlinkThroughputPerUE>,
-        <http://example.org/intent/1/expectation/1/target/Latency> ;
     ns1:observationPeriod "60"^^xsd:int ;
     ns1:userLabel "green_nest"^^xsd:string .
 
-<http://example.org/intent/1/context/EnergyEfficiency> a ns1:Context ;
+<http://example.org/intent/2/context/EnergyEfficiency> a ns1:Context ;
     ns1:contextAttribute "EnergyEfficiency"^^xsd:string ;
     ns1:contextCondition "IS_EQUAL_TO_OR_GREATER_THAN"^^xsd:string ;
     ns1:contextValueRange "90%"^^xsd:string .
 
-<http://example.org/intent/1/context/IsolationLevel> a ns1:Context ;
+<http://example.org/intent/2/context/IsolationLevel> a ns1:Context ;
     ns1:contextAttribute "IsolationLevel"^^xsd:string ;
     ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
     ns1:contextValueRange "DedicatedResources"^^xsd:string .
 
-<http://example.org/intent/1/expectation/1> a ns1:Expectation ;
+<http://example.org/intent/2/expectation/1> a ns1:Expectation ;
     ns1:expectationVerb "DELIVER"^^xsd:string ;
-    ns1:intentContext <http://example.org/intent/1/expectation/1/context/AreaOfService>,
-        <http://example.org/intent/1/expectation/1/context/ServiceType> ;
+    ns1:intentContext <http://example.org/intent/2/expectation/1/context/AreaOfService>,
+        <http://example.org/intent/2/expectation/1/context/ServiceType> ;
     ns1:objectInstance "Slice_001"^^xsd:string ;
     ns1:objectType "NEST"^^xsd:string .
 
-<http://example.org/intent/1/expectation/1/context/AreaOfService> a ns1:Context ;
+<http://example.org/intent/2/expectation/1/context/AreaOfService> a ns1:Context ;
     ns1:contextAttribute "AreaOfService"^^xsd:string ;
     ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
     ns1:contextValueRange "Urban"^^xsd:string .
 
-<http://example.org/intent/1/expectation/1/context/ServiceType> a ns1:Context ;
+<http://example.org/intent/2/expectation/1/context/ServiceType> a ns1:Context ;
     ns1:contextAttribute "ServiceType"^^xsd:string ;
     ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "eMBB"^^xsd:string .
-
-<http://example.org/intent/1/expectation/1/target/DownlinkThroughputPerUE> a ns1:Target ;
-    ns1:targetCondition "IS_EQUAL_TO_OR_GREATER_THAN"^^xsd:string ;
-    ns1:targetContext <http://example.org/intent/1/expectation/1/target/DownlinkThroughputPerUE/context/TrafficPattern> ;
-    ns1:targetName "DownlinkThroughputPerUE"^^xsd:string ;
-    ns1:targetValueRange "1Gbps"^^xsd:string .
-
-<http://example.org/intent/1/expectation/1/target/DownlinkThroughputPerUE/context/TrafficPattern> a ns1:Context ;
-    ns1:contextAttribute "TrafficPattern"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "HighUsagePeakHours"^^xsd:string .
-
-<http://example.org/intent/1/expectation/1/target/Latency> a ns1:Target ;
-    ns1:targetCondition "IS_EQUAL_TO_OR_LESS_THAN"^^xsd:string ;
-    ns1:targetContext <http://example.org/intent/1/expectation/1/target/Latency/context/TimeCriticality> ;
-    ns1:targetName "Latency"^^xsd:string ;
-    ns1:targetValueRange "10ms"^^xsd:string .
-
-<http://example.org/intent/1/expectation/1/target/Latency/context/TimeCriticality> a ns1:Context ;
-    ns1:contextAttribute "TimeCriticality"^^xsd:string ;
-    ns1:contextCondition "IS_EQUAL_TO"^^xsd:string ;
-    ns1:contextValueRange "High"^^xsd:string .
+    ns1:contextValueRange "URLLC"^^xsd:string .
 

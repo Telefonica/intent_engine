@@ -99,7 +99,11 @@ def store_graph_in_graphdb(graph, endpoint_url, repository_id):
     store.open((f"{endpoint_url}/repositories/{repository_id}", f"{endpoint_url}/repositories/{repository_id}/statements"))
     
     for triple in graph:
-        store.add(triple)
+        try:
+            store.add(triple)
+        except Exception as e:
+            logger.error("Failed to add triple %s to the store: %s", triple, e)
+            
 
     # # Example usage:
     # # Store graph in a file
@@ -134,6 +138,8 @@ def get_intent_from_uri(intent_uri, endpoint_url, repository_id):
     """
     Return the full intent stored in the RDF graph matching the intent URI.
     """
+    EX = Namespace("http://example.org/")
+    g = sparqlstore.SPARQLUpdateStore()
     intent_data = {
         "intent": {
             "id": intent_uri.split("/")[-1],
@@ -366,3 +372,8 @@ def get_intent_from_graph(intent,endpoint_url, repository_id):
             intent_data["intent"]["intentContexts"].append(context_data)
         intents.append(intent_data)
     return intents
+
+
+
+
+    

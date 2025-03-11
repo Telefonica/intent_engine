@@ -74,9 +74,15 @@ class green_bssf(abstract_library):
                             logger.debug("look for NEST type: %s",obj_ctx)
                             if obj_ctx.contextAttribute=='ServiceType':
                                 if obj_ctx.contextValueRange=='eMBB':
-                                    intent_dict['intentExpectations'][i]['expectationObject']['objectType']='NEST_eMBB'
+                                    intent_dict['intentExpectations'][i]['expectationObject']['objectType']='Sub_Slice'
+                                    nest_label="eMBB"
                                     nest_expectations.append(intent_dict['intentExpectations'][i])
                                     logger.debug("NEST for eMBB")
+                                if obj_ctx.contextValueRange=='URLLC':
+                                    intent_dict['intentExpectations'][i]['expectationObject']['objectType']='Sub_Slice'
+                                    nest_expectations.append(intent_dict['intentExpectations'][i])
+                                    nest_label="URLLC"
+                                    logger.debug("NEST for URLLC")
             
 
             subintent_green['Intent']={'intentExpectations':nest_expectations,
@@ -85,7 +91,7 @@ class green_bssf(abstract_library):
                                         'intentPriority':intent_dict['intentPriority']}
         
             store_graph_in_graphdb(create_intent_graph(intent_model), "http://192.168.159.253:7200", "6green")
-            get_intent_from_userLabel("green_nest","http://192.168.159.253:7200", "6green")
+            get_intent_from_userLabel(nest_label,"http://192.168.159.253:7200", "6green")
             return [IntentModel(subintent_green)]
 
         else:

@@ -49,6 +49,9 @@ class IntentModel():
 
         return keywords
 
+    def get_admin_state(self):
+        return self.__intent.intentAdminState
+    
     def get_intent(self):
         return self.__intent
     def set_intent(self,intent):

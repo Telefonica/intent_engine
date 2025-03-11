@@ -51,6 +51,9 @@ class Classifier():
         translators=[]
         intent=intent_model
         for tree in self.__trees:
+            # Intent for storing at database
+            if intent_model.get_admin_state() == 'MANAGED':
+                return [intent_model],['DBstorage']
             # get all libraries capable of translate the intent
             logger.debug("Keywords: %s",intent_model.get_keywords())
             self.find_in_tree(intent_model.get_keywords(),tree,ill)
