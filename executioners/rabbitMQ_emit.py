@@ -25,8 +25,8 @@ logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 def sender(key,message):
 
-    credentials = pika.PlainCredentials('nemo-user', 'PRE4utv0ytf0fnbeuv')
-    params=pika.ConnectionParameters(host='132.227.122.23',port=30403,virtual_host='/',
+    credentials = pika.PlainCredentials('nemo-user', '')
+    params=pika.ConnectionParameters(host='',port=30403,virtual_host='/',
                                      credentials=credentials)
     connection = pika.BlockingConnection(parameters=params)
     channel = connection.channel()

@@ -33,7 +33,7 @@ class rabbitmq():
             # Docker container case where hostname needed
             logger.debug("Reading enviroment RBMQ vars: %s",self.__addr)
         else:
-            self.__addr="132.227.122.23"
+            self.__addr=""
         self.__broker_exchange=os.environ.get('RMQ_EXCHANGE')
         if(self.__broker_exchange):
             logger.debug("Reading enviroment RBMQ vars: %s",self.__broker_exchange)
@@ -60,7 +60,7 @@ class rabbitmq():
         if(self.__broker_pass):
             logger.debug("Reading enviroment RBMQ vars: %s",self.__broker_pass)
         else:
-            self.__broker_pass='PRE4utv0ytf0fnbeuv'
+            self.__broker_pass=''
         
         self.__args=[os.environ.get('RMQ_BINDING')]
         if(self.__args):
