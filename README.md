@@ -35,9 +35,38 @@ This definition is broad, and is each library in the intent catalog is the one r
 
 As the networks are evolving continuously, the technologies should follow along. **The Intent Engine** is build as a central core that processes the Intent and then, tries to translate it to network configurations using the intent catalogue. The intent catalogue is a set of python libraries, each one containing a set of Intent Logic Units (ILUs). 
 
-![Arquitecture]
+![Architecture](attached/images/architecture.png)
 
 Also, there is another type of catalogue, the executioners catalogue. It defines the inbound and outbound interfaces of the core. The executioners are managed by the execution platform as they can run independent communication processes with different technologies.
+
+# Intent life-cycle
+
+The final idea of **The Intent Engine** is to be an enabler towards a total Autonomic Nework as defined in [Intent-Based Networking - Concepts and Definitions (ietf.org)](https://www.ietf.org/archive/id/draft-irtf-nmrg-ibn-concepts-definitions-05.html#name-lifecycle-2).  In this draft is also defined a complex life-cycle of a system capable of learning and assuring the incoming Intents. For the moment this is not supported, but there are several functionalities implemented and aiming for that final purpose.
+
+## Intent translator
+
+The Intent Engine is capable of reading incoming intents to the engine via any of the executioners. Then, it translates this expectation into a network configuration that the underlaying network can understand. This creates a layer abstraction and the possibility to update one side without updating the hole workflow.
+
+```mermaid
+flowchart LR
+
+A[Orchestrator] -->|Intent| B(executioner)
+
+subgraph network
+subgraph Intent-engine
+B --> C{Classifier}
+C -->|noILU| D[cl_con lib]
+D -->|ILU| E[L2S-M lib]
+D -->|ILU| F[5G_CMC lib]
+C -->|noILU| G[L2VPN lib]
+G -->|ILU| H[TFS_L2VPN lib]
+
+end
+E ---> |grpc| I[L2S-M]
+F ---> |http| J[CMC_API]
+H -->|http| K[TFS]
+end
+```
 
 # About this repo
 
