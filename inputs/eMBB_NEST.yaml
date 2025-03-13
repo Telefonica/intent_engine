@@ -1,0 +1,41 @@
+Intent:
+  id: '1'
+  userLabel: 'green_nest'
+  intentExpectations:
+    - expectationId: '1'
+      expectationVerb: 'DELIVER'
+      expectationObject:
+        objectType: 'NEST'
+        objectInstance: 'Slice_001'
+        objectContexts:
+         - contextAttribute: 'ServiceType'
+           contextCondition: 'IS_EQUAL_TO'
+           contextValueRange: 'eMBB' # Example: enhanced Mobile Broadband
+         - contextAttribute: 'AreaOfService'
+           contextCondition: 'IS_EQUAL_TO'
+           contextValueRange: 'Urban'
+      expectationTargets:
+        - targetName: 'Latency'
+          targetCondition: 'IS_EQUAL_TO_OR_LESS_THAN'
+          targetValueRange: '10ms'
+          targetContexts:
+            - contextAttribute: 'TimeCriticality'
+              contextCondition: 'IS_EQUAL_TO'
+              contextValueRange: 'High'
+        - targetName: 'DownlinkThroughputPerUE'
+          targetCondition: 'IS_EQUAL_TO_OR_GREATER_THAN'
+          targetValueRange: '1Gbps'
+          targetContexts:
+            - contextAttribute: 'TrafficPattern'
+              contextCondition: 'IS_EQUAL_TO'
+              contextValueRange: 'HighUsagePeakHours'
+  intentContexts:
+   - contextAttribute: 'IsolationLevel'
+     contextCondition: 'IS_EQUAL_TO'
+     contextValueRange: 'DedicatedResources' # Fully isolated resources
+   - contextAttribute: 'EnergyEfficiency'
+     contextCondition: 'IS_EQUAL_TO_OR_GREATER_THAN'
+     contextValueRange: '90%'
+  intentPriority: 1
+  observationPeriod: 60 # Observation period in seconds
+  intentAdminState: 'ACTIVATED'

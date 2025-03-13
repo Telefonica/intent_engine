@@ -13,9 +13,14 @@
 # limitations under the License.
 import json
 from queue import Queue
-from intent_engine.core import ib_object
+
+from devtools import pprint
+from pydantic import ValidationError
+from intent_engine.core import yamlParser
+from intent_engine.core.ib_model import IntentModel
 from intent_engine.core import importer
 from intent_engine.core.intent_classifier import Classifier
+from intent_engine.core.intent_assurance import IntentAssurance
 import logging
 
 logger = logging.getLogger(__name__)
@@ -57,24 +62,50 @@ def core():
         exec_instances.append(class_and_instance)
     # Check NBI
     logger.info("module_instances: %s",module_instances)
-    # data=yamlParser.yaml_to_data("input.yaml")
+    # data=yamlParser.yaml_to_data("inputs/6green_int.yaml")
     # intent=ib_object.IB_object(data)
     # logger.info(intent)
+    assurer=IntentAssurance()
 
     while True:
+        print("------- Wating Intent -------")
         pop=buffer.get()
-        intent=ib_object.IB_object(pop)
+        try:
+            intent: IntentModel = IntentModel(pop)
+        except ValidationError as exception:
+            assurer.format_error_handler(exception)
+            continue
+        pprint(intent.get_dict())
         # ------- Intent classifier -------
         print("------- Intent classifier -------")
-        logger.debug("Intent %s",json.dumps(intent.get_dict(),indent=10))
+        # logger.debug("Intent %s",intent.get_dict())
         # o=[logger.debug("Expectation %s",json.dumps(s.get_dict(),indent=10)) for s in intent.get_expectations()]
         classifier=Classifier([m['instance'] for m in module_instances])
         subintents,ill=classifier.classify(intent)
-        logger.info("ILL : %s",ill)
-
-        # ------ Intent translator -------
-        print("------ Intent translator -------")
+        logger.info("ILL : %s Subintent number: %d",ill, len(subintents))
+        # o=[logger.info("ILL : %s Subintent : %s",ill, subintent) for subintent in subintents]
+        o=[logger.info("Type: %s", type(subintent)) for subintent in subintents]
+        if len(ill) == 0:
+            logger.info("No library capable of reading that intent!!")
+            continue
+        # ------ Intent Assurance --------
+        break_loop=False
         for i,ilu in enumerate(ill):
+            print("------ Intent assurance -------")
+            subintent=subintents[i]
+            general=True
+            assured_schema=...
+            try:
+                assurer.assure_intent(subintent,general,assured_schema)
+            except ValidationError as exception:
+                assurer.attribute_error_handler(exception)
+                continue
+        if not general:
+            logger.warning("Breaking intent closed loop")
+            continue
+        # ------ Intent translator -------
+        for i,ilu in enumerate(ill):
+            print("------ Intent translator -------")
             subintent=subintents[i]
             for module in module_instances:
                 if module['class']==ilu:

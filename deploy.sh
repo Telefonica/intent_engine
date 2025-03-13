@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # © 2024 Telefónica Innovación Digital
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-kubectl delete namespace ie
-kubectl create namespace ie
-docker build intent_engine/ -t intent-engine:latest
-docker tag intent-engine:latest localhost:32000/intent-engine
-docker push localhost:32000/intent-engine
-kubectl apply -f intent_engine/deploy.yaml 
+# namespace creation
+kubectl delete namespace nemo-net
+kubectl create namespace nemo-net
+
+# l2sm test grpc server
+docker build intent_engine/executioners/grpc_libs -t localhost:$1/nemometaos/mncc-ibs-grpc-l2sm:v0.0.2
+docker push localhost:$1/nemometaos/mncc-ibs-grpc-l2sm:v0.0.2
+kubectl apply -f intent_engine/l2sm_grpc_test.yaml 
+
+# sleep 20
+# intent engine deployment
+docker build intent_engine/ -t localhost:$1/nemometaos/mncc-ibs:v0.0.2
+docker push localhost:$1/nemometaos/mncc-ibs:v0.0.2
+kubectl apply -f intent_engine/manifest.yaml 

@@ -1,0 +1,30 @@
+Intent:
+  id: '3'
+  userLabel: 'urllc'
+  intentExpectations:
+    - expectationId: '1'
+      expectationVerb: 'ENSURE'
+      expectationObject:
+        objectType: 'NEST'
+        objectInstance: 'blueprint'
+        objectContexts:
+         - contextAttribute: 'ServiceType'
+           contextCondition: 'IS_EQUAL_TO'
+           contextValueRange: 'URLLC'
+      expectationTargets:
+        - targetName: 'Availability'
+          targetCondition: 'IS_EQUAL_TO_OR_GREATER_THAN'
+          targetValueRange: '99.999%'
+        - targetName: 'SliceQualityOfService'
+          targetCondition: 'IS_EQUAL_TO'
+          targetValueRange: '82'
+        - targetName: 'SupportedDeviceVelocity'
+          targetCondition: 'IS_EQUAL_TO_OR_GREATER_THAN'
+          targetValueRange: '2'
+  intentContexts:
+   - contextAttribute: 'SessionAndServiceContinuitySupport'
+     contextCondition: 'IS_EQUAL_TO'
+     contextValueRange: '1'
+  intentPriority: 1
+  observationPeriod: 60
+  intentAdminState: 'MANAGED'

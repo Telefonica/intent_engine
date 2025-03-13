@@ -1,0 +1,210 @@
+openapi: 3.0.1
+info:
+  title: IntentExpectaions for TeraFlow SDN Controller
+  version: 1.0.0
+  description: >-
+    OAS 3.0.1 definition for a new intentExpectation for 5G Cumucore mncc Adaptor
+paths: {}
+components:
+  schemas:
+    TSFExpectations:
+      # $ref: "#/components/schemas/NewTFSL2VPNIntentExpectation"
+      description: >-
+        Different expectations for TeraFlow SDN Controller
+      type: object
+      oneOf:
+        - $ref: "#/components/schemas/NewTFSL2VPNIntentExpectation"
+        # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"
+
+    #-------Definition of the concrete IntentContexts dataType----------------#
+   
+    #-------Definition of the concrete IntentExpectations dataType----------------#
+    NewTFSL2VPNIntentExpectation:
+        description: >-
+            Expectation to create a new L2VPN in TFS adaptor
+        type: object
+        properties:
+          expectationId:
+            type: string
+          expectationVerb:
+            type: string
+            enum:
+              - DELIVER
+          expectationObject:
+            type: object
+            properties:
+              objectType:
+                type: string
+                enum:
+                  - L2VPN_TFS
+              objectInstance:
+                type: string
+              objectContexts:
+                type: array
+                items:
+                  type: object
+                  oneOf:
+                    - $ref: "#/components/schemas/nodeSrcContext"
+                    - $ref: "#/components/schemas/nodeDstContext"
+                    - $ref: "#/components/schemas/endpointSrcContext"
+                    - $ref: "#/components/schemas/endpointDstContext"
+                    - $ref: "#/components/schemas/vlanIdContext"
+                    - $ref: "#/components/schemas/niNameContext"
+
+          expectationTargets:
+            type: array
+            items:
+              type: object
+              oneOf:
+                -  $ref: "#/components/schemas/l2vpnBandwidthTarget"
+                -  $ref: "#/components/schemas/l2vpnLatencyTarget"
+          
+          expectationContexts:
+            type: array
+            items:
+              type: object
+              oneOf:
+                -  $ref: "#/components/schemas/l2vpnUrlContext"
+
+            #-------Definition of the concrete ExpectationContext dataType----------------#
+    
+    l2vpnUrlContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - url
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+          #-------Definition of the concrete ObjectContext dataType----------------#
+    
+    nodeSrcContext:
+      type: string
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - nodeSrc
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    nodeDstContext:
+      type: string
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - nodeDst
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    endpointSrcContext:
+      type: string
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - endpointSrc
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    endpointDstContext:
+      type: string
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - endpointDst
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    vlanIdContext:
+      type: string
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - vlanId
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+
+    niNameContext:
+      type: string
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - niName
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+    
+    l2vpnIPv4Context:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - ipv4Address
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
+          #-------Definition of the concrete ExpectationTarget dataType----------------#
+    l2vpnBandwidthTarget:
+      type: object
+      properties:
+        targetName:
+          type: string
+          enum:
+            - bandwidth
+        targetCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+            - IS_EQUAL_TO_OR_GREATER_THAN
+            - IS_GREATER_THAN
+        targetValueRange:
+          type: integer
+
+    l2vpnLatencyTarget:
+      type: object
+      properties:
+        targetName:
+          type: string
+          enum:
+            - latency
+        targetCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+            - IS_LESS_THAN
+            - IS_EQUAL_TO_OR_LESS_THAN
+        targetValueRange:
+          type: integer

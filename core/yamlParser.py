@@ -23,14 +23,14 @@ def data_to_yaml(data):
     return True
 
 def yaml_to_data(relative_path):
-
     # Get the current working directory
     current_directory = os.getcwd()
     # Combine the current working directory and the relative path
     yaml_file_path = os.path.join(current_directory, relative_path)
     # Open the file and load the YAML data
-    data={}
-    with open(yaml_file_path, 'r') as yaml_file:
-        data = yaml.safe_load(yaml_file)
+    data=[]
+    with open(yaml_file_path, 'r',encoding="utf-8") as yaml_file:
+        for file in yaml.safe_load_all(yaml_file):
+            data.append(file)
 
     return data

@@ -1,0 +1,57 @@
+Intent:
+  id: '1'
+  userLabel: 'urllc'
+  intentExpectations:
+    - expectationId: '1'
+      expectationVerb: 'ENSURE'
+      expectationObject:
+        objectType: 'NEST'
+        objectInstance: 'blueprint'
+        objectContexts:
+         - contextAttribute: 'ServiceType'
+           contextCondition: 'IS_EQUAL_TO'
+           contextValueRange: 'URLLC'
+      expectationTargets:
+        - targetName: 'Availability'
+          targetCondition: 'IS_EQUAL_TO_OR_GREATER_THAN'
+          targetValueRange: '99.999%'
+        - targetName: 'SliceQualityOfService'
+          targetCondition: 'IS_EQUAL_TO'
+          targetValueRange: '82'
+        - targetName: 'SupportedDeviceVelocity'
+          targetCondition: 'IS_EQUAL_TO_OR_GREATER_THAN'
+          targetValueRange: '2'
+  intentContexts:
+   - contextAttribute: 'SessionAndServiceContinuitySupport'
+     contextCondition: 'IS_EQUAL_TO'
+     contextValueRange: '1'
+  intentPriority: 1
+  observationPeriod: 60
+  intentAdminState: 'MANAGED'
+---
+Intent:
+  id: '2'
+  userLabel: 'green_nest'
+  intentExpectations:
+    - expectationId: '1'
+      expectationVerb: 'DELIVER'
+      expectationObject:
+        objectType: 'NEST'
+        objectInstance: 'Slice_001'
+        objectContexts:
+         - contextAttribute: 'ServiceType'
+           contextCondition: 'IS_EQUAL_TO'
+           contextValueRange: 'URLLC' # Example: enhanced Mobile Broadband
+         - contextAttribute: 'AreaOfService'
+           contextCondition: 'IS_EQUAL_TO'
+           contextValueRange: 'Urban'
+  intentContexts:
+   - contextAttribute: 'IsolationLevel'
+     contextCondition: 'IS_EQUAL_TO'
+     contextValueRange: 'DedicatedResources' # Fully isolated resources
+   - contextAttribute: 'EnergyEfficiency'
+     contextCondition: 'IS_EQUAL_TO_OR_GREATER_THAN'
+     contextValueRange: '90%'
+  intentPriority: 1
+  observationPeriod: 60 # Observation period in seconds
+  intentAdminState: 'ACTIVATED'

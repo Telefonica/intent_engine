@@ -3,9 +3,13 @@ Intent:
   Expectations:
     - Verb: 'request'
       Object: 
-       Type : 'l2sm-network'
-       Instance : 'spain-network'
+       Type : 'l2sm_network'
+       Instance : 'spain_network'
        Contexts :
+        - AttributeName : 
+          Attribute : 'network'
+          Condition : 'is'
+          ValueRange : 'spain_network'
         - AttributeName : 
           Attribute : 'provider_name'
           Condition : 'IS_EQUAL_TO'
@@ -16,11 +20,15 @@ Intent:
           ValueRange : 'idco.uc3m.es'
       Targets:
        - AttributeName :
-         Attribute : 'signature'
+         Attribute : 'secure'
          Condition : 'IS_EQUAL_TO'
-         ValueRange : 'sxySO0jHw4h1kcqO/LMLDgOo...'
+         ValueRange : 'accessList'
+         Contexts :
+            - Attribute: 'public_key'
+              Condition: is
+              ValueRange: 'sxySO0jHw4h1kcqO/LMLDgOo...'
   Context:
     AttributeName: 'nemo_deployment'
-    Attribute: 'overlay'
+    Attribute: 'intent_id'
     Condition: 'IS_EQUAL_TO'
-    ValueRange: 'UP'
+    ValueRange: '1'

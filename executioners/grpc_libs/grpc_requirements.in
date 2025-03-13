@@ -1,0 +1,3 @@
+protobuf==5.27.2
+grpcio
+grpcio-tools

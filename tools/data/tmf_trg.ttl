@@ -1,0 +1,40 @@
+@prefix ex: <http://example.org/> .
+@prefix icm: <http://example.org/icm#> .
+@prefix set: <http://example.org/set#> .
+@prefix log: <http://example.org/log#> .
+@prefix quan: <http://example.org/quan#> .
+
+ex:T1
+    a icm:Target ;
+    icm:chooseFrom (
+        [
+            set:resourcesOfType ( ex:PremiumSlice )
+        ]
+    ) .
+
+ex:T2
+    a icm:Target ;
+    icm:chooseFrom (
+        [
+            set:resourcesOfType ( ex:Slice )
+        ]
+    ) .
+
+ex:E1
+    a icm:PropertyExpectation ;
+    icm:target ex:T1 ;
+    log:allOf ( ex:C1 ex:C2 ) .
+
+ex:E2
+    a icm:PropertyExpectation ;
+    icm:target ex:T2 ;
+    log:allOf ( ex:C1 ) .
+
+ex:C1
+    a log:Condition ;
+    quan:smaller (
+        quan:mean (
+            icm:valuesOfTargetProperties ( ex:latency )
+        )
+        "10ms"^^quan:quantity
+    ) .

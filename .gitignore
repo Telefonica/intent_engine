@@ -2,3 +2,4 @@
 *.pyc
 */__pycache__/
 __pycache__/
+/catalogue/slice_5g.py

@@ -1,0 +1,46 @@
+Intent:
+  id: 'new_intent_2'
+  userLabel: 'cloud_continuum'
+  intentExpectations:
+    - expectationId: '1'
+      expectationVerb: 'DELIVER'
+      expectationObject:
+        objectType: 'L2VPN'
+        objectInstance: 'l2vpn_tfs_1'
+        objectContexts:
+          - contextAttribute: 'nodeSrc'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: '3.3.3.3'
+          - contextAttribute: 'nodeDst'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: '5.5.5.5'
+          - contextAttribute: 'endpointSrc'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'GigabitEthernet0/0/0/1'
+          - contextAttribute: 'endpointDst'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'GigabitEthernet0/0/0/1'
+          - contextAttribute: 'vlanId'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: '999'
+          - contextAttribute: 'niName'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'ninametfs'
+      expectationTargets:
+        - targetName: 'bandwidth'
+          targetCondition: 'IS_EQUAL_TO_OR_GREATER_THAN'
+          targetValueRange: 10.0
+        - targetName: 'latency'
+          targetCondition: 'IS_LESS_THAN'
+          targetValueRange: 15.2
+      expectationContexts:
+        - contextAttribute: 'url'
+          contextCondition: 'IS_EQUAL_TO'
+          contextValueRange: 'http://192.168.165.10/restconf/data/ietf-l2vpn-svc:l2vpn-svc/vpn-services'
+  intentContexts:
+    - contextAttribute: 'NEMO_WORKLOAD'
+      contextCondition: 'IS_EQUAL_TO'
+      contextValueRange: 'cbcb208a-d535-434b-bb35-217a64bd516b'
+  intentPriority: 1
+  observationPeriod: 60
+  intentAdminState: 'ACTIVATED'

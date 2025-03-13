@@ -13,7 +13,7 @@
 # limitations under the License.
 import logging
 from intent_engine.catalogue.abstract_library import abstract_library
-from intent_engine.core.ib_object import IB_object
+from intent_engine.core.ib_model import IntentModel
 
 logger = logging.getLogger(__name__)
 
@@ -24,9 +24,8 @@ class tfs_controller(abstract_library):
     def __init__(self):
         decision_tree={
            "cloud_continuum" : {
-               "tfs_controller":{
-                   "l2vpn":{
-                       "request":["tfs_controller"]}
+               "DELIVER":{
+                   "L2VPN_TFS":"tfs_controller"
                     }
                 }
         }
@@ -46,78 +45,84 @@ class tfs_controller(abstract_library):
         super().__init__(module_name="tfs_controller",isILU=True,params=params,decision_tree=decision_tree)
         self.__params=params
     
-    def translator(self,subintent : IB_object) -> tuple[list , str]:
+    def generate_subintent(self,subintent : IntentModel):
+
+        return subintent
+
+    def translator(self,intent_model : IntentModel) -> tuple[list , str]:
         # TODO: cambiar el connect_type dependiendo del intent de  tfs session
         exec_params=[]
         params={}
         logger.info("Translating TFS connector...")
         logger.debug("debug TFS connector...")
-        for exp in subintent.get_expectations():
-            exp_verb=exp.get_verb()
+        subintent=intent_model.get_intent()
+        for exp in subintent.intentExpectations:
+            exp_verb=exp.expectationVerb
             logger.debug("expectation case %s",exp_verb)
             match exp_verb:
-                case "request":
-                    exp_obj=exp.get_object()
+                case "DELIVER":
+                    exp_obj=exp.expectationObject
                     logger.debug("request case obj: %s",exp_obj)
-                    exp_type=exp_obj.get_type()
+                    exp_type=exp_obj.objectType
                     match exp_type:
-                        case "l2vpn":
-                            for obj_ctx in exp_obj.get_contexts():
+                        case "L2VPN_TFS":
+                            for obj_ctx in exp_obj.objectContexts:
                                 # Loop ctx inside obj
                                 logger.debug("objectctx case %s: ",obj_ctx)
-                                att=obj_ctx.get_attribute()
+                                att=obj_ctx.contextAttribute
                                 match att:
-                                    case "node_src":
-                                        logger.debug("node_src case %s",obj_ctx.get_value_range())
-                                        self.__params['node_src']=obj_ctx.get_value_range()
+                                    case "nodeSrc":
+                                        logger.debug("node_src case %s",obj_ctx.contextValueRange)
+                                        self.__params['node_src']=obj_ctx.contextValueRange
                                         logger.debug("params after %s",self.__params)
-                                    case "node_dst":
+                                    case "nodeDst":
                                         logger.debug("node_dst case")
-                                        self.__params['node_dst']=obj_ctx.get_value_range()
-                                    case "vlan_id":
+                                        self.__params['node_dst']=obj_ctx.contextValueRange
+                                    case "vlanId":
                                         logger.debug("vlan_id case")
-                                        self.__params['vlan_id']=obj_ctx.get_value_range()
-                    for trg_ctx in exp.get_target():
+                                        self.__params['vlan_id']=obj_ctx.contextValueRange
+                    for trg_ctx in exp.expectationTargets:
                         # Loop trg inside exp
-                        att=trg_ctx.get_attribute()
+                        att=trg_ctx.targetName
                         match att:
                             case "signature":
                                 logger.debug("signature case")
-                        trg_ctx=trg_ctx.get_context()
+                        trg_ctx=trg_ctx.targetContexts
                         if trg_ctx:
                             for ctx in trg_ctx:
                                 # Loop ctx inside trg inside exp
-                                att=ctx.get_attribute()
+                                att=ctx.contextAttribute
                                 match att:
                                     case "signature":
                                         logger.debug("signature_trg_ctx case")
                     
-                    for exp_ctx in exp.get_context():
-                        att=exp_ctx.get_attribute()
+                    for exp_ctx in exp.expectationContexts:
+                        att=exp_ctx.contextAttribute
                         match att:
                             case "url":
                                 logger.debug("url case")
                                 
-                                params['url']=exp_ctx.get_value_range()
+                                params['url']=exp_ctx.contextValueRange
                                 params['headers'] = {'Content-Type': 'multipart/form-data'}
                                 params['connect_type'] = 'get'
                             case "user":
                                 logger.debug("user case")
-                                params['user']=exp_ctx.get_value_range()
+                                params['user']=exp_ctx.contextValueRange
                             case "password":
                                 logger.debug("pass case")
-                                params['password']=exp_ctx.get_value_range()
+                                params['password']=exp_ctx.contextValueRange
 
 
         # esto debería context del intent
-        match subintent.get_context().get_name():
-            case "tfs_controller":
-                logger.debug("intent context tfs controller case")
-                match subintent.get_context().get_attribute():
-                    case "state":
-                        logger.debug("intent context att state case")
-                    case "permits":
-                        logger.debug("intent context att permits case")
+        for int_ctx in subintent.intentContexts:
+            match int_ctx.contextAttribute:
+                case "tfs_controller":
+                    logger.debug("intent context tfs controller case")
+                    match subintent.intentContexts:
+                        case "state":
+                            logger.debug("intent context att state case")
+                        case "permits":
+                            logger.debug("intent context att permits case")
 
         return [self.vpnl2_schema(),params],"sysout"
 

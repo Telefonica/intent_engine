@@ -1,0 +1,29 @@
+Intent:
+  id: 'Intent_2'
+  userLabel: 'EnergyCarbonEfficiency'
+  intentExpectations:
+    - expectationId: '2'
+      expectationVerb: 'ENSURE'
+      expectationObject:
+          objectInstance: 'cbcb208a-d535-434b-bb35-217a64bd516c'
+          objectType: 'L2SM_Network'
+          objectContexts:
+            - contextAttribute: 'ServiceStartTime'
+              contextCondition: 'IS_EQUAL_TO'
+              contextValueRange: 2024-06-215T22:00:00Z
+            - contextAttribute: 'ServiceEndTime'
+              contextCondition: 'IS_EQUAL_TO'
+              contextValueRange: 2024-10-28T22:00:00Z
+      expectationTargets:
+        - targetName: 'CompEnergyEfficiency'
+          targetCondition: 'IS_GREATER_THAN'
+          targetValueRange: 40000
+        - targetName: 'CompEnergyConsumption'
+          targetCondition: 'IS_LESS_THAN'
+          targetValueRange: 900
+        - targetName: 'GreenEnergyConsumptionRate'
+          targetCondition: 'IS_GREATER_THAN'
+          targetValueRange: 90
+  intentPriority: 1
+  observationPeriod: 60
+  intentAdminState: 'ACTIVATED'

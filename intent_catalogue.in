@@ -3,3 +3,7 @@ intent_engine.catalogue.nemo
 intent_engine.catalogue.l2vpn
 intent_engine.catalogue.tfs_controller
 intent_engine.catalogue.slice_5g
+intent_engine.catalogue.enif_slice
+intent_engine.catalogue.green_bssf
+intent_engine.catalogue.nsmf
+intent_engine.catalogue.DBstorage

@@ -11,9 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import json
 import logging
+
+from devtools import pprint
+
 from intent_engine.catalogue.abstract_library import abstract_library
-from intent_engine.core.ib_object import IB_object
+from intent_engine.core.ib_model import IntentModel,IntentNrm, jsonable_model_encoder
 
 logger = logging.getLogger(__name__)
 
@@ -24,9 +28,8 @@ class l2vpn(abstract_library):
     def __init__(self):
         decision_tree={
            "cloud_continuum" : {
-               "tfs_controller":{
-                   "l2vpn":{
-                       "request":["tfs_controller"]}
+               "DELIVER":{
+                   "L2VPN":"l2vpn"
                     },
                 "mininet": "mininet_controller"
                 }
@@ -47,8 +50,27 @@ class l2vpn(abstract_library):
         super().__init__(module_name="l2vpn",isILU=False,params=params,decision_tree=decision_tree)
         self.__params=params
     
-    def translator(self,subintent : IB_object) -> tuple[list , str]:
+    def generate_subintent(self,intent_model : IntentModel):
+        intent=intent_model.get_intent()
+        logger.debug("Generating L2VPN TFS subintent...")
+        for i,exp in enumerate(intent.intentExpectations):
+            if exp.expectationVerb.value == 'DELIVER':
+                # new_dict=exp.dict()
+                # new_dict['expectationObject']['objectType']='L2VPN_TFS'
+                intent_dict=intent.dict(exclude_defaults=True)
+                intent_dict['intentExpectations'][i]['expectationObject']['objectType']='L2VPN_TFS'
+                # pprint(new_dict)
+                # IntentNrm.NewTFSL2VPNIntentExpectation(**new_dict)
+                pprint(jsonable_model_encoder(intent_dict))
+                subintent=IntentNrm.IntentMncc(**jsonable_model_encoder(intent_dict))
+        # TODO: meter la nbi de TFS como parte del context para el subintent
+        logger.debug("L2VPN subintent : %s",subintent)
+        intent_model.set_intent(subintent)
+        return intent_model
+    
+    def translator(self,subintent : IntentModel) -> tuple[list , str]:
         # TODO: cambiar el connect_type dependiendo del intent de  tfs session
+        # FIXME: This is deprecated to tfs_controller
         exec_params=[]
         logger.info("Translating L2VPN...")
         logger.debug("debug L2VPN...")
@@ -116,8 +138,9 @@ class l2vpn(abstract_library):
         blue_prints=[{},{}]
         return blue_prints
     
-    def create_ilu(self,intent : IB_object) -> IB_object:
+    def create_ilu(self,intent : IntentModel) -> IntentModel:
         # TODO: puede que esto no tenga sentido porq el classifier debería classificarlo como 
+        # Deprecated
         # tfs_controller?    
 
         subintent=intent
@@ -228,7 +251,3 @@ class l2vpn(abstract_library):
                     }
 
         return vpn_descriptor
-
-if __name__ == "__main__":
-    a=tfs_vpnl2()
-    print(a.get_decision_tree())

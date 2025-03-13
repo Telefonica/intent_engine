@@ -1,0 +1,199 @@
+openapi: 3.0.1
+info:
+  title: IntentExpectaions for L2SM
+  version: 1.0.0
+  description: >-
+    OAS 3.0.1 definition for a new intentExpectation for L2SM mncc Adaptor
+paths: {}
+components:
+  schemas:
+    L2SMExpectations:
+      description: >-
+        Different expectations for L2SM mncc adaptor
+      # type: object
+      oneOf:
+        - $ref: "#/components/schemas/NewNetworkExpectation"
+        # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"
+    # intentContexts:
+    #   description: >-
+    #     Cloud_continuum context specific for name-containe
+    #   type: array
+    #   items:
+    #     $ref : "#/components/schemas/L2SMIntentContext"
+
+    #-------Definition of the concrete IntentContexts dataType----------------#
+    # L2SMIntentContext:
+    #     description: >-
+    #         Url where the l2sm http server is located
+    #     type: object
+    #     properties:
+    #       contextAttribute:
+    #         type: string
+    #         enum:
+    #           - NEMO_WORKLOAD
+    #       contextCondition:
+    #         type: string
+    #         enum:
+    #           - IS_EQUAL_TO
+    #       contextValueRange:
+    #         type: string
+    #-------Definition of the concrete IntentExpectations dataType----------------#
+    NewNetworkExpectation:
+        description: >-
+            Expectation to request a new l2sm network.
+        type: object
+        properties:
+          expectationId:
+            type: string
+          expectationVerb:
+            type: string
+            enum:
+              - DELIVER
+          expectationObject:
+            type: object
+            properties:
+              objectType:
+                type: string
+                enum:
+                  - L2SM_NETWORK
+              objectInstance:
+                type: string
+              objectContexts:
+                type: array
+                items:
+                  type: object
+                  anyOf:
+                    - $ref: "#/components/schemas/l2smNetworkContext"
+                    - $ref: "#/components/schemas/l2smProviderContext"
+                    - $ref: "#/components/schemas/l2smDomainContext"
+                    # - $ref: "#/components/schemas/l2smObjectContext"
+                    # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/Context"
+          expectationTargets:
+            type: array
+            items:
+              type: object
+              allOf:
+                -  $ref: "#/components/schemas/secureTarget"
+
+          expectationContexts:
+            type: array
+            items:
+              type: object
+              oneOf:
+                - $ref: "#/components/schemas/urlExpectationContext"
+
+                  #-------Definition of the concrete ExpectationContext dataType----------------#
+    urlExpectationContext:
+        description: >-
+            Url where the l2sm http server is located
+        type: object
+        properties:
+          contextAttribute:
+            type: string
+            enum:
+              - url
+          contextCondition:
+            $ref : "TS28312_IntentNrm.yaml#/components/schemas/Condition"
+          contextValueRange:
+            type: string
+                  #-------Definition of the concrete ObjectContext dataType----------------#
+    
+    l2smObjectContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - network
+            - providerName
+            - domain
+        contextCondition:
+          $ref : "TS28312_IntentNrm.yaml#/components/schemas/Condition"
+        contextValueRange:
+          type: string
+
+    l2smNetworkContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - network
+        contextCondition:
+          $ref : "TS28312_IntentNrm.yaml#/components/schemas/Condition"
+        contextValueRange:
+          type: string
+    l2smProviderContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - providerName
+        contextCondition:
+          $ref : "TS28312_IntentNrm.yaml#/components/schemas/Condition"
+        contextValueRange:
+          type: string
+    l2smDomainContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - domain
+        contextCondition:
+          $ref : "TS28312_IntentNrm.yaml#/components/schemas/Condition"
+        contextValueRange:
+          type: string
+    securedKeyContext:
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - publicKey
+        contextCondition:
+          $ref : "TS28312_IntentNrm.yaml#/components/schemas/Condition"
+        contextValueRange:
+          type: string
+          #-------Definition of the concrete ExpectationTarget dataType----------------#
+    secureTarget:
+      type: object
+      properties:
+        targetName:
+          type: string
+          enum:
+            - secure
+        targetCondition:
+          $ref : "TS28312_IntentNrm.yaml#/components/schemas/Condition"
+        targetValueRange:
+          type: string
+        targetContexts:
+          type: array
+          items:
+            type: object
+            oneOf:
+              -  $ref: '#/components/schemas/securedKeyContext'
+          #-------Definition of the concrete ExpectationContext dataType----------------#
+    L2SMExpectationContext:
+            description: >-
+                Url where the l2sm http server is located
+            type: object
+            properties:
+              contextAttribute:
+                type: string
+                enum:
+                  - url
+              contextCondition:
+                type: string
+                enum:
+                  - IS_EQUAL_TO
+              contextValueRange:
+                type: string
+
+#-------Definition of the concrete Condition dataType, to avoid repetition----------------#
+
+    IS_EQUAL_TO:
+      type: string
+      enum:
+        - IS_EQUAL_TO

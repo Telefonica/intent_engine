@@ -81,6 +81,7 @@ For any feedback or doubts about **The Intent Engine** don't hesitate to contact
 # Acknowledgments
 
 The work in this open-source project has partially been granted by :
+- [DESIRE6G] [DESIRE6G - Web](https://desire6g.eu/) (EU Horizon Europe Grant Agreement no. 101096466)
 - [NEMO]([HOME - META-OS](https://meta-os.eu/)) (EU Horizon Europe Grant Agreement No. 101070118).
 - [6Green]([6Green - Web](https://www.6green.eu/)) (101096925 – 6Green – HORIZON-JU-SNS-2022) 
 

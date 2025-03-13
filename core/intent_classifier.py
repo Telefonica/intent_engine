@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
+from typing import List
 from schema import Schema, And, Use, Optional, SchemaError
-from .ib_object import IB_object
-import jsonpickle
+from .ib_model import IntentModel
 import logging
 logger = logging.getLogger(__name__)
 
@@ -38,23 +38,72 @@ class Classifier():
             for item in obj:
                 self.find_in_tree(keywords,item,leaves)
         else:
-            print("is leave :",obj)
+            print("is leaf :",obj)
             leaves.append(obj)
 
-    def classify(self,intent : IB_object):
+    def classify(self,intent_model : IntentModel) -> tuple[list[IntentModel],list]:
         """
         When an intent is recived in the intent_core .
         TODO: get intent blueprint to create subintents
         """
         ill=[]
-        sub_intents=[]
+        sub_intents:list[IntentModel]=[]
+        translators=[]
+        intent=intent_model
         for tree in self.__trees:
-            self.find_in_tree(intent.get_keywords(),tree,ill)
-            sub_intents.append(intent)
-            logger.info("Ill: %s || Subintent: %s",ill[:],intent)
+            # Intent for storing at database
+            if intent_model.get_admin_state() == 'MANAGED':
+                return [intent_model],['DBstorage']
+            # get all libraries capable of translate the intent
+            logger.debug("Keywords: %s",intent_model.get_keywords())
+            self.find_in_tree(intent_model.get_keywords(),tree,ill)
+        # unique list in case of duplicities
+        unique_ill=list(set(ill))
+        logger.debug("unique list: %s",unique_ill)
+        for ilu in unique_ill:
+            # for every unique ill and intent
+            logger.debug("new iter subintent module: %s",ilu)
+            for module in self.__modules:
+                # for every module installed, recognise intent
+                if module.get_name() == ilu:
+                    # if ill has direct translator to executioner is ilu
+                    if module.isILU():
+                        # get translator
+                        # the subintent is for having the same ordering or some minor checks
+                        logger.debug("Module is ilu: %s",module)
+                        sub_intent=module.generate_subintent(intent)
+                        sub_intents.append(sub_intent)
+                        translators.append(module.get_name())
+                        logger.debug("translators iteration ILU: %s",translators)
+                    else:
+                        # this means it has no direct translator
+                        # it generates another subintent to be classified by other ill/ilu
+                        # this loops until ilu
+                        logger.debug("reclassify...")
+                        sub_intent=module.generate_subintent(intent)
+                        # If is a list of sub_intents
+                        # TODO: classify for each subintent?
+                        if isinstance(sub_intent,list):
+                            for division in sub_intent:
+                                logger.debug("sub_intent iteration noILU: %s",sub_intent)
+                                sub_intent,sub_ilu=self.classify(division)
+                                translators.extend(sub_ilu)
+                                sub_intents.extend(sub_intent)
+                                logger.debug("translators iteration noILU: %s",translators)
+                        else: 
+                            logger.debug("sub_intent iteration noILU: %s",sub_intent)
+                            sub_intent,sub_ilu=self.classify(sub_intent)
+                            translators.extend(sub_ilu)
+                            sub_intents.extend(sub_intent)
+                            logger.debug("translators iteration noILU: %s",translators)
+                    
+        # if translators:
+            # logger.debug("Translators: %s || Subintent: %s",translators[:],sub_intent)
+
         # Necesito que sea uniq ill, pero cada ill su subintent?
-        # problema si un ill tiene dos subintents? 
-        return list(set(sub_intents)),list(set(ill))
+        # problema si un ill tiene dos subintents?
+        # return list(set(sub_intents)),list(set(ill))
+        return sub_intents,translators
     
     def check(self,conf_schema, conf):
         try:
@@ -63,6 +112,6 @@ class Classifier():
         except SchemaError:
             return False
     
-    def filter(self, intent :IB_object):
+    def filter(self, intent :IntentModel):
 
         return intent

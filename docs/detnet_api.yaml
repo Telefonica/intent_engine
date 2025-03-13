@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: Topology Exposure API
+  version: 1.0.0
+paths:
+  /topology:
+    get:
+      summary: Get Network Topology
+      description: >
+        Retrieves the current network topology, including nodes, links, bandwith and, latency.
+      responses:
+        '200':
+          description: The current network topology.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nodes:
+                    type: array
+                    description: List of nodes in the network topology.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: Unique identifier of the node.
+                        domain:
+                          type: string
+                          description: Type of domain to which the node belongs, can be 'Detnet', '3GPP', 'TSN', WiFi' or, 'No-Deterministic'.
+                          enum: [Detnet, 3GPP, TSN, WiFi, No-Deterministic]
+                        capabilities:
+                          type: string
+                          description: These are the capabilities of each node that can be configured. For example, in the case of TSN can be FRER, 802.1 Qbv, etc.,
+                          enum: [FRER, Priorities, Preemption, Qav, Qbv, Qci, CB]
+                  links:
+                    type: array
+                    description: List of links between nodes.
+                    items:
+                      type: object
+                      properties:
+                        source:
+                          type: string
+                          description: ID of the source node.
+                        target:
+                          type: string
+                          description: ID of the target node. If is 'null' means an external domain node.
+                        type: 
+                          type: string
+                          description: Type of link, which can be either 'Interdomain' (if it connects nodes belonging to different domains) or 'Intradomain' (if it connects nodes within the same domain). 
+                          enum: [Interdomain, Intradomain]
+                        bandwidth:
+                          type: string
+                          description: Available bandwidth on the link.
+                        latency:
+                          type: string
+                          description: Link latency time. It can only be covered if the link is 'Intradomain'.
+                        port:
+                          type: string
+                          description: Port used in the link.
+

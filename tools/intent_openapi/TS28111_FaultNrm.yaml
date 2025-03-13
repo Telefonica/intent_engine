@@ -1,0 +1,551 @@
+openapi: 3.0.1
+info:
+  title: Fault Management NRM
+  version: 18.1.0
+  description: >-
+    OAS 3.0.1 definition of the Fault Supervision MnS
+    © 2024, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
+    All rights reserved.
+externalDocs:
+  description: 3GPP TS 28.111; Fault Management
+  url: http://www.3gpp.org/ftp/Specs/archive/28_series/28.111/
+servers:
+  - url: '{MnSRoot}/FaultSupervisionMnS/{MnSversion}'
+    variables:
+      MnSRoot:
+        description: See subclause 4.4.3 of TS 32.158
+        default: http://example.com/3GPPManagement
+      MnSversion:
+        description: Version number of the OpenAPI definition
+        default: XXX
+paths: {}
+
+components:
+  schemas:
+
+  #---- Definition of AlarmRecord ----------------------------------------------------#
+ 
+    AlarmId:
+      type: string
+    AlarmType:
+      type: string
+      enum:
+        - COMMUNICATIONS_ALARM
+        - QUALITY_OF_SERVICE_ALARM
+        - PROCESSING_ERROR_ALARM
+        - EQUIPMENT_ALARM
+        - ENVIRONMENTAL_ALARM
+        - INTEGRITY_VIOLATION
+        - OPERATIONAL_VIOLATION
+        - PHYSICAL_VIOLATION
+        - SECURITY_SERVICE_OR_MECHANISM_VIOLATION
+        - TIME_DOMAIN_VIOLATION
+    ProbableCause:
+      description: >-
+        The value of the probable cause may be a specific standardized string, or any
+        vendor provided string. Probable cause strings are not standardized in the
+        present document. They may be added in a future version. Up to then the
+        mapping of the generic probable cause strings "PROBABLE_CAUSE_001" to
+        "PROBABLE_CAUSE_005" is vendor specific.
+        The value of the probable cause may also be an integer. The mapping of integer
+        values to probable causes is vendor specific.
+      oneOf:
+        - anyOf:
+            - type: string
+              enum:
+                - PROBABLE_CAUSE_001
+                - PROBABLE_CAUSE_002
+                - PROBABLE_CAUSE_003
+                - PROBABLE_CAUSE_004
+                - PROBABLE_CAUSE_005
+            - type: string
+        - type: integer
+    SpecificProblem:
+      oneOf:
+        - type: string
+        - type: integer
+    PerceivedSeverity:
+      type: string
+      enum:
+        - INDETERMINATE
+        - CRITICAL
+        - MAJOR
+        - MINOR
+        - WARNING
+        - CLEARED
+    TrendIndication:
+      type: string
+      enum:
+        - MORE_SEVERE
+        - NO_CHANGE
+        - LESS_SEVERE
+    ThresholdHysteresis:
+      type: object
+      required:
+        - high
+      properties:
+        high:
+          oneOf:
+            - type: integer
+            - $ref: 'TS28623_ComDefs.yaml#/components/schemas/Float'
+        low:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/Float'
+    ThresholdLevelInd:
+      oneOf:
+        - type: object
+          properties:
+            up:
+              $ref: '#/components/schemas/ThresholdHysteresis'
+        - type: object
+          properties:
+            down:
+              $ref: '#/components/schemas/ThresholdHysteresis'
+    ThresholdInfo:
+      type: object
+      properties:
+        observedMeasurement:
+          type: string
+        observedValue:
+          type: number
+        thresholdLevel:
+          $ref: '#/components/schemas/ThresholdLevelInd'
+        armTime:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/DateTime'
+      required:
+        - observedMeasurement
+        - observedValue
+    CorrelatedNotification:
+      type: object
+      properties:
+        sourceObjectInstance:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+        notificationIds:
+          type: array
+          items:
+            $ref: 'TS28623_ComDefs.yaml#/components/schemas/NotificationId'
+      required:
+        - sourceObjectInstance
+        - notificationIds
+    CorrelatedNotifications:
+      type: array
+      items:
+        $ref: '#/components/schemas/CorrelatedNotification'
+    AckState:
+      type: string
+      enum:
+        - ACKNOWLEDGED
+        - UNACKNOWLEDGED
+
+    AlarmRecord:
+      description: >-
+        The alarmId is not a property of an alarm record. It is used as key
+        in the map of alarm records instead.
+      type: object
+      properties:
+        # alarmId:
+        #  $ref: '#/components/schemas/AlarmId'
+        objectInstance:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+        notificationId:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/NotificationId'
+        alarmRaisedTime:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/DateTime'
+        alarmChangedTime:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/DateTime'
+        alarmClearedTime:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/DateTime'
+        alarmType:
+          $ref: '#/components/schemas/AlarmType'
+        probableCause:
+          $ref: '#/components/schemas/ProbableCause'
+        specificProblem:
+          $ref: '#/components/schemas/SpecificProblem'
+        perceivedSeverity:
+          $ref: '#/components/schemas/PerceivedSeverity'
+        backedUpStatus:
+          type: boolean
+        backUpObject:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+        trendIndication:
+          $ref: '#/components/schemas/TrendIndication'
+        thresholdinfo:
+          $ref: '#/components/schemas/ThresholdInfo'
+        correlatedNotifications:
+          $ref: '#/components/schemas/CorrelatedNotifications'
+        stateChangeDefinition:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeValueChangeSet'
+        monitoredAttributes:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeNameValuePairSet'
+        proposedRepairActions:
+          type: string
+        additionalText:
+          type: string
+        additionalInformation:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeNameValuePairSet'
+
+        rootCauseIndicator:
+          type: boolean
+
+        ackTime:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/DateTime'
+        ackUserId:
+          type: string
+        ackSystemId:
+          type: string
+        ackState:
+          $ref: '#/components/schemas/AckState'
+
+        clearUserId:
+          type: string
+        clearSystemId:
+          type: string
+        serviceUser:
+          type: string
+        serviceProvider:
+          type: string
+        securityAlarmDetector:
+          type: string
+
+    AlarmList-Single:
+      allOf:
+        - $ref: 'TS28623_GenericNrm.yaml#/components/schemas/Top'
+        - type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                administrativeState:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/AdministrativeState'
+                operationalState:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/OperationalState'
+                numOfAlarmRecords:
+                  type: integer
+                lastModification:
+                  $ref: 'TS28623_ComDefs.yaml#/components/schemas/DateTime'
+                alarmRecords:
+                  description: >-
+                     This resource represents a map of alarm records.
+                     The alarmIds are used as keys in the map.
+                  type: object
+                  additionalProperties:
+                    $ref: '#/components/schemas/AlarmRecord'
+
+
+  #---- Definition of alarm notifications --------------------------------------------#
+  
+    AlarmNotificationTypes:
+      type: string
+      enum:
+        - notifyNewAlarm
+        - notifyChangedAlarm
+        - notifyChangedAlarmGeneral
+        - notifyAckStateChanged
+        - notifyCorrelatedNotificationChanged
+        - notifyComments
+        - notifyClearedAlarm
+        - notifyAlarmListRebuilt
+        - notifyPotentialFaultyAlarmList
+    AlarmListAlignmentRequirement:
+      type: string
+      enum:
+        - ALIGNMENT_REQUIRED
+        - ALIGNMENT_NOT_REQUIRED
+
+    NotifyNewAlarm:
+      allOf:
+        - $ref: 'TS28623_ComDefs.yaml#/components/schemas/NotificationHeader'
+        - type: object
+          required:
+            - alarmId
+            - alarmType
+            - probableCause
+            - perceivedSeverity
+          properties:
+            alarmId:
+              $ref: '#/components/schemas/AlarmId'
+            alarmType:
+              $ref: '#/components/schemas/AlarmType'
+            probableCause:
+              $ref: '#/components/schemas/ProbableCause'
+            specificProblem:
+              $ref: '#/components/schemas/SpecificProblem'
+            perceivedSeverity:
+              $ref: '#/components/schemas/PerceivedSeverity'
+            backedUpStatus:
+              type: boolean
+            backUpObject:
+              $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+            trendIndication:
+              $ref: '#/components/schemas/TrendIndication'
+            thresholdInfo:
+              $ref: '#/components/schemas/ThresholdInfo'
+            correlatedNotifications:
+              $ref: '#/components/schemas/CorrelatedNotifications'
+            stateChangeDefinition:
+              $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeValueChangeSet'
+            monitoredAttributes:
+              $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeNameValuePairSet'
+            proposedRepairActions:
+              type: string
+            additionalText:
+              type: string
+            additionalInformation:
+              $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeNameValuePairSet'
+            rootCauseIndicator:
+              type: boolean
+    NotifyNewSecAlarm:
+      allOf:
+        - $ref: 'TS28623_ComDefs.yaml#/components/schemas/NotificationHeader'
+        - type: object
+          required:
+            - alarmId
+            - alarmType
+            - probableCause
+            - perceivedSeverity
+            - serviceUser
+            - serviceProvider
+            - securityAlarmDetector 
+          properties:
+            alarmId:
+              $ref: '#/components/schemas/AlarmId'
+            alarmType:
+              $ref: '#/components/schemas/AlarmType'
+            probableCause:
+              $ref: '#/components/schemas/ProbableCause'
+            perceivedSeverity:
+              $ref: '#/components/schemas/PerceivedSeverity'
+            correlatedNotifications:
+              $ref: '#/components/schemas/CorrelatedNotifications'
+            additionalText:
+              type: string
+            additionalInformation:
+              $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeNameValuePairSet'
+            rootCauseIndicator:
+              type: boolean
+            serviceUser:
+              type: string
+            serviceProvider:
+              type: string
+            securityAlarmDetector:
+              type: string
+    NotifyClearedAlarm:
+      allOf:
+        - $ref: 'TS28623_ComDefs.yaml#/components/schemas/NotificationHeader'
+        - type: object
+          required:
+            - alarmId
+            - alarmType
+            - probableCause
+            - perceivedSeverity
+          properties:
+            alarmId:
+              $ref: '#/components/schemas/AlarmId'
+            alarmType:
+              $ref: '#/components/schemas/AlarmType'
+            probableCause:
+              $ref: '#/components/schemas/ProbableCause'
+            perceivedSeverity:
+              $ref: '#/components/schemas/PerceivedSeverity'
+            correlatedNotifications:
+              $ref: '#/components/schemas/CorrelatedNotifications'
+            clearUserId:
+              type: string
+            clearSystemId:
+              type: string
+    NotifyChangedAlarm:
+      allOf:
+        - $ref: 'TS28623_ComDefs.yaml#/components/schemas/NotificationHeader'
+        - type: object
+          required:
+            - alarmId
+            - alarmType
+            - probableCause
+            - perceivedSeverity
+          properties:
+            alarmId:
+              $ref: '#/components/schemas/AlarmId'
+            alarmType:
+              $ref: '#/components/schemas/AlarmType'
+            probableCause:
+              $ref: '#/components/schemas/ProbableCause'
+            perceivedSeverity:
+              $ref: '#/components/schemas/PerceivedSeverity'
+    NotifyChangedAlarmGeneral:
+      allOf:
+        - $ref: 'TS28623_ComDefs.yaml#/components/schemas/NotificationHeader'
+        - type: object
+          required:
+            - alarmId
+            - alarmType
+          properties:
+            alarmId:
+              $ref: '#/components/schemas/AlarmId'
+            alarmType:
+              $ref: '#/components/schemas/AlarmType'
+            probableCause:
+              $ref: '#/components/schemas/ProbableCause'
+            specificProblem:
+              $ref: '#/components/schemas/SpecificProblem'
+            perceivedSeverity:
+              $ref: '#/components/schemas/PerceivedSeverity'
+            correlatedNotifications:
+              $ref: '#/components/schemas/CorrelatedNotifications'
+            backedUpStatus:
+              type: boolean
+            backUpObject:
+              $ref: 'TS28623_ComDefs.yaml#/components/schemas/Dn'
+            trendIndication:
+              $ref: '#/components/schemas/TrendIndication'
+            thresholdInfo:
+              $ref: '#/components/schemas/ThresholdInfo'
+            stateChangeDefinition:
+              $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeValueChangeSet'
+            monitoredAttributes:
+              $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeNameValuePairSet'
+            proposedRepairActions:
+              type: string
+            additionalText:
+              type: string
+            additionalInformation:
+              $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeNameValuePairSet'
+            rootCauseIndicator:
+              type: boolean
+            changedAlarmAttributes:
+              $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeNameValuePairSet'
+    NotifyChangedSecAlarmGeneral:
+      allOf:
+        - $ref: 'TS28623_ComDefs.yaml#/components/schemas/NotificationHeader'
+        - type: object
+          required:
+            - alarmId
+            - alarmType
+            - serviceUser
+            - serviceProvider
+            - securityAlarmDetector
+          properties:
+            alarmId:
+              $ref: '#/components/schemas/AlarmId'
+            alarmType:
+              $ref: '#/components/schemas/AlarmType'
+            probableCause:
+              $ref: '#/components/schemas/ProbableCause'
+            perceivedSeverity:
+              $ref: '#/components/schemas/PerceivedSeverity'
+            correlatedNotifications:
+              $ref: '#/components/schemas/CorrelatedNotifications'
+            additionalText:
+              type: string
+            additionalInformation:
+              $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeNameValuePairSet'
+            rootCauseIndicator:
+              type: boolean
+            serviceUser:
+              type: string
+            serviceProvider:
+              type: string
+            securityAlarmDetector:
+              type: string
+            changedAlarmAttributes:
+              $ref: 'TS28623_ComDefs.yaml#/components/schemas/AttributeNameValuePairSet'
+    NotifyCorrelatedNotificationChanged:
+      allOf:
+        - $ref: 'TS28623_ComDefs.yaml#/components/schemas/NotificationHeader'
+        - type: object
+          required:
+            - alarmId
+            - correlatedNotifications
+          properties:
+            alarmId:
+              $ref: '#/components/schemas/AlarmId'
+            correlatedNotifications:
+              $ref: '#/components/schemas/CorrelatedNotifications'
+            rootCauseIndicator:
+              type: boolean
+    NotifyAckStateChanged:
+      allOf:
+        - $ref: 'TS28623_ComDefs.yaml#/components/schemas/NotificationHeader'
+        - type: object
+          required:
+            - alarmId
+            - alarmType
+            - probableCause
+            - perceivedSeverity
+            - ackState
+            - ackUserId
+          properties:
+            alarmId:
+              $ref: '#/components/schemas/AlarmId'
+            alarmType:
+              $ref: '#/components/schemas/AlarmType'
+            probableCause:
+              $ref: '#/components/schemas/ProbableCause'
+            perceivedSeverity:
+              $ref: '#/components/schemas/PerceivedSeverity'
+            ackState:
+              $ref: '#/components/schemas/AckState'
+            ackUserId:
+              type: string
+            ackSystemId:
+              type: string
+    NotifyComments:
+      allOf:
+        - $ref: 'TS28623_ComDefs.yaml#/components/schemas/NotificationHeader'
+        - type: object
+          required:
+            - alarmId
+            - alarmType
+            - probableCause
+            - perceivedSeverity
+            - comments
+          properties:
+            alarmId:
+              $ref: '#/components/schemas/AlarmId'
+            alarmType:
+              $ref: '#/components/schemas/AlarmType'
+            probableCause:
+              $ref: '#/components/schemas/ProbableCause'
+            perceivedSeverity:
+              $ref: '#/components/schemas/PerceivedSeverity'
+            comments:
+              $ref: '#/components/schemas/Comments'
+    NotifyPotentialFaultyAlarmList:
+      allOf:
+        - $ref: 'TS28623_ComDefs.yaml#/components/schemas/NotificationHeader'
+        - type: object
+          required:
+            - reason
+          properties:
+            reason:
+              type: string
+    NotifyAlarmListRebuilt:
+      allOf:
+        - $ref: 'TS28623_ComDefs.yaml#/components/schemas/NotificationHeader'
+        - type: object
+          required:
+            - reason
+          properties:
+            reason:
+              type: string
+            alarmListAlignmentRequirement:
+              $ref: '#/components/schemas/AlarmListAlignmentRequirement'
+
+  #---- Definition of resources ------------------------------------------------------#
+
+    Comment:
+      type: object
+      properties:
+        commentTime:
+          $ref: 'TS28623_ComDefs.yaml#/components/schemas/DateTime'
+        commentUserId:
+          type: string
+        commentSystemId:
+          type: string
+        commentText:
+          type: string
+    Comments:
+      description: >-
+        Collection of comments. The comment identifiers are allocated by the
+        MnS producer and used as key in the map.
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/Comment'

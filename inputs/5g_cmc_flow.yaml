@@ -1,0 +1,54 @@
+Intent:
+  id: 'mncc_5gcmc_1'
+  userLabel: 'cloud_continuum'
+  intentExpectations:
+    - expectationId: '1'
+      expectationVerb: 'DELIVER'
+      expectationObject:
+        objectType: '5G_SLICE_FLOW'
+        objectInstance: 'cmc_slice_1'
+        objectContexts:
+          - contextAttribute: 'ip4Address'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: '1.1.1.1'
+          - contextAttribute: 'type'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'BOTH'
+          - contextAttribute: 'portNumber'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: '36000'
+          - contextAttribute: 'portType'
+            contextCondition: 'IS_EQUAL_TO'
+            contextValueRange: 'UDP'
+      expectationTargets:
+        - targetName: 'ulCapacity'
+          targetCondition: 'IS_EQUAL_TO'
+          targetValueRange: '3'
+          targetContexts:
+            - contextAttribute: 'profile'
+              contextCondition: 'IS_EQUAL_TO'
+              contextValueRange: 'audio4k'
+        - targetName: 'dlCapacity'
+          targetCondition: 'IS_EQUAL_TO'
+          targetValueRange: '3'
+          targetContexts:
+            - contextAttribute: 'profile'
+              contextCondition: 'IS_EQUAL_TO'
+              contextValueRange: 'audio4k'
+      expectationContexts:
+        - contextAttribute: 'starTime'
+          contextCondition: 'IS_EQUAL_TO'
+          contextValueRange: 2021-05-10T12:30:00-1
+        - contextAttribute: 'stopTime'
+          contextCondition: 'IS_EQUAL_TO'
+          contextValueRange: 2021-05-10T13:45:00-1
+        - contextAttribute: 'url'
+          contextCondition: 'IS_EQUAL_TO'
+          contextValueRange: 'localhost'
+  intentContexts:
+    - contextAttribute: 'NEMO_WORKLOAD'
+      contextCondition: 'IS_EQUAL_TO'
+      contextValueRange: 'cbcb208a-d535-434b-bb35-217a64bd516b'
+  intentPriority: 1
+  observationPeriod: 60
+  intentAdminState: 'ACTIVATED'

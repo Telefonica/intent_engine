@@ -1,0 +1,23 @@
+include:
+  - project: 'eclipsefdn/it/releng/gitlab-runner-service/gitlab-ci-templates'
+    file: 'jobs/buildkit.gitlab-ci.yml'
+  - project: 'eclipsefdn/it/releng/gitlab-runner-service/gitlab-ci-templates'
+    file: 'pipeline-autodevops.gitlab-ci.yml'
+
+stages:
+  - build
+  - test
+
+variables:
+  CI_REGISTRY_IMAGE: nemometaos/mncc-ibs
+
+buildkit:
+  extends: .buildkit
+  
+unit-test:
+  stage: test
+  script:
+    - echo "Running unit tests... This will take about 10 seconds."
+    # - docker run $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA /script/to/run/tests
+    - sleep 10
+    - echo "Tests passed succesfully!"

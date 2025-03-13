@@ -1,0 +1,56 @@
+openapi: 3.0.1
+info:
+  title: Intent for mNCC
+  version: 1.0.0
+  description: >-
+    OAS 3.0.1 definition for a new intentExpectation for meta Network Cluster Controller
+paths: {}
+components:
+  schemas:
+    Intent-mncc:
+      description: >-
+        This set of intents represent the possible request to the mncc.
+      # $ref : "TS28312_IntentNrm.yaml#/components/schemas/Intent-Single"
+      allOf:
+        - $ref : "TS28312_IntentNrm.yaml#/components/schemas/Intent-Single"
+        - type: object
+          properties:
+            userLabel:
+              type: string
+            intentExpectations:
+              description: >-
+                     Expectations for all the mncc adaptors
+              type: array
+              items:
+                # type: object
+                anyOf:
+                  - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/NewNetworkExpectation"
+                  - $ref: "IntentExpectation_5GCMC.yaml#/components/schemas/New5GFlowExpectation"
+                  - $ref: "IntentExpectation_L2VPN.yaml#/components/schemas/NewL2VPNIntentExpectation"
+                  - $ref: "IntentExpectation_TFS.yaml#/components/schemas/NewTFSL2VPNIntentExpectation"              # - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/L2SMExpectations"
+                  # - $ref: "IntentExpectation_5GCMC.yaml#/components/schemas/5GCMCExpectations"
+                  # - $ref: "TS28312_IntentNrm.yaml#/components/schemas/IntentExpectation"       
+            intentContexts:
+              type: array
+              items:
+                oneOf:
+                  - $ref : "#/components/schemas/NEMOIntentContext"
+              description: >-
+                It describes the list of Context(s) in mNCC which represents the constraints and conditions that should apply 
+                for the entire intent even if there may be specific contexts defined for specific parts of the intent 
+
+    NEMOIntentContext:
+      description: >-
+            NEMO_WORKLOAD identifier
+      type: object
+      properties:
+        contextAttribute:
+          type: string
+          enum:
+            - NEMO_WORKLOAD
+        contextCondition:
+          type: string
+          enum:
+            - IS_EQUAL_TO
+        contextValueRange:
+          type: string
