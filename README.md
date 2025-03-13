@@ -21,11 +21,13 @@
 The **Intent Engine** is a translator between different technologies, abstracting the specific details of network components from the general directives of higher-level components. This abstract order is known as Intent (*an intention*). It express an expectation of *what* the underlying technologies should do without knowing the *how*. 
 
 Following the structure in [Specification # 28.312 (3gpp.org)](https://portal.3gpp.org/desktopmodules/Specifications/SpecificationDetails.aspx?specificationId=3554) an Intent is divided in :
-- Expectation: which defines the requirements, goals and constraints of the Intent.
-	- Object : containing the action to perform and object constrains.
-	- Context : the scope of the action defined.
-	- Target : the goals and constraints that should support the underlying technology.
-- Context : the scope of the expectation.
+- Intent:
+  - intentContext: Is the scope of the intent itself. It could be used to define administrative task as priority of the intent, times of applicability or identification. This is jet to be define before the final version.
+  - intentExpectations: is the request that the user makes to the network
+    - expectationVerb: is the main action of the intention. This is usually a verb like create, request, modify, delete, deliver…
+    - expectationObject: is the direct complement of the action. The object has a type and an instance, conceptually very similar to a programming language class and its instantiation. Also, the object contains its own objectContext list to provide the required information of itself.
+    - expectationContexts: are the scopes in which the expectation is applied. Here are defined where (or when) the action must be performed. For example, a certain RAN area or a specific active cluster.
+    - expectationTargets: are the goals or objectives to be reached with the expectation. Translated to a transport network this could be restrictions in bandwidths, latencies, jitter… Every target can also have a more specific context in which is applied.
 
 This definition is broad, and is each library in the intent catalog is the one responsible for translating the intent into a network configuration. 
 
