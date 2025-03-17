@@ -15,7 +15,7 @@
 
 The initial information model is the following one defined by 3GPP [Specification # 28.312 (3gpp.org)](https://portal.3gpp.org/desktopmodules/Specifications/SpecificationDetails.aspx?specificationId=3554). 
 
-```plantuml
+<!-- ```plantuml
 @startuml 
 hide circle 
 hide methods 
@@ -54,7 +54,8 @@ note left of ManagedEntity
 Represents the following IOCs: Subnetwork 
 end note
 @enduml
-```
+``` -->
+![information model](attached/umlIntent3gpp.png)
 
 The Intent information model has been integrated with the intent-engine using OpenAPI schemas and the "datamodel-codegen" tool to autogenerate the Python objects that the engine uses.
 
@@ -65,4 +66,8 @@ If an Intent is stored in the GraphDB database, it can be viewed as a node graph
 ![Graph preview](attached/graph_preview.png)
 
 ## Other information models
+
+There are also other standarization organizations working on defining Intents as a set of objects, goals and constrains such as [TMforum TR292](https://www.tmforum.org/resources/introductory-guide/tr292-tm-forum-intent-ontology-tio-v3-6-0/). Future realeases of the code could be able to translate from one information model to the other.
+
+![TMforum high level schema of intent ontology.](attached/tmfModel.png)
 
