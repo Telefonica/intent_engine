@@ -36,13 +36,7 @@ components:
             items:
               # $ref: "#/components/schemas/IntentExpectation"
               type: object
-              allOf:
-                # - $ref: "IntentExpectation_L2SM.yaml#/components/schemas/L2SMExpectation"
-                # - $ref: "IntentExpectation_5GCMC.yaml#/components/schemas/5GCMCExpectation"
-                # - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/RadioNetworkExpectation"
-                # - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/EdgeServiceSupportExpectation"  
-                # - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/5GCNetworkExpectation"              
-                # - $ref: "TS28312_IntentExpectations.yaml#/components/schemas/RadioServiceExpectation"     
+              allOf:  
                 - $ref: "#/components/schemas/IntentExpectation"           
           contextSelectivity:
             $ref: "#/components/schemas/Selectivity" 

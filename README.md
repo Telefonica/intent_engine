@@ -71,6 +71,8 @@ end
 # About this repo
 
 Each branch is the development in the different projects.
+Some other docs:
+- [Create a new library](new_module.md)
 
 # Support
 
