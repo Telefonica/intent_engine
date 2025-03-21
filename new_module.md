@@ -1,35 +1,32 @@
 ## How to: Create a new library to translate Intents
 
-The Intent paradigm lies in its potential scalability for new intents as the technology changes. The isolated perspective it offers, enables seamless integration of new network connectivity adaptors through the addition of a library in the intent catalogue within the Intent-Engine. This concept nicely follows the same potential that micro-kernel architectures have.
+The Intent paradigm lies in its potential scalability for new intents as the technology changes. The isolated perspective it offers enables seamless integration of new network connectivity adaptors through the addition of a library in the intent catalogue within the Intent-Engine. This concept nicely follows the same potential that micro-kernel architectures have.
 
 ### New library
 
-The Intent-Engine can be understood as a translator with libraries installed as plugins. At the end, the plugins are nothing but a python class that the Intent Core will use in order to process the intents coming as inputs to the north bound interface. The new libraries located at the Intent Catalogue, must follow the general abstract class.
+The Intent-Engine can be understood as a translator with libraries installed as plugins. At the end, the plugins are nothing but a Python class that the Intent Core will use to process the intents coming as inputs to the northbound interface. The new libraries located at the Intent Catalogue must follow the general abstract class.
 
-The general class, defines functions, parameters and objects necessary for all the libraries in the Intent Catalogue. There are two main functionalities that an new library must have:
+The general class defines functions, parameters, and objects necessary for all the libraries in the Intent Catalogue. There are two main functionalities that a new library must have:
 
-- Decision tree for classification: decision tree that is traversed and compared to the different key words inside the intent. The leaf of the decision points to the library in charge of generating the subintent. userLabel->
-- Subintent generation: given an intent that has been classified the library, generates an intent that a less abstracted library (closer to the technology), can understand as own. The classifier will iterate over an intent until the library is marked as ILU (intent logic unit). Then, the classification step is finished and passes to the translation.
-- Translation: Once the intent is an ILU, means that there is a one-to-one relation with a network action. In this step, the library is in charge of taking all the different intent parameters and generating.
+- Decision tree for classification: decision tree that is traversed and compared to the different keywords inside the intent. The leaf of the decision points to the library in charge of generating the subintent.
+- Subintent generation: given an intent that has been classified, the library generates an intent that a less abstracted library (closer to the technology) can understand as its own. The classifier will iterate over an intent until the library is marked as ILU (intent logic unit). Then, the classification step is finished and passes to the translation.
+- Translation: Once the intent is an ILU, it means that there is a one-to-one relation with a network action. In this step, the library is in charge of taking all the different intent parameters and generating the necessary actions.
 
- There are other functionalities that a new library could have depending on the complexity of the technology itself, as requesting information from a database or a machine learning based translation. But as long as all this functions are enclosed on the abstract definitions, the Intent Core will work.
+There are other functionalities that a new library could have depending on the complexity of the technology itself, such as requesting information from a database or a machine learning-based translation. But as long as all these functions are enclosed in the abstract definitions, the Intent Core will work.
 
-It is necessary by the importer module in the Intent-Engine that the libraries paths are written on the $intent\_catalogue.in$ file. This enables the whole project to use the libraries functions.
+It is necessary for the importer module in the Intent-Engine that the libraries' paths are written in the *intent_catalogue.in* file. This enables the whole project to use the libraries' functions.
 
-### Steps
+### Workflow
 
+This are some recomended definition steps that could facilitate the process of creating a new library.
 *New library:*
-- Define what attributes, targets and contexts supported. New ones? Already existing ones?
+- Define what attributes, targets, and contexts are supported. New ones? Already existing ones?
 - Make the decision tree so the classifier can recognize the new network technology.
-- New interface from the intent based system to the adaptor?
-
-*IBS:*
-- Write abstract library doc
-- Define cloud continuum tree
+- New interface from the Intent-engine system to the technology? New executioner?
 
 ### Using the integrated data model
 
-The internal object model in python is generated automatic from the OpenAPI specification (unofficial repository than can serve as an example :[5GC_APIs/TS28312_IntentNrm.yaml at Rel-18 · jdegre/5GC_APIs](https://github.com/jdegre/5GC_APIs/blob/Rel-18/TS28312_IntentNrm.yaml)). If any change on the model is required in the python object "*IntentNrm.IntentNrmg*", the next command will do the work:
+The internal object model in Python is generated automatically from the OpenAPI specification (unofficial repository that can serve as an example: [5GC_APIs/TS28312_IntentNrm.yaml at Rel-18 · jdegre/5GC_APIs](https://github.com/jdegre/5GC_APIs/blob/Rel-18/TS28312_IntentNrm.yaml)). If any change to the model is required in the Python object "*IntentNrm.IntentNrmg*", the following command will do the work:
 
 ```bash
 datamodel-codegen --input intent_engine/tools/intent_openapi/NrmgIntent.yaml --output intent_engine/core/IntentNrm.py --enum-field-as-literal all --collapse-root-models
@@ -163,7 +160,7 @@ class green(abstract_library):
         the information model of the underlaying technology. The second one is usually
         related to the parameters that the executioner must need to make the connection, 
         for example, endpoint API url, connection type, credentials...
-        Then, the string, are the executioners names to be called separated by space.
+        Then, the string is the executioners names to be called separated by space.
         Usually, it is the executioner followed by the "sys_out" executioner which will
         output all the parameters to system outprint.
         
